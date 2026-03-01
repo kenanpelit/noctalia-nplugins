@@ -30,17 +30,6 @@ Item {
     border.color: hasWork ? Qt.alpha(Color.mPrimary, 0.22) : Style.capsuleBorderColor
     border.width: Style.capsuleBorderWidth
 
-    Rectangle {
-      anchors.centerIn: parent
-      visible: hasWork
-      width: 8
-      height: 8
-      radius: 4
-      color: Color.mPrimary
-      anchors.horizontalCenterOffset: 10
-      anchors.verticalCenterOffset: -10
-    }
-
     NIcon {
       anchors.centerIn: parent
       icon: "notes"
