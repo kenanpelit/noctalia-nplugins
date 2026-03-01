@@ -162,17 +162,18 @@ Item {
 
         Repeater {
           model: [
-            { label: "Active Tasks", value: root.summaryValue("activeTodos") },
-            { label: "Notes", value: root.summaryValue("notes") },
-            { label: "Scratchpad", value: root.summaryValue("scratchpadChars") + " chars" }
+            { label: "Active Tasks", value: root.summaryValue("activeTodos"), tabIndex: 2 },
+            { label: "Notes", value: root.summaryValue("notes"), tabIndex: 1 },
+            { label: "Scratchpad", value: root.summaryValue("scratchpadChars") + " chars", tabIndex: 0 }
           ]
 
           delegate: Rectangle {
             required property var modelData
+            readonly property bool isActive: root.currentTabIndex === modelData.tabIndex
             Layout.fillWidth: true
             radius: Style.radiusM
-            color: Qt.alpha(Color.mPrimary, 0.08)
-            border.color: Qt.alpha(Color.mPrimary, 0.14)
+            color: isActive ? Qt.alpha(Color.mPrimary, 0.14) : Qt.alpha(Color.mPrimary, 0.08)
+            border.color: isActive ? Qt.alpha(Color.mPrimary, 0.28) : Qt.alpha(Color.mPrimary, 0.14)
             border.width: 1
             implicitHeight: summaryCol.implicitHeight + (Style.marginM * 2)
 
@@ -182,35 +183,15 @@ Item {
               anchors.margins: Style.marginM
               spacing: 2
 
-              NText { text: modelData.label; pointSize: Style.fontSizeXS; color: Color.mSecondary }
-              NText { text: String(modelData.value); pointSize: Style.fontSizeL; font.weight: Font.Medium; color: Color.mOnSurface }
+              NText { text: modelData.label; pointSize: Style.fontSizeXS; color: isActive ? Color.mPrimary : Color.mSecondary }
+              NText { text: String(modelData.value); pointSize: Style.fontSizeL; font.weight: Font.Medium; color: isActive ? Color.mPrimary : Color.mOnSurface }
             }
-          }
-        }
-      }
 
-      RowLayout {
-        Layout.fillWidth: true
-        spacing: Style.marginS
-
-        Repeater {
-          model: [
-            { label: "Active Task", tabIndex: 2 },
-            { label: "Notes", tabIndex: 1 },
-            { label: "Scratchpad", tabIndex: 0 }
-          ]
-
-          delegate: NButton {
-            required property var modelData
-            readonly property real tabButtonWidth: Math.max(1, Math.floor((panelFrame.width - (Style.marginL * 2) - (Style.marginS * 2)) / 3))
-            Layout.fillWidth: false
-            Layout.minimumWidth: tabButtonWidth
-            Layout.preferredWidth: tabButtonWidth
-            Layout.maximumWidth: tabButtonWidth
-            text: modelData.label
-            backgroundColor: root.currentTabIndex === modelData.tabIndex ? Qt.alpha(Color.mPrimary, 0.14) : Qt.alpha(Color.mSurfaceVariant, 0.42)
-            textColor: root.currentTabIndex === modelData.tabIndex ? Color.mPrimary : Color.mOnSurface
-            onClicked: root.currentTabIndex = modelData.tabIndex
+            MouseArea {
+              anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
+              onClicked: root.currentTabIndex = modelData.tabIndex
+            }
           }
         }
       }
