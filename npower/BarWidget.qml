@@ -30,25 +30,16 @@ Item {
       return "battery-4";
     return "battery";
   }
-  readonly property string profileLabel: {
-    if (!main)
-      return "...";
-    if (main.profile === "power-saver")
-      return "Saver";
-    if (main.profile === "performance")
-      return "Perf";
-    if (main.profile === "balanced")
-      return "Balanced";
-    return String(main.profile || "Unknown");
-  }
   readonly property string detailText: {
     if (!main)
       return "...";
     if (main.batteryAvailable && main.batteryPercent >= 0)
-      return main.batteryPercent + "% | " + profileLabel;
+      return main.batteryPercent + "%";
     if (main.onAc)
-      return "AC | " + profileLabel;
-    return profileLabel;
+      return "AC";
+    if (main.onBattery)
+      return "Battery";
+    return "";
   }
   readonly property color accentColor: {
     if (!main)
