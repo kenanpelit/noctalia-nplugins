@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import qs.Commons
 import qs.Widgets
@@ -29,6 +30,26 @@ Item {
       return "battery-4";
     return "battery";
   }
+  readonly property string profileLabel: {
+    if (!main)
+      return "...";
+    if (main.profile === "power-saver")
+      return "Saver";
+    if (main.profile === "performance")
+      return "Perf";
+    if (main.profile === "balanced")
+      return "Balanced";
+    return String(main.profile || "Unknown");
+  }
+  readonly property string detailText: {
+    if (!main)
+      return "...";
+    if (main.batteryAvailable && main.batteryPercent >= 0)
+      return main.batteryPercent + "% | " + profileLabel;
+    if (main.onAc)
+      return "AC | " + profileLabel;
+    return profileLabel;
+  }
   readonly property color accentColor: {
     if (!main)
       return Color.mOnSurface;
@@ -43,7 +64,7 @@ Item {
     return Color.mOnSurface;
   }
 
-  implicitWidth: Style.capsuleHeight
+  implicitWidth: row.implicitWidth + (Style.marginM * 2)
   implicitHeight: Style.capsuleHeight
 
   Rectangle {
@@ -53,11 +74,23 @@ Item {
     border.color: Qt.alpha(root.accentColor, 0.24)
     border.width: Style.capsuleBorderWidth
 
-    NIcon {
+    RowLayout {
+      id: row
       anchors.centerIn: parent
-      icon: root.iconName
-      color: mouse.containsMouse ? Color.mOnHover : root.accentColor
-      pointSize: Style.fontSizeS
+      spacing: Style.marginS
+
+      NIcon {
+        icon: root.iconName
+        color: mouse.containsMouse ? Color.mOnHover : root.accentColor
+        pointSize: Style.fontSizeS
+      }
+
+      NText {
+        text: root.detailText
+        color: mouse.containsMouse ? Color.mOnHover : Color.mOnSurface
+        pointSize: Style.barFontSize
+        font.weight: Font.Medium
+      }
     }
   }
 

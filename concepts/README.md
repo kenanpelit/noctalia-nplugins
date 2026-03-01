@@ -6,5 +6,4 @@ They are intentionally not listed in `registry.json` yet. The goal is to keep th
 
 Current concepts:
 
-- `nclipper.md`: notes + clipboard convergence roadmap
 - `nkeyflow.md`: keybind visibility and action routing layer for Niri/Hyprland

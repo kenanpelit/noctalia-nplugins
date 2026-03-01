@@ -19,7 +19,7 @@
     {
       "id": "npower",
       "name": "NPower",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Laptop-focused power profile, battery, and session controls in one panel.",
@@ -31,6 +31,24 @@
         "Panel",
         "ControlCenter",
         "System"
+      ]
+    },
+    {
+      "id": "nclipper",
+      "name": "NClipper",
+      "version": "0.1.0",
+      "official": false,
+      "author": "Kenan Pelit",
+      "description": "Focused clipboard capture with saved snippets, pinning, and quick recopy actions.",
+      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+      "minNoctaliaVersion": "4.0.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "ControlCenter",
+        "Utility",
+        "Productivity"
       ]
     },
     {
