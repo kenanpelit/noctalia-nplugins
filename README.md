@@ -6,6 +6,7 @@ Custom Noctalia plugin registry maintained by Kenan Pelit.
 
 - `registry.json`: index used by Noctalia custom plugin sources
 - `ndns/`: DNS / VPN Switcher plugin
+- `nip/`: compact public IP monitor plugin
 - `npodman/`: Podman dashboard plugin
 - `notes/`: unified notes, scratchpad, and todos plugin
 - `network/`: live network console plugin

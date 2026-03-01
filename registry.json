@@ -65,6 +65,22 @@
         "ControlCenter",
         "Network"
       ]
+    },
+    {
+      "id": "nip",
+      "name": "NIP",
+      "version": "0.1.0",
+      "official": false,
+      "author": "Kenan Pelit",
+      "description": "Compact public IP monitor with an icon-only bar presence.",
+      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+      "minNoctaliaVersion": "4.4.3",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "Network"
+      ]
     }
   ]
 }
