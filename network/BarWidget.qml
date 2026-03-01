@@ -33,6 +33,8 @@ Item {
   readonly property color accentColor: fullyOnline ? Color.mPrimary : (online ? "#ffb74d" : Color.mOnSurface)
   readonly property color downColor: online ? "#4fc3f7" : Color.mOnSurfaceVariant
   readonly property color upColor: online ? "#81c784" : Color.mOnSurfaceVariant
+  readonly property color hoverTextColor: "#000000"
+  readonly property color baseTextColor: Color.mOnSurfaceVariant
   readonly property real rateChipWidth: Math.round(72 * Style.uiScaleRatio)
   readonly property real contentWidth: showText ? row.implicitWidth + (Style.marginM * 2) : Style.capsuleHeight
   readonly property real contentHeight: Style.capsuleHeight
@@ -122,7 +124,7 @@ Item {
       NIcon {
         icon: root.iconName
         applyUiScale: false
-        color: mouseArea.containsMouse ? Color.mOnHover : accentColor
+        color: mouseArea.containsMouse ? root.hoverTextColor : accentColor
       }
 
       RowLayout {
@@ -131,8 +133,8 @@ Item {
 
         Rectangle {
           radius: Style.radiusM
-          color: mouseArea.containsMouse ? Qt.alpha(Color.mOnHover, 0.12) : Qt.alpha(root.downColor, 0.12)
-          border.color: mouseArea.containsMouse ? Qt.alpha(Color.mOnHover, 0.14) : Qt.alpha(root.downColor, 0.22)
+          color: mouseArea.containsMouse ? Qt.alpha("#ffffff", 0.70) : Qt.alpha(root.downColor, 0.12)
+          border.color: mouseArea.containsMouse ? Qt.alpha(root.hoverTextColor, 0.16) : Qt.alpha(root.downColor, 0.22)
           border.width: 1
           Layout.preferredHeight: Math.max(Style.capsuleHeight - 10, 18)
           Layout.preferredWidth: root.rateChipWidth
@@ -146,22 +148,22 @@ Item {
               text: "↓"
               pointSize: Math.max(Style.barFontSize - 1, 8)
               font.weight: Font.DemiBold
-              color: mouseArea.containsMouse ? Color.mOnHover : root.downColor
+              color: mouseArea.containsMouse ? root.hoverTextColor : root.downColor
             }
 
             NText {
               text: root.downRateText
               pointSize: Style.barFontSize
               font.weight: Font.Medium
-              color: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
+              color: mouseArea.containsMouse ? root.hoverTextColor : root.baseTextColor
             }
           }
         }
 
         Rectangle {
           radius: Style.radiusM
-          color: mouseArea.containsMouse ? Qt.alpha(Color.mOnHover, 0.12) : Qt.alpha(root.upColor, 0.12)
-          border.color: mouseArea.containsMouse ? Qt.alpha(Color.mOnHover, 0.14) : Qt.alpha(root.upColor, 0.22)
+          color: mouseArea.containsMouse ? Qt.alpha("#ffffff", 0.70) : Qt.alpha(root.upColor, 0.12)
+          border.color: mouseArea.containsMouse ? Qt.alpha(root.hoverTextColor, 0.16) : Qt.alpha(root.upColor, 0.22)
           border.width: 1
           Layout.preferredHeight: Math.max(Style.capsuleHeight - 10, 18)
           Layout.preferredWidth: root.rateChipWidth
@@ -175,14 +177,14 @@ Item {
               text: "↑"
               pointSize: Math.max(Style.barFontSize - 1, 8)
               font.weight: Font.DemiBold
-              color: mouseArea.containsMouse ? Color.mOnHover : root.upColor
+              color: mouseArea.containsMouse ? root.hoverTextColor : root.upColor
             }
 
             NText {
               text: root.upRateText
               pointSize: Style.barFontSize
               font.weight: Font.Medium
-              color: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
+              color: mouseArea.containsMouse ? root.hoverTextColor : root.baseTextColor
             }
           }
         }
@@ -191,7 +193,7 @@ Item {
       NText {
         visible: !showRates && showLabel
         text: root.labelText()
-        color: mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface
+        color: mouseArea.containsMouse ? root.hoverTextColor : root.baseTextColor
         pointSize: Style.barFontSize
         font.weight: Font.Medium
         elide: Text.ElideRight
