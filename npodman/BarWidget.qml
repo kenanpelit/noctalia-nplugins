@@ -161,13 +161,6 @@ Item {
                 color: root.hasRunningContainers ? root.activeColor : Color.mOnSurface
             }
 
-            NText {
-                text: root.podmanAvailable ? (root.runningCount + "/" + root.totalCount) : "0/0"
-                pointSize: Style.barFontSize
-                font.weight: Font.Medium
-                color: mouse.containsMouse ? Color.mOnHover : Color.mOnSurface
-            }
-
             Rectangle {
                 visible: root.hasRunningContainers
                 Layout.preferredWidth: 8

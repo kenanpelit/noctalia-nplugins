@@ -158,6 +158,22 @@ Item {
     }
     function removePod(name) { runCommand(["podman", "pod", "rm", "-f", name], refreshAll); }
 
+
+    function compactContainerLine(name, shortId, image, status, ports) {
+        var parts = [];
+        parts.push(String(name || shortId || "container"));
+        if (String(image || "").trim() !== "") {
+            parts.push(String(image));
+        }
+        if (String(status || "").trim() !== "") {
+            parts.push(String(status));
+        }
+        if (String(ports || "").trim() !== "") {
+            parts.push(String(ports));
+        }
+        return parts.join(" | ");
+    }
+
     Component.onCompleted: checkProcess.running = true
 
     onVisibleChanged: {
@@ -502,35 +518,14 @@ Item {
                                 anchors.margins: Style.marginM
                                 spacing: Style.marginS
 
-                                RowLayout {
+                                NText {
                                     Layout.fillWidth: true
-
-                                    NText {
-                                        text: name || shortId
-                                        pointSize: Style.fontSizeS
-                                        font.weight: Font.Medium
-                                        color: Color.mOnSurface
-                                    }
-
-                                    Rectangle {
-                                        radius: height / 2
-                                        color: statusColor
-                                        implicitWidth: stateText.implicitWidth + (Style.marginS * 2)
-                                        implicitHeight: stateText.implicitHeight + Style.marginS
-
-                                        NText {
-                                            id: stateText
-                                            anchors.centerIn: parent
-                                            text: state
-                                            pointSize: Style.fontSizeXS
-                                            color: "white"
-                                        }
-                                    }
+                                    text: root.compactContainerLine(name, shortId, image, status, ports)
+                                    pointSize: Style.fontSizeS
+                                    font.weight: Font.Medium
+                                    color: Color.mOnSurface
+                                    elide: Text.ElideRight
                                 }
-
-                                NText { text: image; pointSize: Style.fontSizeXS; color: Color.mOnSurfaceVariant; wrapMode: Text.WordWrap }
-                                NText { text: status; visible: text !== ""; pointSize: Style.fontSizeXS; color: Color.mSecondary; wrapMode: Text.WordWrap }
-                                NText { text: ports; visible: text !== ""; pointSize: Style.fontSizeXS; color: Color.mSecondary; wrapMode: Text.WordWrap }
 
                                 RowLayout {
                                     Layout.fillWidth: true
