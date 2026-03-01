@@ -68,7 +68,8 @@ Item {
     icon: root.currentIcon
     text: root.displayIp
     rotateText: isVerticalBar
-    forceOpen: true
+    forceOpen: false
+    forceClose: true
     autoHide: false
     customTextIconColor: root.iconColor
 
