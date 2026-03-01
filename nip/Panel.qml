@@ -195,48 +195,6 @@ Item {
           }
         }
 
-        // IPC Examples
-        NText {
-          text: "IPC Commands"
-          font.pointSize: Style.fontSizeM * Style.uiScaleRatio
-          font.weight: Font.Medium
-          color: Color.mOnSurface
-          Layout.topMargin: Style.marginM
-        }
-
-        Rectangle {
-          Layout.fillWidth: true
-          Layout.preferredHeight: examplesColumn.implicitHeight + Style.marginM * 2
-          color: Color.mSurfaceVariant
-          radius: Style.radiusM
-
-          ColumnLayout {
-            id: examplesColumn
-            anchors {
-              fill: parent
-              margins: Style.marginM
-            }
-            spacing: Style.marginS
-
-            NText {
-              text: "$ qs -c noctalia-shell ipc call plugin:nip refreshIp"
-              font.pointSize: Style.fontSizeS * Style.uiScaleRatio
-              font.family: Settings.data.ui.fontFixed
-              color: Color.mPrimary
-              Layout.fillWidth: true
-              wrapMode: Text.WrapAnywhere
-            }
-
-            NText {
-              text: "$ qs -c noctalia-shell ipc call plugin:nip toggle"
-              font.pointSize: Style.fontSizeS * Style.uiScaleRatio
-              font.family: Settings.data.ui.fontFixed
-              color: Color.mPrimary
-              Layout.fillWidth: true
-              wrapMode: Text.WrapAnywhere
-            }
-          }
-        }
       }
     }
   }
