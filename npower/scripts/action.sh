@@ -9,6 +9,11 @@ current_profile() {
   powerprofilesctl get 2>/dev/null || true
 }
 
+lock_via_shell() {
+  qs -c noctalia-shell ipc call lockScreen lock \
+    || qs -c noctalia-shell ipc call sessionMenu lock
+}
+
 case "$cmd" in
   set-profile)
     mode="${1:-}"
@@ -37,15 +42,14 @@ case "$cmd" in
     fi
     ;;
   lock)
-    loginctl lock-session || loginctl lock-sessions
+    lock_via_shell || loginctl lock-session || loginctl lock-sessions
     ;;
   suspend)
     systemctl suspend
     ;;
   lock-and-suspend)
-    (loginctl lock-session || loginctl lock-sessions || true)
-    sleep 1
-    systemctl suspend
+    qs -c noctalia-shell ipc call sessionMenu lockAndSuspend \
+      || { lock_via_shell || true; sleep 1; systemctl suspend; }
     ;;
   idle-toggle)
     qs -c noctalia-shell ipc call idleInhibitor toggle

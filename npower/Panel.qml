@@ -14,6 +14,16 @@ Item {
 
   property real contentPreferredWidth: Math.round(560 * Style.uiScaleRatio)
   property real contentPreferredHeight: Math.round(620 * Style.uiScaleRatio)
+  readonly property real twoColumnButtonWidth: Math.max(150 * Style.uiScaleRatio, Math.floor((contentColumn.width - Style.marginS) / 2))
+  readonly property real threeColumnButtonWidth: Math.max(108 * Style.uiScaleRatio, Math.floor((contentColumn.width - (Style.marginS * 2)) / 3))
+
+  function applyButtonWidth(item, width) {
+    if (!item)
+      return;
+    item.Layout.minimumWidth = width;
+    item.Layout.preferredWidth = width;
+    item.Layout.maximumWidth = width;
+  }
 
   Rectangle {
     id: panelFrame
@@ -35,12 +45,23 @@ Item {
 
         RowLayout {
           Layout.fillWidth: true
+          spacing: Style.marginM
 
-          NText {
-            text: "NPower"
-            font.pointSize: Style.fontSizeL * Style.uiScaleRatio
-            font.weight: Font.Bold
+          ColumnLayout {
             Layout.fillWidth: true
+            spacing: 2
+
+            NText {
+              text: "NPower"
+              font.pointSize: Style.fontSizeL * Style.uiScaleRatio
+              font.weight: Font.Bold
+            }
+
+            NText {
+              text: main ? ((main.onAc ? "AC power" : (main.onBattery ? "Battery power" : "Unknown source")) + " | " + main.profile) : "Checking current power state..."
+              color: Color.mOnSurfaceVariant
+              pointSize: Style.fontSizeS * Style.uiScaleRatio
+            }
           }
 
           NButton {
@@ -70,6 +91,8 @@ Item {
               Layout.preferredHeight: cardColumn.implicitHeight + (Style.marginM * 2)
               color: Color.mSurfaceVariant
               radius: Style.radiusL
+              border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.12)
+              border.width: 1
 
               ColumnLayout {
                 id: cardColumn
@@ -97,6 +120,8 @@ Item {
           Layout.fillWidth: true
           color: Color.mSurfaceVariant
           radius: Style.radiusL
+          border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.12)
+          border.width: 1
           implicitHeight: profileColumn.implicitHeight + (Style.marginM * 2)
 
           ColumnLayout {
@@ -110,32 +135,56 @@ Item {
               font.weight: Font.DemiBold
             }
 
-            RowLayout {
+            GridLayout {
               Layout.fillWidth: true
-              spacing: Style.marginS
-
-              NButton { Layout.fillWidth: true; text: "Saver"; icon: "battery-1"; enabled: !!main && !main.actionBusy; onClicked: main.setProfile("power-saver") }
-              NButton { Layout.fillWidth: true; text: "Balanced"; icon: "adjustments"; enabled: !!main && !main.actionBusy; onClicked: main.setProfile("balanced") }
-              NButton { Layout.fillWidth: true; text: "Performance"; icon: "bolt"; enabled: !!main && !main.actionBusy; onClicked: main.setProfile("performance") }
-            }
-
-            RowLayout {
-              Layout.fillWidth: true
-              spacing: Style.marginS
+              columns: 3
+              columnSpacing: Style.marginS
+              rowSpacing: Style.marginS
 
               NButton {
-                Layout.fillWidth: true
-                text: main && main.autoProfileLocked ? "Unlock Auto Profile" : "Lock Auto Profile"
+                text: "Saver"
+                icon: "battery-1"
+                enabled: !!main && !main.actionBusy
+                Component.onCompleted: root.applyButtonWidth(this, root.threeColumnButtonWidth)
+                onClicked: main.setProfile("power-saver")
+              }
+
+              NButton {
+                text: "Balanced"
+                icon: "adjustments"
+                enabled: !!main && !main.actionBusy
+                Component.onCompleted: root.applyButtonWidth(this, root.threeColumnButtonWidth)
+                onClicked: main.setProfile("balanced")
+              }
+
+              NButton {
+                text: "Performance"
+                icon: "bolt"
+                enabled: !!main && !main.actionBusy
+                Component.onCompleted: root.applyButtonWidth(this, root.threeColumnButtonWidth)
+                onClicked: main.setProfile("performance")
+              }
+            }
+
+            GridLayout {
+              Layout.fillWidth: true
+              columns: 2
+              columnSpacing: Style.marginS
+              rowSpacing: Style.marginS
+
+              NButton {
+                text: main && main.autoProfileLocked ? "Unlock Auto" : "Lock Auto"
                 icon: main && main.autoProfileLocked ? "lock-open" : "lock"
                 enabled: !!main && !main.actionBusy
+                Component.onCompleted: root.applyButtonWidth(this, root.twoColumnButtonWidth)
                 onClicked: main.toggleAutoProfileLock()
               }
 
               NButton {
-                Layout.fillWidth: true
-                text: "Cycle"
+                text: "Cycle Mode"
                 icon: "arrows-shuffle"
                 enabled: !!main && !main.actionBusy
+                Component.onCompleted: root.applyButtonWidth(this, root.twoColumnButtonWidth)
                 onClicked: main.cycleProfile()
               }
             }
@@ -146,6 +195,8 @@ Item {
           Layout.fillWidth: true
           color: Color.mSurfaceVariant
           radius: Style.radiusL
+          border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.12)
+          border.width: 1
           implicitHeight: sessionColumn.implicitHeight + (Style.marginM * 2)
 
           ColumnLayout {
@@ -159,44 +210,41 @@ Item {
               font.weight: Font.DemiBold
             }
 
-            RowLayout {
+            GridLayout {
               Layout.fillWidth: true
-              spacing: Style.marginS
+              columns: 2
+              columnSpacing: Style.marginS
+              rowSpacing: Style.marginS
 
               NButton {
-                Layout.fillWidth: true
-                text: "Idle Toggle"
+                text: "Idle Inhibit"
                 icon: "hourglass"
                 enabled: !!main && !main.actionBusy && main.idleCommandAvailable
+                Component.onCompleted: root.applyButtonWidth(this, root.twoColumnButtonWidth)
                 onClicked: main.toggleIdleInhibit()
               }
 
               NButton {
-                Layout.fillWidth: true
-                text: "Lock"
+                text: "Lock Screen"
                 icon: "lock"
                 enabled: !!main && !main.actionBusy
+                Component.onCompleted: root.applyButtonWidth(this, root.twoColumnButtonWidth)
                 onClicked: main.lockSession()
               }
-            }
-
-            RowLayout {
-              Layout.fillWidth: true
-              spacing: Style.marginS
 
               NButton {
-                Layout.fillWidth: true
                 text: "Suspend"
                 icon: "moon"
                 enabled: !!main && !main.actionBusy
+                Component.onCompleted: root.applyButtonWidth(this, root.twoColumnButtonWidth)
                 onClicked: main.suspendSession()
               }
 
               NButton {
-                Layout.fillWidth: true
                 text: "Lock & Suspend"
                 icon: "lock-pause"
                 enabled: !!main && !main.actionBusy
+                Component.onCompleted: root.applyButtonWidth(this, root.twoColumnButtonWidth)
                 onClicked: main.lockAndSuspend()
               }
             }
@@ -207,6 +255,8 @@ Item {
           Layout.fillWidth: true
           color: Color.mSurfaceVariant
           radius: Style.radiusL
+          border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.12)
+          border.width: 1
           implicitHeight: statusColumn.implicitHeight + (Style.marginM * 2)
 
           ColumnLayout {
