@@ -9,6 +9,7 @@ This repository is designed to be added as a custom Noctalia plugin source. Noct
 | Plugin | ID | Purpose |
 | --- | --- | --- |
 | NDNS | `ndns` | DNS and VPN switching for Mullvad, Blocky, and direct DNS presets. |
+| NCapture | `ncapture` | Unified screenshots, recording, and privacy-state capture workflow. |
 | NPodman | `npodman` | Compact Podman dashboard for containers, images, and pods. |
 | Notes Hub | `notes` | Unified scratchpad, note cards, and todo workflow. |
 | Network Console | `network` | Live NetworkManager view with Wi-Fi visibility and quick actions. |
@@ -18,6 +19,7 @@ This repository is designed to be added as a custom Noctalia plugin source. Noct
 
 - `registry.json`: plugin index consumed by Noctalia custom sources
 - `ndns/`: DNS and VPN control plugin
+- `ncapture/`: capture workflow plugin
 - `npodman/`: Podman management plugin
 - `notes/`: productivity workspace plugin
 - `network/`: network status and Wi-Fi control plugin
@@ -39,6 +41,16 @@ After adding the source, Noctalia will:
 ## Runtime Requirements
 
 Some plugins depend on external system tools. The main runtime requirements are:
+
+### NCapture
+
+`ncapture` is designed around the local capture stack:
+
+- `gpu-screen-recorder`
+- `grimblast` (or compatible screenshot command)
+- PipeWire
+
+The actual action commands are configurable in plugin settings so the plugin can adapt to existing workflows.
 
 ### NDNS
 
@@ -76,6 +88,17 @@ It interacts with the local user-session Podman CLI directly.
 ### NIP
 
 `nip` relies on the local networking stack and external connectivity to resolve public IP information.
+
+## Planned Concepts
+
+The repository also includes non-installable design blueprints under `concepts/` for future plugins:
+
+- `ncapture`: unified capture, recording, and privacy workflow
+- `npower`: laptop power, charging, and session power hub
+- `nclipper`: notes + clipboard convergence roadmap
+- `nkeyflow`: compositor and shell keybinding intelligence
+
+These are intentionally kept out of `registry.json` until they are implemented.
 
 ## Compatibility
 

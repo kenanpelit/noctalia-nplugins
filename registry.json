@@ -17,6 +17,24 @@
       ]
     },
     {
+      "id": "ncapture",
+      "name": "NCapture",
+      "version": "0.1.0",
+      "official": false,
+      "author": "Kenan Pelit",
+      "description": "Unified capture hub for screenshots, screen recording, and live privacy state.",
+      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+      "minNoctaliaVersion": "4.0.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "ControlCenter",
+        "Utility",
+        "Privacy"
+      ]
+    },
+    {
       "id": "npodman",
       "name": "NPodman",
       "version": "0.3.3",
