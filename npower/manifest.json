@@ -1,17 +1,28 @@
 {
   "id": "npower",
   "name": "NPower",
-  "description": "Laptop power profile, battery, and session controls in one compact panel.",
   "version": "0.1.0",
-  "author": "Kenan Pelit",
   "minNoctaliaVersion": "4.0.0",
+  "author": "Kenan Pelit",
   "license": "MIT",
   "repository": "https://github.com/kenanpelit/noctalia-nplugins",
-  "main": "Main.qml",
-  "barWidget": "BarWidget.qml",
-  "panel": "Panel.qml",
-  "controlCenterWidget": "ControlCenterWidget.qml",
-  "settings": "Settings.qml",
+  "description": "Laptop power profile, battery, and session controls in one compact panel.",
+  "tags": [
+    "Bar",
+    "Panel",
+    "ControlCenter",
+    "System"
+  ],
+  "entryPoints": {
+    "main": "Main.qml",
+    "barWidget": "BarWidget.qml",
+    "controlCenterWidget": "ControlCenterWidget.qml",
+    "panel": "Panel.qml",
+    "settings": "Settings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
   "metadata": {
     "defaultSettings": {
       "watchdogInterval": 15000
