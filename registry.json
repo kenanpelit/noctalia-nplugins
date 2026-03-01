@@ -19,7 +19,7 @@
     {
       "id": "npower",
       "name": "NPower",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Laptop-focused power profile, battery, and session controls in one panel.",
