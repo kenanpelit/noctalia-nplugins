@@ -1,0 +1,38 @@
+{
+  "id": "notes",
+  "name": "Notes Hub",
+  "version": "0.1.0",
+  "minNoctaliaVersion": "4.0.0",
+  "author": "Kenan Pelit",
+  "license": "MIT",
+  "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+  "description": "Unified notes workspace with scratchpad, note cards, and todos.",
+  "tags": [
+    "Bar",
+    "Panel",
+    "ControlCenter",
+    "Productivity"
+  ],
+  "entryPoints": {
+    "main": "Main.qml",
+    "barWidget": "BarWidget.qml",
+    "controlCenterWidget": "ControlCenterWidget.qml",
+    "panel": "Panel.qml",
+    "settings": "Settings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {
+      "scratchpadContent": "",
+      "notes": [],
+      "todos": [],
+      "showCountsInBar": true,
+      "autosaveDelay": 700,
+      "count": 0,
+      "todoCount": 0,
+      "activeTodoCount": 0
+    }
+  }
+}

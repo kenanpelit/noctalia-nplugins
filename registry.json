@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "plugins": [
+    {
+      "id": "ndns",
+      "name": "NDNS",
+      "version": "1.5.0",
+      "official": false,
+      "author": "Kenan Pelit",
+      "description": "DNS / VPN Switcher for Noctalia with Mullvad, Blocky, and DNS presets.",
+      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+      "minNoctaliaVersion": "4.0.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Network"
+      ]
+    },
+    {
+      "id": "npodman",
+      "name": "NPodman",
+      "version": "0.3.2",
+      "official": false,
+      "author": "Kenan Pelit",
+      "description": "Compact Podman panel for containers, images, and pods.",
+      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+      "minNoctaliaVersion": "4.0.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "Development"
+      ]
+    },
+    {
+      "id": "notes",
+      "name": "Notes Hub",
+      "version": "0.1.0",
+      "official": false,
+      "author": "Kenan Pelit",
+      "description": "Unified notes workspace with scratchpad, note cards, and todos.",
+      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+      "minNoctaliaVersion": "4.0.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "ControlCenter",
+        "Productivity"
+      ]
+    },
+    {
+      "id": "network",
+      "name": "Network Console",
+      "version": "0.1.0",
+      "official": false,
+      "author": "Kenan Pelit",
+      "description": "A richer NetworkManager-powered network overview with live state, Wi-Fi visibility, and quick actions.",
+      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+      "minNoctaliaVersion": "4.0.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "ControlCenter",
+        "Network"
+      ]
+    }
+  ]
+}
