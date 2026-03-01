@@ -10,7 +10,6 @@ This repository is designed to be added as a custom Noctalia plugin source. Noct
 | --- | --- | --- |
 | NDNS | `ndns` | DNS and VPN switching for Mullvad, Blocky, and direct DNS presets. |
 | NPower | `npower` | Laptop power profile, battery, and session controls in one panel. |
-| NClipper | `nclipper` | Focused clipboard capture with saved snippets, pinning, and quick recopy actions. |
 | NPodman | `npodman` | Compact Podman dashboard for containers, images, and pods. |
 | Notes Hub | `notes` | Unified scratchpad, note cards, and todo workflow. |
 | Network Console | `network` | Live NetworkManager view with Wi-Fi visibility and quick actions. |
@@ -21,7 +20,6 @@ This repository is designed to be added as a custom Noctalia plugin source. Noct
 - `registry.json`: plugin index consumed by Noctalia custom sources
 - `ndns/`: DNS and VPN control plugin
 - `npower/`: power profile and session actions plugin
-- `nclipper/`: clipboard capture and reusable snippets plugin
 - `npodman/`: Podman management plugin
 - `notes/`: productivity workspace plugin
 - `network/`: network status and Wi-Fi control plugin
@@ -76,13 +74,6 @@ It also reads:
 - `/sys/class/power_supply/*`
 - `ppp-auto-profile.timer`
 - `stasis.service`
-
-### NClipper
-
-`nclipper` requires:
-
-- `wl-paste`
-- `wl-copy`
 
 ### NPodman
 

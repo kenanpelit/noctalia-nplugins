@@ -34,24 +34,6 @@
       ]
     },
     {
-      "id": "nclipper",
-      "name": "NClipper",
-      "version": "0.1.1",
-      "official": false,
-      "author": "Kenan Pelit",
-      "description": "Focused clipboard capture with saved snippets, pinning, and quick recopy actions.",
-      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
-      "minNoctaliaVersion": "4.0.0",
-      "license": "MIT",
-      "tags": [
-        "Bar",
-        "Panel",
-        "ControlCenter",
-        "Utility",
-        "Productivity"
-      ]
-    },
-    {
       "id": "npodman",
       "name": "NPodman",
       "version": "0.3.3",
