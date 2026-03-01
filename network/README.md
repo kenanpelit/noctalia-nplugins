@@ -1,5 +1,7 @@
 # Network Console
 
+![network preview](preview.png)
+
 A richer NetworkManager-powered network plugin for Noctalia.
 
 ## Features

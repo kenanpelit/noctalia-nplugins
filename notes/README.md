@@ -1,5 +1,7 @@
 # Notes Hub
 
+![notes preview](preview.png)
+
 A unified Noctalia productivity plugin that merges three workflows into one panel:
 
 - scratchpad capture for fast, disposable text

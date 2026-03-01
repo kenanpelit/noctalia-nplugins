@@ -1,5 +1,7 @@
 # NPodman
 
+![npodman preview](preview.png)
+
 A compact Noctalia plugin for Podman.
 
 ## What it does
