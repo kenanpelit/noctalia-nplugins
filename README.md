@@ -1,48 +1,86 @@
 # Noctalia NPlugins
 
-Custom Noctalia plugin registry maintained by Kenan Pelit.
+A curated third-party plugin registry for Noctalia, focused on practical workflows, polished UI, and deep system integration.
 
-## Repository Layout
+This repository is designed to be added as a custom Noctalia plugin source. Noctalia reads `registry.json`, then installs individual plugin directories from this repository.
 
-- `registry.json`: index used by Noctalia custom plugin sources
-- `ndns/`: DNS / VPN Switcher plugin
-- `nip/`: compact public IP monitor plugin
-- `npodman/`: Podman dashboard plugin
-- `notes/`: unified notes, scratchpad, and todos plugin
-- `network/`: live network console plugin
+## Included Plugins
 
-## Runtime Dependencies
+| Plugin | ID | Purpose |
+| --- | --- | --- |
+| NDNS | `ndns` | DNS and VPN switching for Mullvad, Blocky, and direct DNS presets. |
+| NPodman | `npodman` | Compact Podman dashboard for containers, images, and pods. |
+| Notes Hub | `notes` | Unified scratchpad, note cards, and todo workflow. |
+| Network Console | `network` | Live NetworkManager view with Wi-Fi visibility and quick actions. |
+| NIP | `nip` | Compact public IP monitor with an icon-only bar presence. |
 
-### ndns
+## Repository Structure
 
-`ndns` depends on external system commands to apply DNS and VPN changes:
+- `registry.json`: plugin index consumed by Noctalia custom sources
+- `ndns/`: DNS and VPN control plugin
+- `npodman/`: Podman management plugin
+- `notes/`: productivity workspace plugin
+- `network/`: network status and Wi-Fi control plugin
+- `nip/`: public IP monitoring plugin
 
-- `osc-mullvad`: backend orchestrator for Mullvad / Blocky mode switching
-- `mullvad`: Mullvad CLI
-- `nmcli`: NetworkManager CLI
-- `sudo -n` or `pkexec`: needed when stopping `blocky.service` during direct DNS preset changes
+## Add This As A Noctalia Source
 
-`ndns` first looks for `osc-mullvad` in `PATH`. If it is not found there, it also checks:
+Add one of the following repository URLs in Noctalia plugin sources:
 
-- `$HOME/.local/bin/osc-mullvad`
+- `https://github.com/kenanpelit/noctalia-nplugins`
+- `git@github.com:kenanpelit/noctalia-nplugins.git`
+
+After adding the source, Noctalia will:
+
+1. Fetch `registry.json`
+2. List available plugins from this repository
+3. Install the selected plugin subdirectory
+
+## Runtime Requirements
+
+Some plugins depend on external system tools. The main runtime requirements are:
+
+### NDNS
+
+`ndns` uses external commands to manage DNS and VPN state:
+
+- `osc-mullvad`
+- `mullvad`
+- `nmcli`
+- `sudo -n` or `pkexec` when stopping `blocky.service` during direct DNS changes
+
+`ndns` resolves `osc-mullvad` in this order:
+
+1. `PATH`
+2. `$HOME/.local/bin/osc-mullvad`
 
 Reference implementation:
 
 - `https://github.com/kenanpelit/cachyos/blob/main/modules/scripts/bin/osc-mullvad.sh`
 
-### npodman
+### NPodman
 
-`npodman` depends on:
+`npodman` requires:
 
 - `podman`
 
-It uses the local Podman CLI directly from the user session.
+It interacts with the local user-session Podman CLI directly.
 
-## Add As A Noctalia Source
+### Network Console
 
-Use this repository URL in Noctalia plugin sources:
+`network` requires:
 
-- `git@github.com:kenanpelit/noctalia-nplugins.git`
-- or `https://github.com/kenanpelit/noctalia-nplugins`
+- `nmcli`
+- a running NetworkManager environment
 
-Noctalia will fetch `registry.json`, then install the selected plugin subdirectory.
+### NIP
+
+`nip` relies on the local networking stack and external connectivity to resolve public IP information.
+
+## Compatibility
+
+Plugins in this repository are maintained for modern Noctalia builds and use the minimum versions declared in `registry.json`.
+
+## License
+
+All plugins in this repository are published under the MIT license unless stated otherwise in the plugin metadata.
