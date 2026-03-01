@@ -1,7 +1,7 @@
 {
   "id": "ndns",
   "name": "NDNS",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "DNS / VPN Switcher for Noctalia with Mullvad, Blocky, and DNS presets.",
   "repository": "https://github.com/kenanpelit/noctalia-nplugins",
   "tags": [

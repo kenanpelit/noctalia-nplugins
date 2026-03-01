@@ -54,6 +54,8 @@ Item {
       return Color.mError;
     return Color.mOnSurface;
   }
+  readonly property color hoverTextColor: "#000000"
+  readonly property color baseTextColor: Color.mOnSurfaceVariant
   readonly property real statusChipWidth: Math.round(48 * Style.uiScaleRatio)
 
   implicitWidth: row.implicitWidth + (Style.marginM * 2)
@@ -74,13 +76,13 @@ Item {
       NIcon {
         icon: root.iconName
         applyUiScale: false
-        color: mouse.containsMouse ? Color.mOnHover : root.accentColor
+        color: mouse.containsMouse ? root.hoverTextColor : root.accentColor
       }
 
       Rectangle {
         radius: Style.radiusM
-        color: mouse.containsMouse ? Qt.alpha(Color.mOnHover, 0.12) : Qt.alpha(root.accentColor, 0.12)
-        border.color: mouse.containsMouse ? Qt.alpha(Color.mOnHover, 0.14) : Qt.alpha(root.accentColor, 0.22)
+        color: mouse.containsMouse ? Qt.alpha("#ffffff", 0.70) : Qt.alpha(root.accentColor, 0.12)
+        border.color: mouse.containsMouse ? Qt.alpha(root.hoverTextColor, 0.16) : Qt.alpha(root.accentColor, 0.22)
         border.width: 1
         Layout.preferredHeight: Math.max(Style.capsuleHeight - 10, 18)
         Layout.preferredWidth: root.statusChipWidth
@@ -90,7 +92,7 @@ Item {
           text: root.detailText
           pointSize: Style.barFontSize
           font.weight: Font.Medium
-          color: mouse.containsMouse ? Color.mOnHover : Color.mOnSurface
+          color: mouse.containsMouse ? root.hoverTextColor : root.baseTextColor
         }
       }
     }

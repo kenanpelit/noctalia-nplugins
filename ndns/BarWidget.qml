@@ -16,15 +16,15 @@ Item {
     readonly property var mainInstance: pluginApi?.mainInstance
     readonly property bool protectedMode: Boolean(mainInstance?.vpnConnected || mainInstance?.blockyActive)
     readonly property bool customMode: Boolean(mainInstance?.isCustomDns && !protectedMode)
-
+    readonly property color accentColor: protectedMode
+                                      ? Color.mPrimary
+                                      : (customMode ? Color.mSecondary : Color.mOnSurface)
+    readonly property color hoverTextColor: "#000000"
+    readonly property color baseTextColor: Color.mOnSurfaceVariant
+    readonly property string chipText: mainInstance?.currentDnsName || pluginApi?.tr("plugin.short_title") || "DNS"
+    readonly property real infoChipWidth: Math.round(88 * Style.uiScaleRatio)
     readonly property real contentWidth: contentRow.implicitWidth + (Style.marginM * 2)
     readonly property real contentHeight: Style.capsuleHeight
-    readonly property color capsuleBg: protectedMode
-                                      ? Qt.alpha(Color.mPrimary, 0.14)
-                                      : (customMode ? Qt.alpha(Color.mSurfaceVariant, 0.92) : Style.capsuleColor)
-    readonly property color capsuleFg: protectedMode
-                                      ? Color.mPrimary
-                                      : (mouseArea.containsMouse ? Color.mOnHover : Color.mOnSurface)
 
     implicitWidth: contentWidth
     implicitHeight: contentHeight
@@ -35,9 +35,9 @@ Item {
         y: Style.pixelAlignCenter(parent.height, height)
         width: root.contentWidth
         height: root.contentHeight
-        color: mouseArea.containsMouse ? Color.mHover : root.capsuleBg
+        color: mouseArea.containsMouse ? Color.mHover : Style.capsuleColor
         radius: height / 2
-        border.color: protectedMode ? Qt.alpha(Color.mPrimary, 0.22) : Style.capsuleBorderColor
+        border.color: Qt.alpha(root.accentColor, 0.22)
         border.width: Style.capsuleBorderWidth
 
         Behavior on color { ColorAnimation { duration: 150 } }
@@ -47,32 +47,38 @@ Item {
             anchors.centerIn: parent
             spacing: Style.marginS
 
-            Rectangle {
-                Layout.preferredWidth: Math.round(20 * Style.uiScaleRatio)
-                Layout.preferredHeight: Math.round(20 * Style.uiScaleRatio)
-                radius: width / 2
-                color: protectedMode ? Qt.alpha(Color.mPrimary, 0.12) : Qt.alpha(Color.mSurfaceVariant, 0.7)
+            NIcon {
+                icon: mainInstance?.currentIconName || "world"
+                applyUiScale: false
+                color: mouseArea.containsMouse ? root.hoverTextColor : root.accentColor
+            }
 
-                NIcon {
-                    anchors.centerIn: parent
-                    icon: mainInstance?.currentIconName || "world"
-                    pointSize: Style.fontSizeS
-                    color: root.capsuleFg
+            Rectangle {
+                radius: Style.radiusM
+                color: mouseArea.containsMouse ? Qt.alpha("#ffffff", 0.70) : Qt.alpha(root.accentColor, 0.12)
+                border.color: mouseArea.containsMouse ? Qt.alpha(root.hoverTextColor, 0.16) : Qt.alpha(root.accentColor, 0.22)
+                border.width: 1
+                Layout.preferredHeight: Math.max(Style.capsuleHeight - 10, 18)
+                Layout.preferredWidth: root.infoChipWidth
+
+                NText {
+                    anchors.fill: parent
+                    anchors.leftMargin: Style.marginS
+                    anchors.rightMargin: Style.marginS
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    text: root.chipText
+                    pointSize: Style.barFontSize
+                    font.weight: Font.Medium
+                    elide: Text.ElideRight
+                    color: mouseArea.containsMouse ? root.hoverTextColor : root.baseTextColor
                 }
             }
 
-            NText {
-                text: mainInstance?.currentDnsName || pluginApi?.tr("plugin.short_title") || "DNS"
-                color: root.capsuleFg
-                pointSize: Style.barFontSize
-                font.weight: Font.Medium
-                elide: Text.ElideRight
-            }
-
             Rectangle {
-                Layout.preferredWidth: 7
-                Layout.preferredHeight: 7
-                radius: width / 2
+                Layout.preferredWidth: 8
+                Layout.preferredHeight: 8
+                radius: 4
                 color: protectedMode ? Color.mPrimary : (customMode ? Color.mSecondary : Qt.alpha(Color.mOutline, 0.45))
             }
         }

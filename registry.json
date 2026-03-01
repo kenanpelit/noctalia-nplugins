@@ -4,7 +4,7 @@
     {
       "id": "ndns",
       "name": "NDNS",
-      "version": "1.5.1",
+      "version": "1.5.2",
       "official": false,
       "author": "Kenan Pelit",
       "description": "DNS / VPN Switcher for Noctalia with Mullvad, Blocky, and DNS presets.",
@@ -19,7 +19,7 @@
     {
       "id": "npower",
       "name": "NPower",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Laptop-focused power profile, battery, and session controls in one panel.",
