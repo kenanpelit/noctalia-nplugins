@@ -202,7 +202,11 @@ Item {
 
           delegate: NButton {
             required property var modelData
-            Layout.fillWidth: true
+            readonly property real tabButtonWidth: Math.max(1, Math.floor((panelFrame.width - (Style.marginL * 2) - (Style.marginS * 2)) / 3))
+            Layout.fillWidth: false
+            Layout.minimumWidth: tabButtonWidth
+            Layout.preferredWidth: tabButtonWidth
+            Layout.maximumWidth: tabButtonWidth
             text: modelData.label
             backgroundColor: root.currentTabIndex === modelData.tabIndex ? Qt.alpha(Color.mPrimary, 0.14) : Qt.alpha(Color.mSurfaceVariant, 0.42)
             textColor: root.currentTabIndex === modelData.tabIndex ? Color.mPrimary : Color.mOnSurface
