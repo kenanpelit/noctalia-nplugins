@@ -291,50 +291,66 @@ Item {
                 color: Color.mSecondary
             }
 
-            GridLayout {
+            ColumnLayout {
                 Layout.fillWidth: true
-                columns: 2
-                columnSpacing: Style.marginS
-                rowSpacing: Style.marginS
+                spacing: Style.marginS
 
-                NButton {
+                RowLayout {
                     Layout.fillWidth: true
-                    text: "Mullvad"
-                    icon: "shield-lock"
-                    backgroundColor: root.actionBackground("mullvad")
-                    textColor: root.actionTextColor("mullvad")
-                    enabled: !(mainInstance && mainInstance.isChanging)
-                    onClicked: mainInstance && mainInstance.runAction("mullvad")
+                    spacing: Style.marginS
+
+                    NButton {
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        Layout.preferredWidth: 1
+                        text: "Mullvad"
+                        icon: "shield-lock"
+                        backgroundColor: root.actionBackground("mullvad")
+                        textColor: root.actionTextColor("mullvad")
+                        enabled: !(mainInstance && mainInstance.isChanging)
+                        onClicked: mainInstance && mainInstance.runAction("mullvad")
+                    }
+
+                    NButton {
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        Layout.preferredWidth: 1
+                        text: "Blocky"
+                        icon: "shield-check"
+                        backgroundColor: root.actionBackground("blocky")
+                        textColor: root.actionTextColor("blocky")
+                        enabled: !(mainInstance && mainInstance.isChanging)
+                        onClicked: mainInstance && mainInstance.runAction("blocky")
+                    }
                 }
 
-                NButton {
+                RowLayout {
                     Layout.fillWidth: true
-                    text: "Blocky"
-                    icon: "shield-check"
-                    backgroundColor: root.actionBackground("blocky")
-                    textColor: root.actionTextColor("blocky")
-                    enabled: !(mainInstance && mainInstance.isChanging)
-                    onClicked: mainInstance && mainInstance.runAction("blocky")
-                }
+                    spacing: Style.marginS
 
-                NButton {
-                    Layout.fillWidth: true
-                    text: pluginApi ? pluginApi.tr("panel.default_dns") : "Default (ISP)"
-                    icon: "world"
-                    backgroundColor: root.actionBackground("default")
-                    textColor: root.actionTextColor("default")
-                    enabled: !(mainInstance && mainInstance.isChanging)
-                    onClicked: mainInstance && mainInstance.runAction("default")
-                }
+                    NButton {
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        Layout.preferredWidth: 1
+                        text: "ISP / Auto"
+                        icon: "world"
+                        backgroundColor: root.actionBackground("default")
+                        textColor: root.actionTextColor("default")
+                        enabled: !(mainInstance && mainInstance.isChanging)
+                        onClicked: mainInstance && mainInstance.runAction("default")
+                    }
 
-                NButton {
-                    Layout.fillWidth: true
-                    text: pluginApi ? pluginApi.tr("panel.toggle") : "Toggle"
-                    icon: "switch-2"
-                    backgroundColor: root.actionBackground("toggle")
-                    textColor: root.actionTextColor("toggle")
-                    enabled: !(mainInstance && mainInstance.isChanging)
-                    onClicked: mainInstance && mainInstance.runAction("toggle")
+                    NButton {
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        Layout.preferredWidth: 1
+                        text: pluginApi ? pluginApi.tr("panel.toggle") : "Toggle"
+                        icon: "switch-2"
+                        backgroundColor: root.actionBackground("toggle")
+                        textColor: root.actionTextColor("toggle")
+                        enabled: !(mainInstance && mainInstance.isChanging)
+                        onClicked: mainInstance && mainInstance.runAction("toggle")
+                    }
                 }
             }
 
