@@ -52,7 +52,7 @@
     {
       "id": "network",
       "name": "Network Console",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "official": false,
       "author": "Kenan Pelit",
       "description": "A richer NetworkManager-powered network overview with live state, Wi-Fi visibility, and quick actions.",
