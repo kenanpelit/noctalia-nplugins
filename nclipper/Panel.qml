@@ -91,9 +91,17 @@ Item {
                 id: previewText
                 anchors.fill: parent
                 anchors.margins: Style.marginM
-                text: main && String(main.currentClipboard || "").trim() !== "" ? main.currentClipboard : "Clipboard is empty or non-text right now."
+                text: {
+                  if (!main)
+                    return "Checking clipboard...";
+                  if (main.clipboardKind === "image")
+                    return "Image clipboard detected. NClipper is text-only and will not render image data.";
+                  if (main.hasTextClipboard)
+                    return main.currentClipboard;
+                  return "Clipboard is empty or non-text right now.";
+                }
                 wrapMode: Text.Wrap
-                color: main && String(main.currentClipboard || "").trim() !== "" ? Color.mOnSurface : Color.mOnSurfaceVariant
+                color: main && main.hasTextClipboard ? Color.mOnSurface : Color.mOnSurfaceVariant
               }
             }
 
@@ -103,9 +111,9 @@ Item {
               columnSpacing: Style.marginS
               rowSpacing: Style.marginS
 
-              NButton { Layout.fillWidth: true; text: "Save Clip"; icon: "device-floppy"; enabled: !!main && !main.actionBusy && main.currentClipboard.trim() !== ""; onClicked: main.saveCurrent() }
-              NButton { Layout.fillWidth: true; text: "Pin Current"; icon: "pin"; enabled: !!main && !main.actionBusy && main.currentClipboard.trim() !== ""; onClicked: main.pinCurrent() }
-              NButton { Layout.fillWidth: true; text: "Copy Again"; icon: "copy"; enabled: !!main && !main.actionBusy && main.currentClipboard.trim() !== ""; onClicked: main.copyText(main.currentClipboard) }
+              NButton { Layout.fillWidth: true; text: "Save Clip"; icon: "device-floppy"; enabled: !!main && !main.actionBusy && main.hasTextClipboard; onClicked: main.saveCurrent() }
+              NButton { Layout.fillWidth: true; text: "Pin Current"; icon: "pin"; enabled: !!main && !main.actionBusy && main.hasTextClipboard; onClicked: main.pinCurrent() }
+              NButton { Layout.fillWidth: true; text: "Copy Again"; icon: "copy"; enabled: !!main && !main.actionBusy && main.hasTextClipboard; onClicked: main.copyText(main.currentClipboard) }
             }
           }
         }

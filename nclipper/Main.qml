@@ -7,6 +7,7 @@ Item {
 
   property var pluginApi: null
   property string currentClipboard: ""
+  property string clipboardKind: "empty"
   property var itemsData: []
   property string lastError: ""
   property string lastAction: ""
@@ -22,6 +23,7 @@ Item {
     }
     return count;
   }
+  readonly property bool hasTextClipboard: clipboardKind === "text" && String(currentClipboard || "").trim() !== ""
   readonly property int pollInterval: {
     var candidate = pluginApi && pluginApi.pluginSettings ? parseInt(pluginApi.pluginSettings.pollInterval, 10) : NaN;
     return (isNaN(candidate) || candidate < 1000) ? 2500 : candidate;
@@ -149,10 +151,14 @@ Item {
   }
 
   function saveCurrent() {
+    if (!hasTextClipboard)
+      return "";
     return addClipText(currentClipboard, false);
   }
 
   function pinCurrent() {
+    if (!hasTextClipboard)
+      return "";
     return addClipText(currentClipboard, true);
   }
 
@@ -217,11 +223,32 @@ Item {
     clipboardProcess.running = true;
   }
 
-  function applyClipboard(text) {
+  function applyClipboardPayload(text) {
     var raw = String(text || "");
-    raw = raw.replace(/\r/g, "");
-    raw = raw.replace(/\n$/, "");
-    currentClipboard = raw;
+    var lines = raw.split("\n");
+    var marker = lines.length > 0 ? String(lines.shift() || "").trim() : "__EMPTY__";
+    var body = lines.join("\n");
+    body = body.replace(/\r/g, "");
+    body = body.replace(/\n$/, "");
+
+    if (marker === "__TEXT__") {
+      clipboardKind = "text";
+      currentClipboard = body;
+      return;
+    }
+    if (marker === "__IMAGE__") {
+      clipboardKind = "image";
+      currentClipboard = "";
+      return;
+    }
+    if (marker === "__EMPTY__") {
+      clipboardKind = "empty";
+      currentClipboard = "";
+      return;
+    }
+
+    clipboardKind = body.trim() ? "text" : "empty";
+    currentClipboard = body;
   }
 
   Component.onCompleted: {
@@ -247,9 +274,12 @@ Item {
 
   Process {
     id: clipboardProcess
-    command: ["sh", "-lc", "wl-paste --no-newline --type text 2>/dev/null || wl-paste --no-newline 2>/dev/null || true"]
+    command: [
+      "sh", "-lc",
+      'if wl-paste --list-types 2>/dev/null | grep -q "^text/"; then printf "__TEXT__\\n"; wl-paste --no-newline --type text 2>/dev/null || true; elif wl-paste --list-types 2>/dev/null | grep -q "^image/"; then printf "__IMAGE__\\n"; else printf "__EMPTY__\\n"; fi'
+    ]
     stdout: StdioCollector {
-      onStreamFinished: root.applyClipboard(this.text || "")
+      onStreamFinished: root.applyClipboardPayload(this.text || "")
     }
   }
 

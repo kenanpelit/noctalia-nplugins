@@ -36,7 +36,7 @@
     {
       "id": "nclipper",
       "name": "NClipper",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Focused clipboard capture with saved snippets, pinning, and quick recopy actions.",
