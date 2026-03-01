@@ -2,6 +2,8 @@
 
 Laptop-focused power management for Noctalia.
 
+![npower preview](preview.png)
+
 ## Features
 
 - Power source and battery snapshot
