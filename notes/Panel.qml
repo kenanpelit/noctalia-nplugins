@@ -127,7 +127,7 @@ Item {
 
           NIcon {
             anchors.centerIn: parent
-            icon: "file-text"
+            icon: "notes"
             pointSize: Style.fontSizeL
             color: Color.mPrimary
           }
@@ -194,16 +194,19 @@ Item {
         spacing: Style.marginS
 
         Repeater {
-          model: ["Scratchpad", "Notes", "Todos"]
+          model: [
+            { label: "Active Task", tabIndex: 2 },
+            { label: "Notes", tabIndex: 1 },
+            { label: "Scratchpad", tabIndex: 0 }
+          ]
 
           delegate: NButton {
-            required property string modelData
-            required property int index
+            required property var modelData
             Layout.fillWidth: true
-            text: modelData
-            backgroundColor: root.currentTabIndex === index ? Qt.alpha(Color.mPrimary, 0.14) : Qt.alpha(Color.mSurfaceVariant, 0.42)
-            textColor: root.currentTabIndex === index ? Color.mPrimary : Color.mOnSurface
-            onClicked: root.currentTabIndex = index
+            text: modelData.label
+            backgroundColor: root.currentTabIndex === modelData.tabIndex ? Qt.alpha(Color.mPrimary, 0.14) : Qt.alpha(Color.mSurfaceVariant, 0.42)
+            textColor: root.currentTabIndex === modelData.tabIndex ? Color.mPrimary : Color.mOnSurface
+            onClicked: root.currentTabIndex = modelData.tabIndex
           }
         }
       }
@@ -238,7 +241,7 @@ Item {
 
               NButton {
                 text: "Save as Note"
-                icon: "plus"
+                icon: "note"
                 enabled: !!main && scratchpadEditor.text.trim() !== ""
                 onClicked: {
                   if (main) {
@@ -250,7 +253,7 @@ Item {
 
               NButton {
                 text: "Clear"
-                icon: "eraser"
+                icon: "backspace"
                 enabled: !!main && scratchpadEditor.text !== ""
                 onClicked: {
                   scratchpadEditor.text = "";
@@ -329,7 +332,7 @@ Item {
 
                 NButton {
                   text: "New"
-                  icon: "plus"
+                  icon: "note"
                   onClicked: root.startNewNote()
                 }
               }
@@ -374,7 +377,7 @@ Item {
 
                         NIcon {
                           visible: !!modelData.pinned
-                          icon: "pinned"
+                          icon: "pin"
                           pointSize: Style.fontSizeXS
                           color: Color.mPrimary
                         }
@@ -429,7 +432,7 @@ Item {
 
                 NButton {
                   text: root.selectedNoteId && main && main.noteById(root.selectedNoteId) && main.noteById(root.selectedNoteId).pinned ? "Unpin" : "Pin"
-                  icon: "pinned"
+                  icon: "pin"
                   enabled: !!main && !!root.selectedNoteId
                   onClicked: {
                     if (main && root.selectedNoteId) {

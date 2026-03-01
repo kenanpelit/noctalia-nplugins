@@ -43,7 +43,7 @@ Item {
 
     NIcon {
       anchors.centerIn: parent
-      icon: "file-text"
+      icon: "notes"
       applyUiScale: false
       pointSize: Style.fontSizeM
       color: mouseArea.containsMouse ? Color.mOnHover : accentColor

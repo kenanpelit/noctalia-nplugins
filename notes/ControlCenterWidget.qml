@@ -7,7 +7,7 @@ NIconButtonHot {
   property var pluginApi: null
   readonly property var main: pluginApi ? pluginApi.mainInstance : null
 
-  icon: "file-text"
+  icon: "notes"
   tooltipText: {
     var active = main ? main.activeTodoCount : 0;
     var notes = main ? main.noteCount : 0;
