@@ -33,7 +33,7 @@ Item {
   readonly property color accentColor: fullyOnline ? Color.mPrimary : (online ? "#ffb74d" : Color.mOnSurface)
   readonly property color downColor: online ? "#4fc3f7" : Color.mOnSurfaceVariant
   readonly property color upColor: online ? "#81c784" : Color.mOnSurfaceVariant
-  readonly property real rateChipWidth: Math.round(96 * Style.uiScaleRatio)
+  readonly property real rateChipWidth: Math.round(72 * Style.uiScaleRatio)
   readonly property real contentWidth: showText ? row.implicitWidth + (Style.marginM * 2) : Style.capsuleHeight
   readonly property real contentHeight: Style.capsuleHeight
 

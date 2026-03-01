@@ -32,14 +32,14 @@ Item {
   }
   readonly property string detailText: {
     if (!main)
-      return "...";
+      return "--";
     if (main.batteryAvailable && main.batteryPercent >= 0)
       return main.batteryPercent + "%";
     if (main.onAc)
       return "AC";
     if (main.onBattery)
-      return "Battery";
-    return "";
+      return "BAT";
+    return "--";
   }
   readonly property color accentColor: {
     if (!main)
@@ -54,15 +54,16 @@ Item {
       return Color.mError;
     return Color.mOnSurface;
   }
+  readonly property real statusChipWidth: Math.round(48 * Style.uiScaleRatio)
 
   implicitWidth: row.implicitWidth + (Style.marginM * 2)
   implicitHeight: Style.capsuleHeight
 
   Rectangle {
     anchors.fill: parent
-    radius: height / 2
+    radius: Style.radiusL
     color: mouse.containsMouse ? Color.mHover : Style.capsuleColor
-    border.color: Qt.alpha(root.accentColor, 0.24)
+    border.color: Qt.alpha(root.accentColor, 0.22)
     border.width: Style.capsuleBorderWidth
 
     RowLayout {
@@ -72,15 +73,25 @@ Item {
 
       NIcon {
         icon: root.iconName
+        applyUiScale: false
         color: mouse.containsMouse ? Color.mOnHover : root.accentColor
-        pointSize: Style.fontSizeS
       }
 
-      NText {
-        text: root.detailText
-        color: mouse.containsMouse ? Color.mOnHover : Color.mOnSurface
-        pointSize: Style.barFontSize
-        font.weight: Font.Medium
+      Rectangle {
+        radius: Style.radiusM
+        color: mouse.containsMouse ? Qt.alpha(Color.mOnHover, 0.12) : Qt.alpha(root.accentColor, 0.12)
+        border.color: mouse.containsMouse ? Qt.alpha(Color.mOnHover, 0.14) : Qt.alpha(root.accentColor, 0.22)
+        border.width: 1
+        Layout.preferredHeight: Math.max(Style.capsuleHeight - 10, 18)
+        Layout.preferredWidth: root.statusChipWidth
+
+        NText {
+          anchors.centerIn: parent
+          text: root.detailText
+          pointSize: Style.barFontSize
+          font.weight: Font.Medium
+          color: mouse.containsMouse ? Color.mOnHover : Color.mOnSurface
+        }
       }
     }
   }

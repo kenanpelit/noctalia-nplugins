@@ -19,7 +19,7 @@
     {
       "id": "npower",
       "name": "NPower",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Laptop-focused power profile, battery, and session controls in one panel.",
@@ -69,7 +69,7 @@
     {
       "id": "network",
       "name": "Network Console",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "official": false,
       "author": "Kenan Pelit",
       "description": "A richer NetworkManager-powered network overview with live state, Wi-Fi visibility, and quick actions.",
