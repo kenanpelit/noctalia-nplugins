@@ -6,7 +6,5 @@ They are intentionally not listed in `registry.json` yet. The goal is to keep th
 
 Current concepts:
 
-- `ncapture.md`: unified capture and privacy workflow
-- `npower.md`: laptop power, charging, and session power control hub
 - `nclipper.md`: notes + clipboard convergence roadmap
 - `nkeyflow.md`: keybind visibility and action routing layer for Niri/Hyprland

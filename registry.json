@@ -11,28 +11,19 @@
       "repository": "https://github.com/kenanpelit/noctalia-nplugins",
       "minNoctaliaVersion": "4.0.0",
       "license": "MIT",
-      "tags": [
-        "Bar",
-        "Network"
-      ]
+      "tags": ["Bar", "Network"]
     },
     {
-      "id": "ncapture",
-      "name": "NCapture",
+      "id": "npower",
+      "name": "NPower",
       "version": "0.1.0",
       "official": false,
       "author": "Kenan Pelit",
-      "description": "Unified capture hub for screenshots, screen recording, and live privacy state.",
+      "description": "Laptop-focused power profile, battery, and session controls in one panel.",
       "repository": "https://github.com/kenanpelit/noctalia-nplugins",
       "minNoctaliaVersion": "4.0.0",
       "license": "MIT",
-      "tags": [
-        "Bar",
-        "Panel",
-        "ControlCenter",
-        "Utility",
-        "Privacy"
-      ]
+      "tags": ["Bar", "Panel", "ControlCenter", "System"]
     },
     {
       "id": "npodman",
@@ -44,11 +35,7 @@
       "repository": "https://github.com/kenanpelit/noctalia-nplugins",
       "minNoctaliaVersion": "4.0.0",
       "license": "MIT",
-      "tags": [
-        "Bar",
-        "Panel",
-        "Development"
-      ]
+      "tags": ["Bar", "Panel", "Development"]
     },
     {
       "id": "notes",
@@ -60,12 +47,7 @@
       "repository": "https://github.com/kenanpelit/noctalia-nplugins",
       "minNoctaliaVersion": "4.0.0",
       "license": "MIT",
-      "tags": [
-        "Bar",
-        "Panel",
-        "ControlCenter",
-        "Productivity"
-      ]
+      "tags": ["Bar", "Panel", "ControlCenter", "Productivity"]
     },
     {
       "id": "network",
@@ -77,12 +59,7 @@
       "repository": "https://github.com/kenanpelit/noctalia-nplugins",
       "minNoctaliaVersion": "4.0.0",
       "license": "MIT",
-      "tags": [
-        "Bar",
-        "Panel",
-        "ControlCenter",
-        "Network"
-      ]
+      "tags": ["Bar", "Panel", "ControlCenter", "Network"]
     },
     {
       "id": "nip",
@@ -94,11 +71,7 @@
       "repository": "https://github.com/kenanpelit/noctalia-nplugins",
       "minNoctaliaVersion": "4.4.3",
       "license": "MIT",
-      "tags": [
-        "Bar",
-        "Panel",
-        "Network"
-      ]
+      "tags": ["Bar", "Panel", "Network"]
     }
   ]
 }

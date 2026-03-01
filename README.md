@@ -9,7 +9,7 @@ This repository is designed to be added as a custom Noctalia plugin source. Noct
 | Plugin | ID | Purpose |
 | --- | --- | --- |
 | NDNS | `ndns` | DNS and VPN switching for Mullvad, Blocky, and direct DNS presets. |
-| NCapture | `ncapture` | Unified screenshots, recording, and privacy-state capture workflow. |
+| NPower | `npower` | Laptop power profile, battery, and session controls in one panel. |
 | NPodman | `npodman` | Compact Podman dashboard for containers, images, and pods. |
 | Notes Hub | `notes` | Unified scratchpad, note cards, and todo workflow. |
 | Network Console | `network` | Live NetworkManager view with Wi-Fi visibility and quick actions. |
@@ -19,7 +19,7 @@ This repository is designed to be added as a custom Noctalia plugin source. Noct
 
 - `registry.json`: plugin index consumed by Noctalia custom sources
 - `ndns/`: DNS and VPN control plugin
-- `ncapture/`: capture workflow plugin
+- `npower/`: power profile and session actions plugin
 - `npodman/`: Podman management plugin
 - `notes/`: productivity workspace plugin
 - `network/`: network status and Wi-Fi control plugin
@@ -42,16 +42,6 @@ After adding the source, Noctalia will:
 
 Some plugins depend on external system tools. The main runtime requirements are:
 
-### NCapture
-
-`ncapture` is designed around the local capture stack:
-
-- `gpu-screen-recorder`
-- `grimblast` (or compatible screenshot command)
-- PipeWire
-
-The actual action commands are configurable in plugin settings so the plugin can adapt to existing workflows.
-
 ### NDNS
 
 `ndns` uses external commands to manage DNS and VPN state:
@@ -69,6 +59,21 @@ The actual action commands are configurable in plugin settings so the plugin can
 Reference implementation:
 
 - `https://github.com/kenanpelit/cachyos/blob/main/modules/scripts/bin/osc-mullvad.sh`
+
+### NPower
+
+`npower` relies on the local power stack:
+
+- `powerprofilesctl`
+- `systemctl`
+- `loginctl`
+- `qs` (for Noctalia idle inhibitor actions)
+
+It also reads:
+
+- `/sys/class/power_supply/*`
+- `ppp-auto-profile.timer`
+- `stasis.service`
 
 ### NPodman
 
@@ -93,8 +98,6 @@ It interacts with the local user-session Podman CLI directly.
 
 The repository also includes non-installable design blueprints under `concepts/` for future plugins:
 
-- `ncapture`: unified capture, recording, and privacy workflow
-- `npower`: laptop power, charging, and session power hub
 - `nclipper`: notes + clipboard convergence roadmap
 - `nkeyflow`: compositor and shell keybinding intelligence
 
