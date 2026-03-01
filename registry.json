@@ -98,6 +98,23 @@
         "Panel",
         "Network"
       ]
+    },
+    {
+      "id": "nsystem",
+      "name": "NSystem",
+      "version": "0.1.0",
+      "official": false,
+      "author": "Kenan Pelit",
+      "description": "Compact system console with live CPU, memory, disk, load, and quick process insights.",
+      "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+      "minNoctaliaVersion": "4.0.0",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "ControlCenter",
+        "System"
+      ]
     }
   ]
 }
