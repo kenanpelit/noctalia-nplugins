@@ -145,9 +145,9 @@ Item {
             Layout.fillWidth: true
             spacing: Style.marginS
 
-            NButton { Layout.fillWidth: true; text: "Region"; icon: "crop"; enabled: !!main && main.screenshotAvailable; onClicked: main.takeScreenshot("region") }
-            NButton { Layout.fillWidth: true; text: "Screen"; icon: "monitor"; enabled: !!main && main.screenshotAvailable; onClicked: main.takeScreenshot("screen") }
-            NButton { Layout.fillWidth: true; text: "Window"; icon: "window"; enabled: !!main && main.screenshotAvailable; onClicked: main.takeScreenshot("window") }
+            NButton { Layout.fillWidth: true; text: "Region"; icon: "crop"; enabled: !!main; onClicked: main.takeScreenshot("region") }
+            NButton { Layout.fillWidth: true; text: "Screen"; icon: "screen-share"; enabled: !!main; onClicked: main.takeScreenshot("screen") }
+            NButton { Layout.fillWidth: true; text: "Window"; icon: "window"; enabled: !!main; onClicked: main.takeScreenshot("window") }
           }
 
           RowLayout {
@@ -158,7 +158,7 @@ Item {
               Layout.fillWidth: true
               text: main && main.isRecording ? "Stop Recording" : "Start Recording"
               icon: main && main.isRecording ? "player-stop" : "camera-video"
-              enabled: !!main && main.recorderAvailable
+              enabled: !!main
               onClicked: main.toggleRecording()
             }
           }

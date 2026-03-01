@@ -120,12 +120,15 @@ Item {
   }
 
   function runShell(command, actionText) {
-    if (!command || !String(command).trim())
+    if (!command || !String(command).trim()) {
+      lastError = "No command configured";
       return;
+    }
     lastError = "";
     lastAction = actionText;
-    Quickshell.execDetached(["sh", "-lc", String(command)]);
-    stateRefreshTimer.restart();
+    actionProcess.exec({
+      command: ["sh", "-lc", String(command)]
+    });
   }
 
   function screenshotCommandFor(mode) {
@@ -148,10 +151,6 @@ Item {
   }
 
   function startRecording() {
-    if (!recorderAvailable) {
-      lastError = "gpu-screen-recorder is not available";
-      return;
-    }
     if (isRecording)
       return;
     runShell(recordCommand, "Recording start requested");
@@ -222,6 +221,24 @@ Item {
         root.recorderAvailable = parts.length > 0 && parts[0] === "0";
         root.screenshotAvailable = parts.length > 1 && parts[1] === "0";
       }
+    }
+  }
+
+  Process {
+    id: actionProcess
+    stdout: StdioCollector {}
+    stderr: StdioCollector {
+      onStreamFinished: {
+        var msg = String(this.text || "").trim();
+        if (msg)
+          root.lastError = msg;
+      }
+    }
+    onExited: function(exitCode) {
+      if (exitCode !== 0 && !root.lastError) {
+        root.lastError = "Command failed (exit " + exitCode + ")";
+      }
+      root.stateRefreshTimer.restart();
     }
   }
 
