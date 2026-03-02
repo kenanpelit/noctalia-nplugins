@@ -1,5 +1,7 @@
 # NUFW
 
+![nufw preview](preview.png)
+
 Lightweight UFW firewall controls for Noctalia with a compact bar widget, quick actions, and a readable status panel.
 
 ## Features
