@@ -1,7 +1,7 @@
 {
   "id": "npodman",
   "name": "NPodman",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "minNoctaliaVersion": "4.0.0",
   "author": "Kenan Pelit",
   "license": "MIT",
@@ -13,6 +13,7 @@
     "Development"
   ],
   "entryPoints": {
+    "main": "Main.qml",
     "barWidget": "BarWidget.qml",
     "panel": "Panel.qml",
     "settings": "Settings.qml"
