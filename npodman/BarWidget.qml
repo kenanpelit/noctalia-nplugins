@@ -30,6 +30,15 @@ Item {
     readonly property color hoverTextColor: "#000000"
     readonly property real contentWidth: row.implicitWidth + (Style.marginM * 2)
     readonly property real contentHeight: Style.capsuleHeight
+    readonly property string tooltipText: {
+        if (!podmanAvailable)
+            return "Podman unavailable";
+        var lines = [];
+        lines.push("Containers: " + runningCount + " / " + totalCount);
+        lines.push(hasRunningContainers ? "Active containers detected" : "No running containers");
+        lines.push("Left click: Open panel");
+        return lines.join("\n");
+    }
 
     implicitWidth: contentWidth
     implicitHeight: contentHeight
@@ -182,5 +191,12 @@ Item {
                 pluginApi.openPanel(root.screen, root);
             }
         }
+
+        onEntered: {
+            if (root.tooltipText)
+                TooltipService.show(root, root.tooltipText, BarService.getTooltipDirection(root.screen?.name));
+        }
+
+        onExited: TooltipService.hide()
     }
 }

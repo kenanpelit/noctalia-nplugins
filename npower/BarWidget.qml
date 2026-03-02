@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Commons
 import qs.Widgets
+import qs.Services.UI
 
 Item {
   id: root
@@ -57,6 +58,18 @@ Item {
   readonly property color hoverTextColor: "#000000"
   readonly property color baseTextColor: Color.mOnSurfaceVariant
   readonly property real statusChipWidth: Math.round(48 * Style.uiScaleRatio)
+  readonly property string tooltipText: {
+    if (!main)
+      return "Power state unavailable";
+    var lines = [];
+    lines.push("Profile: " + String(main.profile || "unknown"));
+    lines.push(main.onAc ? "Source: AC" : (main.onBattery ? "Source: Battery" : "Source: unknown"));
+    if (main.batteryAvailable && main.batteryPercent >= 0)
+      lines.push("Battery: " + main.batteryPercent + "% (" + String(main.batteryStatus || "unknown") + ")");
+    lines.push("Auto profile: " + (main.autoProfileLocked ? "Locked" : (main.pppTimerActive ? "Active" : "Idle")));
+    lines.push("Stasis: " + (main.stasisActive ? "Active" : "Inactive"));
+    return lines.join("\n");
+  }
 
   implicitWidth: row.implicitWidth + (Style.marginM * 2)
   implicitHeight: Style.capsuleHeight
@@ -113,5 +126,10 @@ Item {
         pluginApi.openPanel(root.screen, root);
       }
     }
+    onEntered: {
+      if (root.tooltipText)
+        TooltipService.show(root, root.tooltipText, BarService.getTooltipDirection(root.screen?.name));
+    }
+    onExited: TooltipService.hide()
   }
 }

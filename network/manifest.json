@@ -1,7 +1,7 @@
 {
   "id": "network",
   "name": "Network Console",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "minNoctaliaVersion": "4.0.0",
   "author": "Kenan Pelit",
   "license": "MIT",

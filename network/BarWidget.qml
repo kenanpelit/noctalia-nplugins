@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Widgets
+import qs.Services.UI
 
 Item {
   id: root
@@ -38,6 +39,19 @@ Item {
   readonly property real rateChipWidth: Math.round(72 * Style.uiScaleRatio)
   readonly property real contentWidth: showText ? row.implicitWidth + (Style.marginM * 2) : Style.capsuleHeight
   readonly property real contentHeight: Style.capsuleHeight
+  readonly property string tooltipText: {
+    var lines = [];
+    lines.push(root.labelText());
+    if (main && main.activeDevice)
+      lines.push("Device: " + main.activeDevice);
+    if (main && main.ipAddress)
+      lines.push("IP: " + main.ipAddress);
+    if (main && main.gateway)
+      lines.push("Gateway: " + main.gateway);
+    if (showRates)
+      lines.push("Down: " + root.downRateText + " | Up: " + root.upRateText);
+    return lines.join("\n");
+  }
 
   property bool showRates: true
   property real rxRateBps: 0
@@ -233,6 +247,11 @@ Item {
         pluginApi.openPanel(root.screen);
       }
     }
+    onEntered: {
+      if (root.tooltipText)
+        TooltipService.show(root, root.tooltipText, BarService.getTooltipDirection(root.screen?.name));
+    }
+    onExited: TooltipService.hide()
   }
 
   Process {

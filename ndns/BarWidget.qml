@@ -22,6 +22,14 @@ Item {
     readonly property color hoverTextColor: "#000000"
     readonly property color baseTextColor: Color.mOnSurfaceVariant
     readonly property string chipText: mainInstance?.currentDnsName || pluginApi?.tr("plugin.short_title") || "DNS"
+    readonly property string tooltipText: {
+        var lines = [];
+        lines.push("DNS: " + root.chipText);
+        lines.push(mainInstance?.currentStatusDetail || "Checking network state");
+        if (mainInstance?.currentDnsIp)
+            lines.push("Resolvers: " + mainInstance.currentDnsIp);
+        return lines.join("\n");
+    }
     readonly property real infoChipWidth: Math.round(88 * Style.uiScaleRatio)
     readonly property real contentWidth: contentRow.implicitWidth + (Style.marginM * 2)
     readonly property real contentHeight: Style.capsuleHeight
@@ -95,5 +103,12 @@ Item {
                 pluginApi.openPanel(root.screen, root);
             }
         }
+
+        onEntered: {
+            if (root.tooltipText)
+                TooltipService.show(root, root.tooltipText, BarService.getTooltipDirection(root.screen?.name));
+        }
+
+        onExited: TooltipService.hide()
     }
 }

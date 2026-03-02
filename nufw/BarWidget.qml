@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import qs.Commons
 import qs.Widgets
+import qs.Services.UI
 
 Item {
   id: root
@@ -31,6 +32,18 @@ Item {
     return Color.mOnSurface;
   }
   readonly property color hoverTextColor: "#000000"
+  readonly property string tooltipText: {
+    if (!main)
+      return "Firewall unavailable";
+    if (!main.available)
+      return main.lastError ? ("UFW unavailable\n" + main.lastError) : "UFW unavailable";
+    var lines = [];
+    lines.push("Firewall: " + String(main.status || "unknown"));
+    lines.push("Rules: " + main.ruleCount);
+    lines.push("Logging: " + String(main.loggingLevel || "n/a"));
+    lines.push("In " + String(main.incomingPolicy || "n/a") + " / Out " + String(main.outgoingPolicy || "n/a"));
+    return lines.join("\n");
+  }
 
   implicitWidth: Math.round((Style.capsuleHeight + Style.marginS) * 1.15)
   implicitHeight: Style.capsuleHeight
@@ -65,5 +78,10 @@ Item {
         pluginApi.openPanel(root.screen, root);
       }
     }
+    onEntered: {
+      if (root.tooltipText)
+        TooltipService.show(root, root.tooltipText, BarService.getTooltipDirection(root.screen?.name));
+    }
+    onExited: TooltipService.hide()
   }
 }

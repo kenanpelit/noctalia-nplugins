@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs.Commons
 import qs.Widgets
+import qs.Services.UI
 
 Item {
   id: root
@@ -19,6 +20,14 @@ Item {
   readonly property color accentColor: hasWork ? Color.mPrimary : Color.mOnSurface
   readonly property real contentWidth: Style.capsuleHeight
   readonly property real contentHeight: Style.capsuleHeight
+  readonly property string tooltipText: {
+    var lines = [];
+    lines.push("Active tasks: " + activeTodos);
+    lines.push("Notes: " + notesCount);
+    if (main && String(main.scratchpadText || "").trim())
+      lines.push("Scratchpad: active");
+    return lines.join("\n");
+  }
 
   implicitWidth: contentWidth
   implicitHeight: contentHeight
@@ -50,5 +59,12 @@ Item {
         pluginApi.openPanel(root.screen);
       }
     }
+
+    onEntered: {
+      if (root.tooltipText)
+        TooltipService.show(root, root.tooltipText, BarService.getTooltipDirection(root.screen?.name));
+    }
+
+    onExited: TooltipService.hide()
   }
 }
