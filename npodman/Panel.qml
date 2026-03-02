@@ -41,9 +41,7 @@ Item {
 
     function appendRows(model, rows) {
         model.clear();
-        rows.forEach(function(row) {
-            model.append(row);
-        });
+        rows.forEach(function(row) { model.append(row); });
     }
 
     function updateStats() {
@@ -53,17 +51,15 @@ Item {
 
         var runningContainers = 0;
         for (var i = 0; i < containersModel.count; ++i) {
-            if (containersModel.get(i).running) {
+            if (containersModel.get(i).running)
                 runningContainers += 1;
-            }
         }
         runningContainerCount = runningContainers;
 
         var runningPods = 0;
         for (var j = 0; j < podsModel.count; ++j) {
-            if (podsModel.get(j).running) {
+            if (podsModel.get(j).running)
                 runningPods += 1;
-            }
         }
         runningPodCount = runningPods;
     }
@@ -84,52 +80,42 @@ Item {
     }
 
     function refreshAll() {
-        if (!podmanAvailable || actionBusy) {
+        if (!podmanAvailable || actionBusy)
             return;
-        }
-        if (!containersProcess.running) {
+        if (!containersProcess.running)
             containersProcess.running = true;
-        }
-        if (!imagesProcess.running) {
+        if (!imagesProcess.running)
             imagesProcess.running = true;
-        }
-        if (!podsProcess.running) {
+        if (!podsProcess.running)
             podsProcess.running = true;
-        }
     }
 
     function scheduleRefresh() {
-        if (podmanAvailable && visible) {
+        if (podmanAvailable && visible)
             eventDebounceTimer.restart();
-        }
     }
 
     function startEventMonitor() {
-        if (podmanAvailable && visible && !eventsProcess.running) {
+        if (podmanAvailable && visible && !eventsProcess.running)
             eventsProcess.running = true;
-        }
     }
 
     function stopEventMonitor() {
         eventsRestartTimer.stop();
-        if (eventsProcess.running) {
+        if (eventsProcess.running)
             eventsProcess.running = false;
-        }
     }
 
     function handleEventData(data) {
         var text = String(data || "").trim();
-        if (!text) {
+        if (!text)
             return;
-        }
-
         scheduleRefresh();
     }
 
     function runCommand(cmdArgs, callback) {
-        if (commandRunner.running) {
+        if (commandRunner.running)
             return;
-        }
         pendingCallback = callback || null;
         lastError = "";
         actionBusy = true;
@@ -158,29 +144,31 @@ Item {
     }
     function removePod(name) { runCommand(["podman", "pod", "rm", "-f", name], refreshAll); }
 
-
     function compactContainerLine(name, shortId, image, status, ports) {
         var parts = [];
         parts.push(String(name || shortId || "container"));
-        if (String(image || "").trim() !== "") {
+        if (String(image || "").trim() !== "")
             parts.push(String(image));
-        }
-        if (String(status || "").trim() !== "") {
+        if (String(status || "").trim() !== "")
             parts.push(String(status));
-        }
-        if (String(ports || "").trim() !== "") {
+        if (String(ports || "").trim() !== "")
             parts.push(String(ports));
-        }
         return parts.join(" | ");
+    }
+
+    function tabLabel() {
+        if (currentTabIndex === 1)
+            return "Images";
+        if (currentTabIndex === 2)
+            return "Pods";
+        return "Containers";
     }
 
     Component.onCompleted: checkProcess.running = true
 
     onVisibleChanged: {
-        if (!podmanAvailable) {
+        if (!podmanAvailable)
             return;
-        }
-
         if (visible) {
             refreshAll();
             startEventMonitor();
@@ -197,9 +185,8 @@ Item {
             podmanAvailable = (code === 0);
             if (podmanAvailable) {
                 refreshAll();
-                if (root.visible) {
+                if (root.visible)
                     startEventMonitor();
-                }
             } else {
                 stopEventMonitor();
                 lastError = (checkStderr.text || "Podman not available").trim();
@@ -211,14 +198,12 @@ Item {
         id: containersProcess
         command: ["podman", "ps", "-a", "--format", "json"]
         stdout: StdioCollector {
-            id: containersStdout
             onStreamFinished: root.applyContainers(this.text || "")
         }
         stderr: StdioCollector { id: containersStderr }
         onExited: function(code) {
-            if (code !== 0) {
+            if (code !== 0)
                 lastError = (containersStderr.text || "Failed to read Podman containers").trim();
-            }
         }
     }
 
@@ -226,14 +211,12 @@ Item {
         id: imagesProcess
         command: ["podman", "images", "--format", "json"]
         stdout: StdioCollector {
-            id: imagesStdout
             onStreamFinished: root.applyImages(this.text || "")
         }
         stderr: StdioCollector { id: imagesStderr }
         onExited: function(code) {
-            if (code !== 0) {
+            if (code !== 0)
                 lastError = (imagesStderr.text || "Failed to read Podman images").trim();
-            }
         }
     }
 
@@ -241,14 +224,12 @@ Item {
         id: podsProcess
         command: ["podman", "pod", "ps", "--format", "json"]
         stdout: StdioCollector {
-            id: podsStdout
             onStreamFinished: root.applyPods(this.text || "")
         }
         stderr: StdioCollector { id: podsStderr }
         onExited: function(code) {
-            if (code !== 0) {
+            if (code !== 0)
                 lastError = (podsStderr.text || "Failed to read Podman pods").trim();
-            }
         }
     }
 
@@ -258,9 +239,8 @@ Item {
         stderr: StdioCollector { id: runnerStderr }
         onExited: function(code) {
             actionBusy = false;
-            if (code !== 0) {
+            if (code !== 0)
                 lastError = (runnerStderr.text || runnerStdout.text || ("Podman command failed (" + code + ")")).trim();
-            }
             if (pendingCallback) {
                 var cb = pendingCallback;
                 pendingCallback = null;
@@ -281,9 +261,8 @@ Item {
             onRead: data => root.handleEventData(data)
         }
         onRunningChanged: {
-            if (!running && root.visible && root.podmanAvailable) {
+            if (!running && root.visible && root.podmanAvailable)
                 eventsRestartTimer.restart();
-            }
         }
     }
 
@@ -324,116 +303,178 @@ Item {
             anchors.margins: Style.marginL
             spacing: Style.marginM
 
-            RowLayout {
+            Rectangle {
                 Layout.fillWidth: true
-                spacing: Style.marginM
-
-                Rectangle {
-                    Layout.preferredWidth: Math.round(44 * Style.uiScaleRatio)
-                    Layout.preferredHeight: Math.round(44 * Style.uiScaleRatio)
-                    radius: width / 2
-                    color: Qt.alpha(Color.mPrimary, 0.14)
-                    border.color: Qt.alpha(Color.mPrimary, 0.2)
-                    border.width: 1
-
-                    NIcon {
-                        anchors.centerIn: parent
-                        icon: "brand-docker"
-                        pointSize: Style.fontSizeL
-                        color: Color.mPrimary
-                    }
-                }
+                color: Qt.alpha(Color.mPrimary, 0.08)
+                radius: Style.radiusL
+                border.color: Qt.alpha(Color.mPrimary, 0.16)
+                border.width: 1
+                implicitHeight: heroLayout.implicitHeight + (Style.marginM * 2)
 
                 ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 2
+                    id: heroLayout
+                    anchors.fill: parent
+                    anchors.margins: Style.marginM
+                    spacing: Style.marginM
 
-                    NText {
-                        text: "NPodman"
-                        pointSize: Style.fontSizeL
-                        font.weight: Style.fontWeightBold
-                        color: Color.mOnSurface
-                    }
-
-                    NText {
-                        text: root.podmanAvailable
-                              ? (root.actionBusy ? "Applying Podman action..." : "Podman containers, images, and pods in one compact panel")
-                              : "Podman CLI is not available in this session"
-                        pointSize: Style.fontSizeXS
-                        color: Color.mSecondary
-                        wrapMode: Text.WordWrap
+                    RowLayout {
                         Layout.fillWidth: true
+                        spacing: Style.marginM
+
+                        Rectangle {
+                            Layout.preferredWidth: Math.round(42 * Style.uiScaleRatio)
+                            Layout.preferredHeight: Math.round(42 * Style.uiScaleRatio)
+                            radius: width / 2
+                            color: Qt.alpha(Color.mPrimary, 0.14)
+                            border.color: Qt.alpha(Color.mPrimary, 0.22)
+                            border.width: 1
+
+                            NIcon {
+                                anchors.centerIn: parent
+                                icon: "brand-docker"
+                                pointSize: Style.fontSizeL
+                                color: Color.mPrimary
+                            }
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 2
+
+                            NText {
+                                text: "NPodman"
+                                pointSize: Style.fontSizeL
+                                font.weight: Style.fontWeightBold
+                                color: Color.mOnSurface
+                            }
+
+                            NText {
+                                text: root.podmanAvailable
+                                      ? (root.actionBusy ? "Applying Podman action..." : "Podman containers, images, and pods in one compact panel")
+                                      : "Podman CLI is not available in this session"
+                                pointSize: Style.fontSizeXS
+                                color: Color.mSecondary
+                                wrapMode: Text.WordWrap
+                                Layout.fillWidth: true
+                            }
+                        }
+
+                        Rectangle {
+                            Layout.alignment: Qt.AlignTop
+                            radius: height / 2
+                            color: root.podmanAvailable ? Qt.alpha(Color.mPrimary, 0.16) : Qt.alpha(Color.mSurfaceVariant, 0.85)
+                            border.color: Qt.alpha(Color.mOutline, 0.12)
+                            border.width: 1
+                            implicitHeight: badgeText.implicitHeight + (Style.marginS * 2)
+                            implicitWidth: badgeText.implicitWidth + (Style.marginM * 2)
+
+                            NText {
+                                id: badgeText
+                                anchors.centerIn: parent
+                                text: root.podmanAvailable ? root.tabLabel() : "Offline"
+                                pointSize: Style.fontSizeXS
+                                font.weight: Font.Medium
+                                color: root.podmanAvailable ? Color.mPrimary : Color.mOnSurface
+                            }
+                        }
                     }
-                }
 
-                NButton {
-                    text: "Refresh"
-                    icon: "refresh"
-                    enabled: root.podmanAvailable && !root.actionBusy
-                    onClicked: root.refreshAll()
-                }
-            }
+                    Rectangle {
+                        Layout.fillWidth: true
+                        radius: Style.radiusM
+                        color: Qt.alpha(Color.mSurface, 0.9)
+                        border.color: Qt.alpha(Color.mOutline, 0.12)
+                        border.width: 1
+                        implicitHeight: liveLayout.implicitHeight + (Style.marginM * 2)
 
-            GridLayout {
-                Layout.fillWidth: true
-                columns: 3
-                columnSpacing: Style.marginS
-                rowSpacing: Style.marginS
+                        RowLayout {
+                            id: liveLayout
+                            anchors.fill: parent
+                            anchors.margins: Style.marginM
+                            spacing: Style.marginM
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    radius: Style.radiusM
-                    color: Qt.alpha(Color.mPrimary, 0.08)
-                    border.color: Qt.alpha(Color.mPrimary, 0.14)
-                    border.width: 1
-                    implicitHeight: containersSummary.implicitHeight + (Style.marginM * 2)
+                            Rectangle {
+                                Layout.preferredWidth: 4
+                                Layout.fillHeight: true
+                                radius: 2
+                                color: root.runningContainerCount > 0 ? Color.mPrimary : Qt.alpha(Color.mOutline, 0.35)
+                            }
 
-                    ColumnLayout {
-                        id: containersSummary
-                        anchors.fill: parent
-                        anchors.margins: Style.marginM
-                        spacing: 2
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
 
-                        NText { text: "Containers"; pointSize: Style.fontSizeXS; color: Color.mSecondary }
-                        NText { text: root.runningContainerCount + " / " + root.containerCount; pointSize: Style.fontSizeL; font.weight: Font.Medium; color: Color.mOnSurface }
+                                NText {
+                                    text: root.podmanAvailable ? (root.runningContainerCount + " active containers") : "Podman unavailable"
+                                    pointSize: Style.fontSizeM
+                                    font.weight: Font.Medium
+                                    color: Color.mOnSurface
+                                }
+
+                                NText {
+                                    text: root.podmanAvailable
+                                          ? (root.imageCount + " images • " + root.runningPodCount + "/" + root.podCount + " pods")
+                                          : "Check podman version and user permissions"
+                                    pointSize: Style.fontSizeXS
+                                    color: Color.mOnSurfaceVariant
+                                    wrapMode: Text.WordWrap
+                                    Layout.fillWidth: true
+                                }
+                            }
+                        }
                     }
-                }
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    radius: Style.radiusM
-                    color: Qt.alpha(Color.mPrimary, 0.08)
-                    border.color: Qt.alpha(Color.mPrimary, 0.14)
-                    border.width: 1
-                    implicitHeight: imagesSummary.implicitHeight + (Style.marginM * 2)
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Style.marginS
 
-                    ColumnLayout {
-                        id: imagesSummary
-                        anchors.fill: parent
-                        anchors.margins: Style.marginM
-                        spacing: 2
+                        Rectangle {
+                            Layout.fillWidth: true
+                            radius: Style.radiusS
+                            color: Qt.alpha(Color.mSurfaceVariant, 0.62)
+                            implicitHeight: containersChipText.implicitHeight + (Style.marginS * 2)
 
-                        NText { text: "Images"; pointSize: Style.fontSizeXS; color: Color.mSecondary }
-                        NText { text: String(root.imageCount); pointSize: Style.fontSizeL; font.weight: Font.Medium; color: Color.mOnSurface }
-                    }
-                }
+                            NText {
+                                id: containersChipText
+                                anchors.centerIn: parent
+                                text: "Containers " + root.runningContainerCount + "/" + root.containerCount
+                                pointSize: Style.fontSizeXS
+                                color: Color.mOnSurface
+                                font.weight: Font.Medium
+                            }
+                        }
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    radius: Style.radiusM
-                    color: Qt.alpha(Color.mPrimary, 0.08)
-                    border.color: Qt.alpha(Color.mPrimary, 0.14)
-                    border.width: 1
-                    implicitHeight: podsSummary.implicitHeight + (Style.marginM * 2)
+                        Rectangle {
+                            Layout.fillWidth: true
+                            radius: Style.radiusS
+                            color: Qt.alpha(Color.mSurfaceVariant, 0.62)
+                            implicitHeight: imagesChipText.implicitHeight + (Style.marginS * 2)
 
-                    ColumnLayout {
-                        id: podsSummary
-                        anchors.fill: parent
-                        anchors.margins: Style.marginM
-                        spacing: 2
+                            NText {
+                                id: imagesChipText
+                                anchors.centerIn: parent
+                                text: "Images " + root.imageCount
+                                pointSize: Style.fontSizeXS
+                                color: Color.mOnSurface
+                                font.weight: Font.Medium
+                            }
+                        }
 
-                        NText { text: "Pods"; pointSize: Style.fontSizeXS; color: Color.mSecondary }
-                        NText { text: root.runningPodCount + " / " + root.podCount; pointSize: Style.fontSizeL; font.weight: Font.Medium; color: Color.mOnSurface }
+                        Rectangle {
+                            Layout.fillWidth: true
+                            radius: Style.radiusS
+                            color: Qt.alpha(Color.mSurfaceVariant, 0.62)
+                            implicitHeight: podsChipText.implicitHeight + (Style.marginS * 2)
+
+                            NText {
+                                id: podsChipText
+                                anchors.centerIn: parent
+                                text: "Pods " + root.runningPodCount + "/" + root.podCount
+                                pointSize: Style.fontSizeXS
+                                color: Color.mOnSurface
+                                font.weight: Font.Medium
+                            }
+                        }
                     }
                 }
             }
@@ -458,9 +499,27 @@ Item {
                 }
             }
 
+            NText {
+                Layout.fillWidth: true
+                text: "Quick Actions"
+                pointSize: Style.fontSizeS
+                font.weight: Font.Medium
+                color: Color.mSecondary
+            }
+
             RowLayout {
                 Layout.fillWidth: true
                 spacing: Style.marginS
+
+                NButton {
+                    Layout.fillWidth: true
+                    text: "Refresh"
+                    icon: "refresh"
+                    backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                    textColor: Color.mOnSurface
+                    enabled: root.podmanAvailable && !root.actionBusy
+                    onClicked: root.refreshAll()
+                }
 
                 Repeater {
                     model: ["Containers", "Images", "Pods"]
@@ -506,9 +565,9 @@ Item {
                             required property string statusColor
 
                             width: ListView.view.width - 8
-                            radius: Style.radiusM
-                            color: Qt.alpha(Color.mSurfaceVariant, 0.34)
-                            border.color: Qt.alpha(Color.mOutline, 0.12)
+                            radius: Style.radiusS
+                            color: Qt.alpha(Color.mSurface, 0.9)
+                            border.color: running ? Qt.alpha(Color.mPrimary, 0.20) : Qt.alpha(Color.mOutline, 0.08)
                             border.width: 1
                             implicitHeight: containerLayout.implicitHeight + (Style.marginM * 2)
 
@@ -535,6 +594,8 @@ Item {
                                         text: "Start"
                                         icon: "player-play"
                                         Layout.fillWidth: true
+                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                                        textColor: Color.mOnSurface
                                         enabled: !root.actionBusy && canStart
                                         onClicked: root.startContainer(uid)
                                     }
@@ -543,6 +604,8 @@ Item {
                                         text: "Stop"
                                         icon: "player-stop"
                                         Layout.fillWidth: true
+                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                                        textColor: Color.mOnSurface
                                         enabled: !root.actionBusy && canStop
                                         onClicked: root.stopContainer(uid)
                                     }
@@ -551,6 +614,8 @@ Item {
                                         text: "Restart"
                                         icon: "refresh"
                                         Layout.fillWidth: true
+                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                                        textColor: Color.mOnSurface
                                         enabled: !root.actionBusy && canRestart
                                         onClicked: root.restartContainer(uid)
                                     }
@@ -559,6 +624,8 @@ Item {
                                         text: "Remove"
                                         icon: "trash"
                                         Layout.fillWidth: true
+                                        backgroundColor: Qt.alpha(Color.mError, 0.10)
+                                        textColor: Color.mError
                                         enabled: !root.actionBusy
                                         onClicked: root.removeContainer(uid)
                                     }
@@ -593,9 +660,9 @@ Item {
                             required property string created
 
                             width: ListView.view.width - 8
-                            radius: Style.radiusM
-                            color: Qt.alpha(Color.mSurfaceVariant, 0.34)
-                            border.color: Qt.alpha(Color.mOutline, 0.12)
+                            radius: Style.radiusS
+                            color: Qt.alpha(Color.mSurface, 0.9)
+                            border.color: Qt.alpha(Color.mOutline, 0.08)
                             border.width: 1
                             implicitHeight: imageLayout.implicitHeight + (Style.marginM * 2)
 
@@ -607,6 +674,7 @@ Item {
 
                                 RowLayout {
                                     Layout.fillWidth: true
+
                                     NText {
                                         Layout.fillWidth: true
                                         text: repository + ":" + tag
@@ -615,6 +683,7 @@ Item {
                                         color: Color.mOnSurface
                                         wrapMode: Text.WordWrap
                                     }
+
                                     NText {
                                         text: shortId
                                         pointSize: Style.fontSizeXS
@@ -629,8 +698,10 @@ Item {
                                     Layout.fillWidth: true
                                     text: "Remove Image"
                                     icon: "trash"
+                                    backgroundColor: Qt.alpha(Color.mError, 0.10)
+                                    textColor: Color.mError
                                     enabled: !root.actionBusy
-                                    onClicked: root.removeImage(id)
+                                    onClicked: root.removeImage(uid)
                                 }
                             }
                         }
@@ -664,9 +735,9 @@ Item {
                             required property string statusColor
 
                             width: ListView.view.width - 8
-                            radius: Style.radiusM
-                            color: Qt.alpha(Color.mSurfaceVariant, 0.34)
-                            border.color: Qt.alpha(Color.mOutline, 0.12)
+                            radius: Style.radiusS
+                            color: Qt.alpha(Color.mSurface, 0.9)
+                            border.color: running ? Qt.alpha(Color.mPrimary, 0.20) : Qt.alpha(Color.mOutline, 0.08)
                             border.width: 1
                             implicitHeight: podLayout.implicitHeight + (Style.marginM * 2)
 
@@ -702,7 +773,11 @@ Item {
                                     }
                                 }
 
-                                NText { text: "Containers: " + containers; pointSize: Style.fontSizeXS; color: Color.mOnSurfaceVariant }
+                                NText {
+                                    text: "Containers: " + containers
+                                    pointSize: Style.fontSizeXS
+                                    color: Color.mOnSurfaceVariant
+                                }
 
                                 RowLayout {
                                     Layout.fillWidth: true
@@ -712,6 +787,8 @@ Item {
                                         text: "Start"
                                         icon: "player-play"
                                         Layout.fillWidth: true
+                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                                        textColor: Color.mOnSurface
                                         enabled: !root.actionBusy && canStart
                                         onClicked: root.startPod(name)
                                     }
@@ -720,6 +797,8 @@ Item {
                                         text: "Stop"
                                         icon: "player-stop"
                                         Layout.fillWidth: true
+                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                                        textColor: Color.mOnSurface
                                         enabled: !root.actionBusy && canStop
                                         onClicked: root.stopPod(name)
                                     }
@@ -728,6 +807,8 @@ Item {
                                         text: "Remove"
                                         icon: "trash"
                                         Layout.fillWidth: true
+                                        backgroundColor: Qt.alpha(Color.mError, 0.10)
+                                        textColor: Color.mError
                                         enabled: !root.actionBusy
                                         onClicked: root.removePod(name)
                                     }
