@@ -44,17 +44,14 @@ Item {
     return Color.mError;
   }
 
-  Component.onCompleted: {
-    if (main)
-      main.refresh();
-  }
+  Component.onCompleted: if (main) main.refresh()
 
   Rectangle {
     id: panelFrame
     anchors.fill: parent
-    radius: Style.radiusL
     color: Color.mSurface
-    border.color: Qt.alpha(Color.mOutline, 0.18)
+    radius: Style.radiusL
+    border.color: Qt.alpha(Color.mOutline, 0.2)
     border.width: 1
 
     ColumnLayout {
@@ -62,117 +59,236 @@ Item {
       anchors.margins: Style.marginL
       spacing: Style.marginM
 
-      RowLayout {
+      Rectangle {
         Layout.fillWidth: true
-        spacing: Style.marginM
-
-        Rectangle {
-          Layout.preferredWidth: 44
-          Layout.preferredHeight: 44
-          radius: 22
-          color: Qt.alpha(root.connectivityColor(), 0.12)
-          border.color: Qt.alpha(root.connectivityColor(), 0.24)
-          border.width: 1
-
-          NIcon {
-            anchors.centerIn: parent
-            icon: main && main.activeType === "wifi" ? "router" : "network"
-            pointSize: Style.fontSizeL
-            color: root.connectivityColor()
-          }
-        }
+        color: Qt.alpha(root.connectivityColor(), 0.08)
+        radius: Style.radiusL
+        border.color: Qt.alpha(root.connectivityColor(), 0.16)
+        border.width: 1
+        implicitHeight: heroLayout.implicitHeight + (Style.marginM * 2)
 
         ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 2
+          id: heroLayout
+          anchors.fill: parent
+          anchors.margins: Style.marginM
+          spacing: Style.marginM
 
-          NText {
-            text: "Network Console"
-            pointSize: Style.fontSizeL
-            font.weight: Font.Bold
-            color: Color.mOnSurface
-          }
-
-          NText {
-            text: main
-                  ? (main.displayName + "  |  " + root.connectivityLabel())
-                  : "NetworkManager state unavailable"
-            pointSize: Style.fontSizeXS
-            color: Color.mSecondary
-            wrapMode: Text.WordWrap
+          RowLayout {
             Layout.fillWidth: true
-          }
-        }
+            spacing: Style.marginM
 
-        NButton {
-          text: "Refresh"
-          icon: "refresh"
-          enabled: !!main && !main.actionBusy
-          onClicked: main.refresh()
-        }
+            Rectangle {
+              Layout.preferredWidth: Math.round(42 * Style.uiScaleRatio)
+              Layout.preferredHeight: Math.round(42 * Style.uiScaleRatio)
+              radius: width / 2
+              color: Qt.alpha(root.connectivityColor(), 0.14)
+              border.color: Qt.alpha(root.connectivityColor(), 0.22)
+              border.width: 1
 
-        NButton {
-          text: main && main.wifiEnabled ? "Wi-Fi Off" : "Wi-Fi On"
-          icon: "power"
-          enabled: !!main && main.nmcliAvailable && !main.actionBusy
-          onClicked: main.toggleWifi()
-        }
-
-        NButton {
-          text: "Rescan"
-          icon: "refresh"
-          enabled: !!main && main.wifiEnabled && !main.actionBusy
-          onClicked: main.rescanWifi()
-        }
-      }
-
-      GridLayout {
-        Layout.fillWidth: true
-        columns: 3
-        columnSpacing: Style.marginS
-        rowSpacing: Style.marginS
-
-        Repeater {
-          model: [
-            { label: "Connectivity", value: root.connectivityLabel() },
-            { label: "Device", value: root.valueOrFallback(main ? main.activeDevice : "", "No active link") },
-            { label: "Connection", value: root.valueOrFallback(main ? main.displayName : "", "Offline") }
-          ]
-
-          delegate: Rectangle {
-            required property var modelData
-            Layout.fillWidth: true
-            radius: Style.radiusM
-            color: Qt.alpha(Color.mPrimary, 0.08)
-            border.color: Qt.alpha(Color.mPrimary, 0.14)
-            border.width: 1
-            implicitHeight: cardCol.implicitHeight + (Style.marginM * 2)
+              NIcon {
+                anchors.centerIn: parent
+                icon: main && main.activeType === "wifi" ? "router" : "network"
+                pointSize: Style.fontSizeL
+                color: root.connectivityColor()
+              }
+            }
 
             ColumnLayout {
-              id: cardCol
-              anchors.fill: parent
-              anchors.margins: Style.marginM
+              Layout.fillWidth: true
               spacing: 2
 
-              NText { text: modelData.label; pointSize: Style.fontSizeXS; color: Color.mSecondary }
               NText {
-                text: String(modelData.value)
+                text: "Network Console"
                 pointSize: Style.fontSizeL
-                font.weight: Font.Medium
+                font.weight: Style.fontWeightBold
                 color: Color.mOnSurface
+              }
+
+              NText {
+                text: main
+                      ? (main.displayName + " • " + root.connectivityLabel())
+                      : "NetworkManager state unavailable"
+                pointSize: Style.fontSizeXS
+                color: Color.mSecondary
                 wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+              }
+            }
+
+            Rectangle {
+              Layout.alignment: Qt.AlignTop
+              radius: height / 2
+              color: Qt.alpha(root.connectivityColor(), 0.14)
+              border.color: Qt.alpha(Color.mOutline, 0.12)
+              border.width: 1
+              implicitHeight: badgeLabel.implicitHeight + (Style.marginS * 2)
+              implicitWidth: badgeLabel.implicitWidth + (Style.marginM * 2)
+
+              NText {
+                id: badgeLabel
+                anchors.centerIn: parent
+                text: root.connectivityLabel()
+                pointSize: Style.fontSizeXS
+                font.weight: Font.Medium
+                color: root.connectivityColor()
+              }
+            }
+          }
+
+          Rectangle {
+            Layout.fillWidth: true
+            radius: Style.radiusM
+            color: Qt.alpha(Color.mSurface, 0.9)
+            border.color: Qt.alpha(Color.mOutline, 0.12)
+            border.width: 1
+            implicitHeight: liveLayout.implicitHeight + (Style.marginM * 2)
+
+            RowLayout {
+              id: liveLayout
+              anchors.fill: parent
+              anchors.margins: Style.marginM
+              spacing: Style.marginM
+
+              Rectangle {
+                Layout.preferredWidth: 4
+                Layout.fillHeight: true
+                radius: 2
+                color: root.connectivityColor()
+              }
+
+              ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 2
+
+                NText {
+                  text: root.valueOrFallback(main ? main.displayName : "", "No active link")
+                  pointSize: Style.fontSizeM
+                  font.weight: Font.Medium
+                  color: Color.mOnSurface
+                }
+
+                NText {
+                  text: main
+                        ? (root.valueOrFallback(main.activeDevice, "No device") + " • " + root.valueOrFallback(main.activeType, "Unknown"))
+                        : "Checking network path..."
+                  pointSize: Style.fontSizeXS
+                  color: Color.mOnSurfaceVariant
+                  wrapMode: Text.WordWrap
+                  Layout.fillWidth: true
+                }
+              }
+            }
+          }
+
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: Style.marginS
+
+            Rectangle {
+              Layout.fillWidth: true
+              radius: Style.radiusS
+              color: Qt.alpha(Color.mSurfaceVariant, 0.62)
+              implicitHeight: radioChipText.implicitHeight + (Style.marginS * 2)
+
+              NText {
+                id: radioChipText
+                anchors.centerIn: parent
+                text: "Wi-Fi " + ((main && main.wifiEnabled) ? "On" : "Off")
+                pointSize: Style.fontSizeXS
+                color: Color.mOnSurface
+                font.weight: Font.Medium
+              }
+            }
+
+            Rectangle {
+              Layout.fillWidth: true
+              radius: Style.radiusS
+              color: Qt.alpha(Color.mSurfaceVariant, 0.62)
+              implicitHeight: ipChipText.implicitHeight + (Style.marginS * 2)
+
+              NText {
+                id: ipChipText
+                anchors.centerIn: parent
+                text: root.valueOrFallback(main ? main.ipAddress : "", "No IP")
+                pointSize: Style.fontSizeXS
+                color: Color.mOnSurface
+                font.weight: Font.Medium
+                elide: Text.ElideRight
               }
             }
           }
         }
       }
 
+      NText {
+        Layout.fillWidth: true
+        text: "Quick Actions"
+        pointSize: Style.fontSizeS
+        font.weight: Font.Medium
+        color: Color.mSecondary
+      }
+
+      RowLayout {
+        Layout.fillWidth: true
+        spacing: Style.marginS
+
+        NButton {
+          Layout.fillWidth: true
+          text: "Refresh"
+          icon: "refresh"
+          backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+          textColor: Color.mOnSurface
+          enabled: !!main && !main.actionBusy
+          onClicked: main.refresh()
+        }
+
+        NButton {
+          Layout.fillWidth: true
+          text: main && main.wifiEnabled ? "Wi-Fi Off" : "Wi-Fi On"
+          icon: "power"
+          backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+          textColor: Color.mOnSurface
+          enabled: !!main && main.nmcliAvailable && !main.actionBusy
+          onClicked: main.toggleWifi()
+        }
+
+        NButton {
+          Layout.fillWidth: true
+          text: "Rescan"
+          icon: "refresh"
+          backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+          textColor: Color.mOnSurface
+          enabled: !!main && main.wifiEnabled && !main.actionBusy
+          onClicked: main.rescanWifi()
+        }
+      }
+
+      Rectangle {
+        Layout.fillWidth: true
+        visible: main ? main.lastError !== "" : false
+        color: Qt.alpha(Color.mError, 0.1)
+        radius: Style.radiusS
+        border.color: Qt.alpha(Color.mError, 0.3)
+        border.width: 1
+        implicitHeight: errorText.implicitHeight + Style.marginM
+
+        NText {
+          id: errorText
+          anchors.fill: parent
+          anchors.margins: Style.marginS
+          text: main ? main.lastError : ""
+          color: Color.mError
+          pointSize: Style.fontSizeS
+          wrapMode: Text.WordWrap
+        }
+      }
+
       Rectangle {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        radius: Style.radiusM
-        color: Qt.alpha(Color.mSurfaceVariant, 0.36)
-        border.color: Qt.alpha(Color.mOutline, 0.1)
+        radius: Style.radiusL
+        color: Qt.alpha(Color.mSurfaceVariant, 0.42)
+        border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.10)
         border.width: 1
 
         ColumnLayout {
@@ -211,11 +327,11 @@ Item {
               color: Qt.alpha(root.connectivityColor(), 0.1)
               border.color: Qt.alpha(root.connectivityColor(), 0.22)
               border.width: 1
-              implicitWidth: badgeLabel.implicitWidth + (Style.marginM * 2)
-              implicitHeight: badgeLabel.implicitHeight + (Style.marginS * 2)
+              implicitWidth: wifiBadgeLabel.implicitWidth + (Style.marginM * 2)
+              implicitHeight: wifiBadgeLabel.implicitHeight + (Style.marginS * 2)
 
               NText {
-                id: badgeLabel
+                id: wifiBadgeLabel
                 anchors.centerIn: parent
                 text: root.connectivityLabel()
                 pointSize: Style.fontSizeXS
@@ -249,8 +365,8 @@ Item {
                   required property var modelData
                   Layout.fillWidth: true
                   radius: Style.radiusS
-                  color: modelData.inUse ? Qt.alpha(Color.mPrimary, 0.1) : Color.mSurface
-                  border.color: modelData.inUse ? Qt.alpha(Color.mPrimary, 0.2) : Qt.alpha(Color.mOutline, 0.08)
+                  color: modelData.inUse ? Qt.alpha(Color.mPrimary, 0.10) : Qt.alpha(Color.mSurface, 0.9)
+                  border.color: modelData.inUse ? Qt.alpha(Color.mPrimary, 0.20) : Qt.alpha(Color.mOutline, 0.08)
                   border.width: 1
                   implicitHeight: wifiRow.implicitHeight + (Style.marginS * 2)
 
@@ -311,7 +427,7 @@ Item {
                         Rectangle {
                           radius: Style.radiusS
                           color: modelData.inUse ? Qt.alpha(Color.mPrimary, 0.12) : Qt.alpha(Color.mSurfaceVariant, 0.42)
-                          border.color: modelData.inUse ? Qt.alpha(Color.mPrimary, 0.2) : Qt.alpha(Color.mOutline, 0.08)
+                          border.color: modelData.inUse ? Qt.alpha(Color.mPrimary, 0.20) : Qt.alpha(Color.mOutline, 0.08)
                           border.width: 1
                           implicitWidth: signalLabel.implicitWidth + (Style.marginS * 2)
                           implicitHeight: signalLabel.implicitHeight + (Style.marginXS * 2)
@@ -329,6 +445,8 @@ Item {
 
                     NButton {
                       text: modelData.inUse ? "Connected" : "Connect"
+                      backgroundColor: modelData.inUse ? Qt.alpha(Color.mPrimary, 0.12) : Qt.alpha(Color.mSurfaceVariant, 0.48)
+                      textColor: modelData.inUse ? Color.mPrimary : Color.mOnSurface
                       enabled: !!main && main.wifiEnabled && !main.actionBusy && !modelData.inUse
                       onClicked: main.connectWifi(modelData.ssid)
                     }
@@ -358,49 +476,33 @@ Item {
           delegate: Rectangle {
             required property var modelData
             Layout.fillWidth: true
-            radius: Style.radiusS
+            radius: Style.radiusM
             color: Qt.alpha(Color.mSurfaceVariant, 0.42)
-            border.color: Qt.alpha(Color.mOutline, 0.08)
+            border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.08)
             border.width: 1
-            implicitHeight: infoCol.implicitHeight + (Style.marginS * 2)
+            implicitHeight: metaCol.implicitHeight + (Style.marginS * 2)
 
             ColumnLayout {
-              id: infoCol
+              id: metaCol
               anchors.fill: parent
               anchors.margins: Style.marginS
-              spacing: 1
+              spacing: 2
 
-              NText { text: modelData.label; pointSize: Style.fontSizeXS; color: Color.mSecondary }
+              NText {
+                text: modelData.label
+                pointSize: Style.fontSizeXS
+                color: Color.mSecondary
+              }
+
               NText {
                 text: String(modelData.value)
                 pointSize: Style.fontSizeS
                 font.weight: Font.Medium
                 color: Color.mOnSurface
-                elide: Text.ElideRight
-                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
               }
             }
           }
-        }
-      }
-
-      Rectangle {
-        Layout.fillWidth: true
-        visible: !!main && main.lastError !== ""
-        radius: Style.radiusS
-        color: Qt.alpha(Color.mError, 0.1)
-        border.color: Qt.alpha(Color.mError, 0.3)
-        border.width: 1
-        implicitHeight: errorText.implicitHeight + (Style.marginM * 2)
-
-        NText {
-          id: errorText
-          anchors.fill: parent
-          anchors.margins: Style.marginM
-          text: main ? main.lastError : ""
-          color: Color.mError
-          pointSize: Style.fontSizeS
-          wrapMode: Text.WordWrap
         }
       }
     }

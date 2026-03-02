@@ -27,6 +27,7 @@ Item {
     readonly property int watchdogInterval: resolveWatchdogInterval()
     readonly property bool hasRunningContainers: podmanAvailable && runningCount > 0
     readonly property color activeColor: "#4caf50"
+    readonly property color hoverTextColor: "#000000"
     readonly property real contentWidth: row.implicitWidth + (Style.marginM * 2)
     readonly property real contentHeight: Style.capsuleHeight
 
@@ -158,7 +159,7 @@ Item {
             NIcon {
                 icon: "brand-docker"
                 pointSize: Style.fontSizeS
-                color: root.hasRunningContainers ? root.activeColor : Color.mOnSurface
+                color: mouse.containsMouse ? root.hoverTextColor : (root.hasRunningContainers ? root.activeColor : Color.mOnSurface)
             }
 
             Rectangle {

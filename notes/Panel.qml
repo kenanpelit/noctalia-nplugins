@@ -12,7 +12,7 @@ Item {
   readonly property var geometryPlaceholder: panelFrame
   readonly property bool allowAttach: true
 
-  property real contentPreferredWidth: 940 * Style.uiScaleRatio
+  property real contentPreferredWidth: 920 * Style.uiScaleRatio
   property real contentPreferredHeight: 640 * Style.uiScaleRatio
 
   property int currentTabIndex: 0
@@ -25,22 +25,11 @@ Item {
     return summary && summary[name] !== undefined ? summary[name] : 0;
   }
 
-  function notesList() {
-    return main ? main.notesData : [];
-  }
-
-  function todosList() {
-    return main ? main.todosData : [];
-  }
+  function notesList() { return main ? main.notesData : []; }
+  function todosList() { return main ? main.todosData : []; }
 
   function refreshEditorFromSelection() {
-    if (!main) {
-      draftTitle = "";
-      draftBody = "";
-      return;
-    }
-
-    if (!selectedNoteId) {
+    if (!main || !selectedNoteId) {
       draftTitle = "";
       draftBody = "";
       return;
@@ -103,9 +92,9 @@ Item {
   Rectangle {
     id: panelFrame
     anchors.fill: parent
-    radius: Style.radiusL
     color: Color.mSurface
-    border.color: Qt.alpha(Color.mOutline, 0.18)
+    radius: Style.radiusL
+    border.color: Qt.alpha(Color.mOutline, 0.2)
     border.width: 1
 
     ColumnLayout {
@@ -113,84 +102,127 @@ Item {
       anchors.margins: Style.marginL
       spacing: Style.marginM
 
-      RowLayout {
+      Rectangle {
         Layout.fillWidth: true
-        spacing: Style.marginM
-
-        Rectangle {
-          Layout.preferredWidth: 44
-          Layout.preferredHeight: 44
-          radius: 22
-          color: Qt.alpha(Color.mPrimary, 0.12)
-          border.color: Qt.alpha(Color.mPrimary, 0.2)
-          border.width: 1
-
-          NIcon {
-            anchors.centerIn: parent
-            icon: "notes"
-            pointSize: Style.fontSizeL
-            color: Color.mPrimary
-          }
-        }
+        color: Qt.alpha(Color.mPrimary, 0.08)
+        radius: Style.radiusL
+        border.color: Qt.alpha(Color.mPrimary, 0.16)
+        border.width: 1
+        implicitHeight: heroLayout.implicitHeight + (Style.marginM * 2)
 
         ColumnLayout {
-          Layout.fillWidth: true
-          spacing: 2
+          id: heroLayout
+          anchors.fill: parent
+          anchors.margins: Style.marginM
+          spacing: Style.marginM
 
-          NText {
-            text: "Notes Hub"
-            pointSize: Style.fontSizeL
-            font.weight: Font.Bold
-            color: Color.mOnSurface
-          }
-
-          NText {
-            text: "One workspace for scratchpad capture, durable notes, and actionable todos."
-            pointSize: Style.fontSizeXS
-            color: Color.mSecondary
-            wrapMode: Text.WordWrap
+          RowLayout {
             Layout.fillWidth: true
-          }
-        }
-      }
+            spacing: Style.marginM
 
-      GridLayout {
-        Layout.fillWidth: true
-        columns: 3
-        columnSpacing: Style.marginS
-        rowSpacing: Style.marginS
+            Rectangle {
+              Layout.preferredWidth: Math.round(42 * Style.uiScaleRatio)
+              Layout.preferredHeight: Math.round(42 * Style.uiScaleRatio)
+              radius: width / 2
+              color: Qt.alpha(Color.mPrimary, 0.14)
+              border.color: Qt.alpha(Color.mPrimary, 0.22)
+              border.width: 1
 
-        Repeater {
-          model: [
-            { label: "Active Tasks", value: root.summaryValue("activeTodos"), tabIndex: 2 },
-            { label: "Notes", value: root.summaryValue("notes"), tabIndex: 1 },
-            { label: "Scratchpad", value: root.summaryValue("scratchpadChars") + " chars", tabIndex: 0 }
-          ]
-
-          delegate: Rectangle {
-            required property var modelData
-            readonly property bool isActive: root.currentTabIndex === modelData.tabIndex
-            Layout.fillWidth: true
-            radius: Style.radiusM
-            color: isActive ? Qt.alpha(Color.mPrimary, 0.14) : Qt.alpha(Color.mPrimary, 0.08)
-            border.color: isActive ? Qt.alpha(Color.mPrimary, 0.28) : Qt.alpha(Color.mPrimary, 0.14)
-            border.width: 1
-            implicitHeight: summaryCol.implicitHeight + (Style.marginM * 2)
-
-            ColumnLayout {
-              id: summaryCol
-              anchors.fill: parent
-              anchors.margins: Style.marginM
-              spacing: 2
-
-              NText { text: modelData.label; pointSize: Style.fontSizeXS; color: isActive ? Color.mPrimary : Color.mSecondary }
-              NText { text: String(modelData.value); pointSize: Style.fontSizeL; font.weight: Font.Medium; color: isActive ? Color.mPrimary : Color.mOnSurface }
+              NIcon {
+                anchors.centerIn: parent
+                icon: "notes"
+                pointSize: Style.fontSizeL
+                color: Color.mPrimary
+              }
             }
 
-            MouseArea {
-              anchors.fill: parent
-              cursorShape: Qt.PointingHandCursor
-              onClicked: root.currentTabIndex = modelData.tabIndex
+            ColumnLayout {
+              Layout.fillWidth: true
+              spacing: 2
+
+              NText {
+                text: "Notes Hub"
+                pointSize: Style.fontSizeL
+                font.weight: Style.fontWeightBold
+                color: Color.mOnSurface
+              }
+
+              NText {
+                text: "One workspace for scratchpad capture, durable notes, and actionable todos."
+                pointSize: Style.fontSizeXS
+                color: Color.mSecondary
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+              }
+            }
+
+            Rectangle {
+              Layout.alignment: Qt.AlignTop
+              radius: height / 2
+              color: Qt.alpha(Color.mPrimary, 0.14)
+              border.color: Qt.alpha(Color.mOutline, 0.12)
+              border.width: 1
+              implicitHeight: badgeText.implicitHeight + (Style.marginS * 2)
+              implicitWidth: badgeText.implicitWidth + (Style.marginM * 2)
+
+              NText {
+                id: badgeText
+                anchors.centerIn: parent
+                text: root.currentTabIndex === 0 ? "Scratchpad" : (root.currentTabIndex === 1 ? "Notes" : "Tasks")
+                pointSize: Style.fontSizeXS
+                font.weight: Font.Medium
+                color: Color.mPrimary
+              }
+            }
+          }
+
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: Style.marginS
+
+            Repeater {
+              model: [
+                { label: "Active Tasks", value: root.summaryValue("activeTodos"), tabIndex: 2 },
+                { label: "Notes", value: root.summaryValue("notes"), tabIndex: 1 },
+                { label: "Scratchpad", value: root.summaryValue("scratchpadChars") + " chars", tabIndex: 0 }
+              ]
+
+              delegate: Rectangle {
+                required property var modelData
+                readonly property bool isActive: root.currentTabIndex === modelData.tabIndex
+                Layout.fillWidth: true
+                radius: Style.radiusM
+                color: isActive ? Qt.alpha(Color.mPrimary, 0.16) : Qt.alpha(Color.mSurfaceVariant, 0.48)
+                border.color: isActive ? Qt.alpha(Color.mPrimary, 0.28) : Qt.alpha(Color.mOutline, 0.10)
+                border.width: 1
+                implicitHeight: summaryCol.implicitHeight + (Style.marginM * 2)
+
+                ColumnLayout {
+                  id: summaryCol
+                  anchors.fill: parent
+                  anchors.margins: Style.marginM
+                  spacing: 2
+
+                  NText {
+                    text: modelData.label
+                    pointSize: Style.fontSizeXS
+                    color: isActive ? Color.mPrimary : Color.mSecondary
+                  }
+
+                  NText {
+                    text: String(modelData.value)
+                    pointSize: Style.fontSizeL
+                    font.weight: Font.Medium
+                    color: isActive ? Color.mPrimary : Color.mOnSurface
+                  }
+                }
+
+                MouseArea {
+                  anchors.fill: parent
+                  cursorShape: Qt.PointingHandCursor
+                  onClicked: root.currentTabIndex = modelData.tabIndex
+                }
+              }
             }
           }
         }
@@ -202,9 +234,9 @@ Item {
         currentIndex: root.currentTabIndex
 
         Rectangle {
-          radius: Style.radiusM
-          color: Qt.alpha(Color.mSurfaceVariant, 0.36)
-          border.color: Qt.alpha(Color.mOutline, 0.1)
+          radius: Style.radiusL
+          color: Qt.alpha(Color.mSurfaceVariant, 0.42)
+          border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.10)
           border.width: 1
 
           ColumnLayout {
@@ -218,7 +250,7 @@ Item {
 
               NText {
                 Layout.fillWidth: true
-                text: "Fast capture"
+                text: "Fast Capture"
                 pointSize: Style.fontSizeM
                 font.weight: Font.Medium
                 color: Color.mOnSurface
@@ -227,6 +259,8 @@ Item {
               NButton {
                 text: "Save as Note"
                 icon: "note"
+                backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                textColor: Color.mOnSurface
                 enabled: !!main && scratchpadEditor.text.trim() !== ""
                 onClicked: {
                   if (main) {
@@ -239,6 +273,8 @@ Item {
               NButton {
                 text: "Clear"
                 icon: "backspace"
+                backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                textColor: Color.mOnSurface
                 enabled: !!main && scratchpadEditor.text !== ""
                 onClicked: {
                   scratchpadEditor.text = "";
@@ -250,8 +286,8 @@ Item {
             Rectangle {
               Layout.fillWidth: true
               Layout.fillHeight: true
-              radius: Style.radiusS
-              color: Color.mSurface
+              radius: Style.radiusM
+              color: Qt.alpha(Color.mSurface, 0.9)
               border.color: Qt.alpha(Color.mOutline, 0.12)
               border.width: 1
 
@@ -281,9 +317,8 @@ Item {
             running: false
             repeat: false
             onTriggered: {
-              if (main && scratchpadEditor.text !== main.scratchpadText) {
+              if (main && scratchpadEditor.text !== main.scratchpadText)
                 main.setScratchpad(scratchpadEditor.text);
-              }
             }
           }
         }
@@ -294,9 +329,9 @@ Item {
           Rectangle {
             Layout.preferredWidth: 300 * Style.uiScaleRatio
             Layout.fillHeight: true
-            radius: Style.radiusM
-            color: Qt.alpha(Color.mSurfaceVariant, 0.36)
-            border.color: Qt.alpha(Color.mOutline, 0.1)
+            radius: Style.radiusL
+            color: Qt.alpha(Color.mSurfaceVariant, 0.42)
+            border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.10)
             border.width: 1
 
             ColumnLayout {
@@ -318,6 +353,8 @@ Item {
                 NButton {
                   text: "New"
                   icon: "note"
+                  backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                  textColor: Color.mOnSurface
                   onClicked: root.startNewNote()
                 }
               }
@@ -336,7 +373,7 @@ Item {
                     required property var modelData
                     width: ListView.view.width - 6
                     radius: Style.radiusS
-                    color: root.selectedNoteId === modelData.id ? Qt.alpha(Color.mPrimary, 0.1) : Color.mSurface
+                    color: root.selectedNoteId === modelData.id ? Qt.alpha(Color.mPrimary, 0.10) : Qt.alpha(Color.mSurface, 0.9)
                     border.color: root.selectedNoteId === modelData.id ? Qt.alpha(Color.mPrimary, 0.24) : Qt.alpha(Color.mOutline, 0.08)
                     border.width: 1
                     implicitHeight: noteCol.implicitHeight + (Style.marginM * 2)
@@ -360,27 +397,36 @@ Item {
                           elide: Text.ElideRight
                         }
 
-                        NIcon {
+                        Rectangle {
                           visible: !!modelData.pinned
-                          icon: "pin"
-                          pointSize: Style.fontSizeXS
-                          color: Color.mPrimary
+                          radius: Style.radiusS
+                          color: Qt.alpha(Color.mPrimary, 0.12)
+                          implicitWidth: pinIcon.implicitWidth + (Style.marginXS * 2)
+                          implicitHeight: pinIcon.implicitHeight + (Style.marginXS * 2)
+
+                          NIcon {
+                            id: pinIcon
+                            anchors.centerIn: parent
+                            icon: "pin"
+                            pointSize: Style.fontSizeXS
+                            color: Color.mPrimary
+                          }
                         }
                       }
 
                       NText {
-                        text: String(modelData.body || "").split("\n").join(" ")
+                        text: modelData.body.replace(/\n/g, " ")
                         pointSize: Style.fontSizeXS
-                        color: Color.mSecondary
-                        elide: Text.ElideRight
+                        color: Color.mOnSurfaceVariant
+                        wrapMode: Text.WordWrap
                         maximumLineCount: 2
+                        elide: Text.ElideRight
                         Layout.fillWidth: true
                       }
                     }
 
                     MouseArea {
                       anchors.fill: parent
-                      hoverEnabled: true
                       cursorShape: Qt.PointingHandCursor
                       onClicked: root.selectNote(modelData.id)
                     }
@@ -393,9 +439,9 @@ Item {
           Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            radius: Style.radiusM
-            color: Qt.alpha(Color.mSurfaceVariant, 0.36)
-            border.color: Qt.alpha(Color.mOutline, 0.1)
+            radius: Style.radiusL
+            color: Qt.alpha(Color.mSurfaceVariant, 0.42)
+            border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.10)
             border.width: 1
 
             ColumnLayout {
@@ -403,57 +449,18 @@ Item {
               anchors.margins: Style.marginM
               spacing: Style.marginM
 
-              RowLayout {
-                Layout.fillWidth: true
-                spacing: Style.marginS
-
-                NText {
-                  Layout.fillWidth: true
-                  text: root.selectedNoteId ? "Edit note" : "New note"
-                  pointSize: Style.fontSizeM
-                  font.weight: Font.Medium
-                  color: Color.mOnSurface
-                }
-
-                NButton {
-                  text: root.selectedNoteId && main && main.noteById(root.selectedNoteId) && main.noteById(root.selectedNoteId).pinned ? "Unpin" : "Pin"
-                  icon: "pin"
-                  enabled: !!main && !!root.selectedNoteId
-                  onClicked: {
-                    if (main && root.selectedNoteId) {
-                      main.toggleNotePinned(root.selectedNoteId);
-                    }
-                  }
-                }
-
-                NButton {
-                  text: "Delete"
-                  icon: "trash"
-                  enabled: !!root.selectedNoteId
-                  onClicked: root.deleteEditorNote()
-                }
-
-                NButton {
-                  text: "Save"
-                  icon: "device-floppy"
-                  enabled: !!main
-                  onClicked: root.saveEditorNote()
-                }
-              }
-
               TextField {
-                id: noteTitleField
                 Layout.fillWidth: true
-                text: root.draftTitle
                 placeholderText: "Title"
+                text: root.draftTitle
                 onTextChanged: root.draftTitle = text
               }
 
               Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                radius: Style.radiusS
-                color: Color.mSurface
+                radius: Style.radiusM
+                color: Qt.alpha(Color.mSurface, 0.9)
                 border.color: Qt.alpha(Color.mOutline, 0.12)
                 border.width: 1
 
@@ -463,16 +470,50 @@ Item {
                   clip: true
 
                   TextArea {
-                    id: noteBodyField
                     text: root.draftBody
                     wrapMode: TextEdit.Wrap
                     selectByMouse: true
                     padding: Style.marginM
-                    placeholderText: "Long-form notes, drafts, meeting notes, or reference snippets."
+                    placeholderText: "Write your note..."
                     color: Color.mOnSurface
                     background: null
                     onTextChanged: root.draftBody = text
                   }
+                }
+              }
+
+              RowLayout {
+                Layout.fillWidth: true
+                spacing: Style.marginS
+
+                NButton {
+                  Layout.fillWidth: true
+                  text: root.selectedNoteId ? "Save" : "Create"
+                  icon: "device-floppy"
+                  backgroundColor: Qt.alpha(Color.mPrimary, 0.14)
+                  textColor: Color.mPrimary
+                  enabled: !!main
+                  onClicked: root.saveEditorNote()
+                }
+
+                NButton {
+                  Layout.fillWidth: true
+                  text: root.selectedNoteId && main && main.noteById(root.selectedNoteId) && main.noteById(root.selectedNoteId).pinned ? "Unpin" : "Pin"
+                  icon: "pin"
+                  backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                  textColor: Color.mOnSurface
+                  enabled: !!main && !!root.selectedNoteId
+                  onClicked: if (main && root.selectedNoteId) main.togglePin(root.selectedNoteId)
+                }
+
+                NButton {
+                  Layout.fillWidth: true
+                  text: "Delete"
+                  icon: "trash"
+                  backgroundColor: Qt.alpha(Color.mError, 0.10)
+                  textColor: Color.mError
+                  enabled: !!main && !!root.selectedNoteId
+                  onClicked: root.deleteEditorNote()
                 }
               }
             }
@@ -480,15 +521,118 @@ Item {
         }
 
         Rectangle {
-          radius: Style.radiusM
-          color: Qt.alpha(Color.mSurfaceVariant, 0.36)
-          border.color: Qt.alpha(Color.mOutline, 0.1)
+          radius: Style.radiusL
+          color: Qt.alpha(Color.mSurfaceVariant, 0.42)
+          border.color: Qt.alpha(Color.mOnSurfaceVariant, 0.10)
           border.width: 1
 
           ColumnLayout {
             anchors.fill: parent
             anchors.margins: Style.marginM
             spacing: Style.marginM
+
+            NText {
+              text: "Active Tasks"
+              pointSize: Style.fontSizeM
+              font.weight: Font.Medium
+              color: Color.mOnSurface
+            }
+
+            ScrollView {
+              Layout.fillWidth: true
+              Layout.fillHeight: true
+              clip: true
+
+              ColumnLayout {
+                width: parent.width
+                spacing: Style.marginS
+
+                Repeater {
+                  model: root.todosList()
+
+                  delegate: Rectangle {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    radius: Style.radiusS
+                    color: Qt.alpha(Color.mSurface, 0.9)
+                    border.color: Qt.alpha(Color.mOutline, 0.08)
+                    border.width: 1
+                    implicitHeight: todoCol.implicitHeight + (Style.marginM * 2)
+
+                    ColumnLayout {
+                      id: todoCol
+                      anchors.fill: parent
+                      anchors.margins: Style.marginM
+                      spacing: Style.marginS
+
+                      RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Style.marginS
+
+                        CheckBox {
+                          checked: !!modelData.done
+                          onToggled: if (main) main.toggleTodo(modelData.id)
+                        }
+
+                        NText {
+                          Layout.fillWidth: true
+                          text: modelData.text
+                          wrapMode: Text.WordWrap
+                          color: modelData.done ? Color.mOnSurfaceVariant : Color.mOnSurface
+                          font.strikeout: !!modelData.done
+                        }
+
+                        Rectangle {
+                          radius: Style.radiusS
+                          color: Qt.alpha(root.priorityColor(modelData.priority), 0.12)
+                          border.color: Qt.alpha(root.priorityColor(modelData.priority), 0.22)
+                          border.width: 1
+                          implicitWidth: priorityText.implicitWidth + (Style.marginS * 2)
+                          implicitHeight: priorityText.implicitHeight + (Style.marginXS * 2)
+
+                          NText {
+                            id: priorityText
+                            anchors.centerIn: parent
+                            text: root.priorityLabel(modelData.priority)
+                            pointSize: Style.fontSizeXS
+                            color: root.priorityColor(modelData.priority)
+                          }
+                        }
+                      }
+
+                      RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Style.marginS
+
+                        NButton {
+                          Layout.fillWidth: true
+                          text: "Priority"
+                          icon: "flag"
+                          backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+                          textColor: Color.mOnSurface
+                          onClicked: if (main) main.cycleTodoPriority(modelData.id)
+                        }
+
+                        NButton {
+                          Layout.fillWidth: true
+                          text: "Remove"
+                          icon: "trash"
+                          backgroundColor: Qt.alpha(Color.mError, 0.10)
+                          textColor: Color.mError
+                          onClicked: if (main) main.removeTodo(modelData.id)
+                        }
+                      }
+                    }
+                  }
+                }
+
+                NText {
+                  visible: root.todosList().length === 0
+                  text: "No active tasks yet."
+                  color: Color.mOnSurfaceVariant
+                }
+              }
+            }
 
             RowLayout {
               Layout.fillWidth: true
@@ -501,104 +645,18 @@ Item {
                 onAccepted: addTodoButton.clicked()
               }
 
-              ComboBox {
-                id: priorityBox
-                model: ["High", "Medium", "Low"]
-                currentIndex: 1
-                Layout.preferredWidth: 140 * Style.uiScaleRatio
-              }
-
               NButton {
                 id: addTodoButton
                 text: "Add"
                 icon: "plus"
+                backgroundColor: Qt.alpha(Color.mPrimary, 0.14)
+                textColor: Color.mPrimary
                 enabled: !!main && todoInput.text.trim() !== ""
                 onClicked: {
-                  if (main) {
-                    var priority = priorityBox.currentIndex === 0 ? "high" : (priorityBox.currentIndex === 2 ? "low" : "medium");
-                    main.addTodo(todoInput.text, priority);
-                    todoInput.text = "";
-                    priorityBox.currentIndex = 1;
-                  }
-                }
-              }
-            }
-
-            ScrollView {
-              Layout.fillWidth: true
-              Layout.fillHeight: true
-              clip: true
-
-              ListView {
-                id: todoView
-                model: root.todosList()
-                spacing: Style.marginS
-
-                delegate: Rectangle {
-                  required property var modelData
-                  width: ListView.view.width - 6
-                  radius: Style.radiusS
-                  color: Color.mSurface
-                  border.color: Qt.alpha(Color.mOutline, 0.08)
-                  border.width: 1
-                  implicitHeight: todoRow.implicitHeight + (Style.marginM * 2)
-
-                  RowLayout {
-                    id: todoRow
-                    anchors.fill: parent
-                    anchors.margins: Style.marginM
-                    spacing: Style.marginS
-
-                    CheckBox {
-                      checked: !!modelData.done
-                      onToggled: {
-                        if (main) main.setTodoDone(modelData.id, checked);
-                      }
-                    }
-
-                    NText {
-                      Layout.fillWidth: true
-                      text: modelData.text
-                      pointSize: Style.fontSizeS
-                      color: modelData.done ? Color.mSecondary : Color.mOnSurface
-                      font.strikeout: !!modelData.done
-                      wrapMode: Text.WordWrap
-                    }
-
-                    Rectangle {
-                      radius: 10
-                      color: Qt.alpha(root.priorityColor(modelData.priority), 0.16)
-                      border.color: Qt.alpha(root.priorityColor(modelData.priority), 0.28)
-                      border.width: 1
-                      implicitWidth: priorityText.implicitWidth + (Style.marginS * 2)
-                      implicitHeight: priorityText.implicitHeight + Style.marginXS
-
-                      NText {
-                        id: priorityText
-                        anchors.centerIn: parent
-                        text: root.priorityLabel(modelData.priority)
-                        pointSize: Style.fontSizeXS
-                        color: root.priorityColor(modelData.priority)
-                      }
-                    }
-
-                    NButton {
-                      text: "Cycle"
-                      enabled: !!main
-                      onClicked: {
-                        if (main) main.cycleTodoPriority(modelData.id);
-                      }
-                    }
-
-                    NButton {
-                      text: "Delete"
-                      icon: "trash"
-                      enabled: !!main
-                      onClicked: {
-                        if (main) main.deleteTodo(modelData.id);
-                      }
-                    }
-                  }
+                  if (!main)
+                    return;
+                  main.addTodo(todoInput.text, "medium");
+                  todoInput.text = "";
                 }
               }
             }

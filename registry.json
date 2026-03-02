@@ -19,7 +19,7 @@
     {
       "id": "npower",
       "name": "NPower",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Laptop-focused power profile, battery, and session controls in one panel.",
@@ -36,7 +36,7 @@
     {
       "id": "npodman",
       "name": "NPodman",
-      "version": "0.3.3",
+      "version": "0.3.4",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Compact Podman panel for containers, images, and pods.",
@@ -52,7 +52,7 @@
     {
       "id": "notes",
       "name": "Notes Hub",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Unified notes workspace with scratchpad, note cards, and todos.",
@@ -69,7 +69,7 @@
     {
       "id": "network",
       "name": "Network Console",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "official": false,
       "author": "Kenan Pelit",
       "description": "A richer NetworkManager-powered network overview with live state, Wi-Fi visibility, and quick actions.",
