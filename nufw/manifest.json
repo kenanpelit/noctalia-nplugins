@@ -1,7 +1,7 @@
 {
   "id": "nufw",
   "name": "NUFW",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "minNoctaliaVersion": "4.0.0",
   "author": "Kenan Pelit",
   "official": false,
