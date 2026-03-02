@@ -36,7 +36,7 @@
     {
       "id": "npodman",
       "name": "NPodman",
-      "version": "0.3.6",
+      "version": "0.3.7",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Compact Podman panel for containers, images, and pods.",

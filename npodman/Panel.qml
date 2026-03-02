@@ -164,6 +164,28 @@ Item {
         return "Containers";
     }
 
+    function actionButtonBackground(actionId, highlight) {
+        if (actionId === "remove")
+            return Qt.alpha(Color.mError, 0.10);
+        if (highlight) {
+            if (actionId === "stop")
+                return Qt.alpha(Color.mError, 0.12);
+            return Qt.alpha(Color.mPrimary, 0.16);
+        }
+        return Qt.alpha(Color.mSurfaceVariant, 0.48);
+    }
+
+    function actionButtonTextColor(actionId, highlight) {
+        if (actionId === "remove")
+            return Color.mError;
+        if (highlight) {
+            if (actionId === "stop")
+                return Color.mError;
+            return Color.mPrimary;
+        }
+        return Color.mOnSurface;
+    }
+
     Component.onCompleted: checkProcess.running = true
 
     onVisibleChanged: {
@@ -594,8 +616,8 @@ Item {
                                         text: "Start"
                                         icon: "player-play"
                                         Layout.fillWidth: true
-                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
-                                        textColor: Color.mOnSurface
+                                        backgroundColor: root.actionButtonBackground("start", canStart)
+                                        textColor: root.actionButtonTextColor("start", canStart)
                                         enabled: !root.actionBusy && canStart
                                         onClicked: root.startContainer(uid)
                                     }
@@ -604,8 +626,8 @@ Item {
                                         text: "Stop"
                                         icon: "player-stop"
                                         Layout.fillWidth: true
-                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
-                                        textColor: Color.mOnSurface
+                                        backgroundColor: root.actionButtonBackground("stop", canStop)
+                                        textColor: root.actionButtonTextColor("stop", canStop)
                                         enabled: !root.actionBusy && canStop
                                         onClicked: root.stopContainer(uid)
                                     }
@@ -614,8 +636,8 @@ Item {
                                         text: "Restart"
                                         icon: "refresh"
                                         Layout.fillWidth: true
-                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
-                                        textColor: Color.mOnSurface
+                                        backgroundColor: root.actionButtonBackground("restart", running && canRestart)
+                                        textColor: root.actionButtonTextColor("restart", running && canRestart)
                                         enabled: !root.actionBusy && canRestart
                                         onClicked: root.restartContainer(uid)
                                     }
@@ -787,8 +809,8 @@ Item {
                                         text: "Start"
                                         icon: "player-play"
                                         Layout.fillWidth: true
-                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
-                                        textColor: Color.mOnSurface
+                                        backgroundColor: root.actionButtonBackground("start", canStart)
+                                        textColor: root.actionButtonTextColor("start", canStart)
                                         enabled: !root.actionBusy && canStart
                                         onClicked: root.startPod(name)
                                     }
@@ -797,8 +819,8 @@ Item {
                                         text: "Stop"
                                         icon: "player-stop"
                                         Layout.fillWidth: true
-                                        backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
-                                        textColor: Color.mOnSurface
+                                        backgroundColor: root.actionButtonBackground("stop", canStop)
+                                        textColor: root.actionButtonTextColor("stop", canStop)
                                         enabled: !root.actionBusy && canStop
                                         onClicked: root.stopPod(name)
                                     }
