@@ -131,8 +131,10 @@ Item {
     target: "plugin:nufw"
 
     function togglePanel() { root.openPanelUi(); }
+    function toggle() { root.openPanelUi(); }
+    function panel() { root.openPanelUi(); }
     function refresh() { root.refresh(); }
-    function toggle() { root.toggleFirewall(); }
+    function toggleFirewall() { root.toggleFirewall(); }
     function enable() { root.enableFirewall(); }
     function disable() { root.disableFirewall(); }
     function reload() { root.reloadFirewall(); }

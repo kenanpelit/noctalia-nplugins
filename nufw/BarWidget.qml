@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import qs.Commons
 import qs.Widgets
 
@@ -7,9 +8,21 @@ Item {
   id: root
 
   property var pluginApi: null
-  readonly property var main: pluginApi ? pluginApi.mainInstance : null
+  property ShellScreen screen
+  property string widgetId: ""
+  property string section: ""
 
-  readonly property string chipText: {
+  readonly property var main: pluginApi ? pluginApi.mainInstance : null
+  readonly property string iconName: {
+    if (!main || !main.available)
+      return "alert-circle";
+    if (main.status === "active")
+      return "shield-check";
+    if (main.status === "inactive")
+      return "shield-x";
+    return "shield";
+  }
+  readonly property string detailText: {
     if (!main || !main.available)
       return "n/a";
     if (main.status === "active")
@@ -18,80 +31,70 @@ Item {
       return "Off";
     return "?";
   }
-
-  function chipBackground() {
+  readonly property color accentColor: {
     if (!main || !main.available)
-      return Qt.alpha(Color.mSurfaceVariant, 0.48);
+      return Color.mError;
     if (main.status === "active")
-      return Qt.alpha(Color.mPrimary, 0.16);
-    return Qt.alpha(Color.mSurfaceVariant, 0.48);
-  }
-
-  function chipTextColor() {
-    if (hoverArea.containsMouse)
-      return "#000000";
-    if (main && main.status === "active")
       return Color.mPrimary;
-    return Color.mOnSurfaceVariant;
+    return Color.mOnSurface;
   }
+  readonly property color hoverTextColor: "#000000"
+  readonly property color baseTextColor: Color.mOnSurfaceVariant
+  readonly property real statusChipWidth: Math.round(48 * Style.uiScaleRatio)
+
+  implicitWidth: row.implicitWidth + (Style.marginM * 2)
+  implicitHeight: Style.capsuleHeight
 
   Rectangle {
     anchors.fill: parent
-    radius: height / 2
-    color: hoverArea.containsMouse ? Color.mHover : Style.capsuleColor
-    border.color: Qt.alpha(main && main.status === "active" ? Color.mPrimary : Color.mOutline, 0.14)
-    border.width: 1
+    radius: Style.radiusL
+    color: mouse.containsMouse ? Color.mHover : Style.capsuleColor
+    border.color: Qt.alpha(root.accentColor, 0.22)
+    border.width: Style.capsuleBorderWidth
 
     RowLayout {
-      anchors.fill: parent
-      anchors.leftMargin: Style.marginM
-      anchors.rightMargin: Style.marginS
+      id: row
+      anchors.centerIn: parent
       spacing: Style.marginS
 
       NIcon {
-        icon: "shield"
-        pointSize: Style.fontSizeM
-        color: hoverArea.containsMouse
-               ? "#000000"
-               : (main && main.status === "active" ? Color.mPrimary : Color.mOnSurfaceVariant)
+        icon: root.iconName
+        applyUiScale: false
+        color: mouse.containsMouse ? root.hoverTextColor : root.accentColor
       }
 
       Rectangle {
-        Layout.preferredWidth: Math.round(48 * Style.uiScaleRatio)
-        Layout.preferredHeight: Math.round(24 * Style.uiScaleRatio)
-        radius: height / 2
-        color: hoverArea.containsMouse ? Qt.rgba(1, 1, 1, 0.7) : root.chipBackground()
-        border.color: hoverArea.containsMouse
-                      ? Qt.rgba(0, 0, 0, 0.14)
-                      : Qt.alpha(Color.mOutline, 0.1)
+        radius: Style.radiusM
+        color: mouse.containsMouse ? Qt.alpha("#ffffff", 0.70) : Qt.alpha(root.accentColor, 0.12)
+        border.color: mouse.containsMouse ? Qt.alpha(root.hoverTextColor, 0.16) : Qt.alpha(root.accentColor, 0.22)
         border.width: 1
+        Layout.preferredHeight: Math.max(Style.capsuleHeight - 10, 18)
+        Layout.preferredWidth: root.statusChipWidth
 
         NText {
           anchors.centerIn: parent
-          text: root.chipText
-          pointSize: Style.fontSizeXS
+          text: root.detailText
+          pointSize: Style.barFontSize
           font.weight: Font.Medium
-          color: root.chipTextColor()
+          color: mouse.containsMouse ? root.hoverTextColor : root.baseTextColor
         }
       }
     }
+  }
 
-    MouseArea {
-      id: hoverArea
-      anchors.fill: parent
-      hoverEnabled: true
-      acceptedButtons: Qt.LeftButton | Qt.RightButton
-      onClicked: function(mouse) {
-        if (!pluginApi)
-          return;
-        if (mouse.button === Qt.RightButton) {
-          if (main)
-            main.refresh();
-          return;
-        }
-        pluginApi.withCurrentScreen(function(screen) {
-          pluginApi.togglePanel(screen, null);
-        });
+  MouseArea {
+    id: mouse
+    anchors.fill: parent
+    hoverEnabled: true
+    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    cursorShape: Qt.PointingHandCursor
+    onClicked: function(mouseEvent) {
+      if (!main)
+        return;
+      if (mouseEvent.button === Qt.RightButton) {
+        main.refresh();
+      } else if (pluginApi) {
+        pluginApi.openPanel(root.screen, root);
       }
     }
   }
