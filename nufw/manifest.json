@@ -1,0 +1,33 @@
+{
+  "id": "nufw",
+  "name": "NUFW",
+  "version": "0.1.0",
+  "minNoctaliaVersion": "4.0.0",
+  "author": "Kenan Pelit",
+  "official": false,
+  "license": "MIT",
+  "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+  "description": "Compact UFW firewall control panel with live status, defaults, and quick actions.",
+  "tags": [
+    "Bar",
+    "Panel",
+    "ControlCenter",
+    "System",
+    "Security"
+  ],
+  "entryPoints": {
+    "main": "Main.qml",
+    "barWidget": "BarWidget.qml",
+    "panel": "Panel.qml",
+    "controlCenterWidget": "ControlCenterWidget.qml",
+    "settings": "Settings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {
+      "watchdogInterval": 12000
+    }
+  }
+}
