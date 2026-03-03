@@ -1,8 +1,8 @@
 # Noctalia NPlugins
 
-A curated third-party plugin registry for Noctalia, focused on practical workflows, polished UI, and deep system integration.
+A curated third-party plugin registry for Noctalia, built around practical workflows, polished UI, and system-aware utilities.
 
-This repository is designed to be added as a custom Noctalia plugin source. Noctalia reads `registry.json`, then installs individual plugin directories from this repository.
+This repository is designed to be used as a custom Noctalia plugin source. Noctalia reads `registry.json`, then installs individual plugin directories from this repository.
 
 ## Included Plugins
 
@@ -14,6 +14,7 @@ This repository is designed to be added as a custom Noctalia plugin source. Noct
 | Notes Hub | `notes` | Unified scratchpad, note cards, and todo workflow. |
 | Network Console | `network` | Live NetworkManager view with Wi-Fi visibility and quick actions. |
 | NIP | `nip` | Compact public IP monitor with an icon-only bar presence. |
+| NUFW | `nufw` | UFW firewall status, quick actions, and rule overview. |
 
 ## Repository Structure
 
@@ -24,6 +25,7 @@ This repository is designed to be added as a custom Noctalia plugin source. Noct
 - `notes/`: productivity workspace plugin
 - `network/`: network status and Wi-Fi control plugin
 - `nip/`: public IP monitoring plugin
+- `nufw/`: UFW firewall control plugin
 
 ## Add This As A Noctalia Source
 
@@ -94,13 +96,14 @@ It interacts with the local user-session Podman CLI directly.
 
 `nip` relies on the local networking stack and external connectivity to resolve public IP information.
 
-## Planned Concepts
+### NUFW
 
-The repository also includes non-installable design blueprints under `concepts/` for future plugins:
+`nufw` requires:
 
-- `nkeyflow`: compositor and shell keybinding intelligence
+- `ufw`
+- `sudo -n` or `pkexec` for firewall actions
 
-These are intentionally kept out of `registry.json` until they are implemented.
+It reads live firewall state from the local UFW configuration and shell tools.
 
 ## Compatibility
 
