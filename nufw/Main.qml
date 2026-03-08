@@ -24,7 +24,7 @@ Item {
   readonly property string actionScript: String(Qt.resolvedUrl("scripts/action.sh")).replace(/^file:\/\//, "")
   readonly property int watchdogInterval: {
     var candidate = pluginApi && pluginApi.pluginSettings ? parseInt(pluginApi.pluginSettings.watchdogInterval, 10) : NaN;
-    return (isNaN(candidate) || candidate < 5000) ? 12000 : candidate;
+    return (isNaN(candidate) || candidate < 30000) ? 60000 : candidate;
   }
   readonly property bool enabled: status === "active"
 

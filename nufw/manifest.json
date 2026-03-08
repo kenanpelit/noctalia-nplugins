@@ -27,7 +27,7 @@
   },
   "metadata": {
     "defaultSettings": {
-      "watchdogInterval": 12000
+      "watchdogInterval": 60000
     }
   }
 }

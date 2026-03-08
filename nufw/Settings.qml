@@ -8,7 +8,7 @@ Item {
   id: root
 
   property var pluginApi: null
-  property string watchdogText: "12000"
+  property string watchdogText: "60000"
 
   Component.onCompleted: syncFromSettings()
   onPluginApiChanged: syncFromSettings()
@@ -17,15 +17,15 @@ Item {
     if (!pluginApi || !pluginApi.pluginSettings)
       return;
     var value = pluginApi.pluginSettings.watchdogInterval;
-    watchdogText = value === undefined ? "12000" : String(value);
+    watchdogText = value === undefined ? "60000" : String(value);
   }
 
   function save() {
     if (!pluginApi || !pluginApi.pluginSettings)
       return;
     var parsed = parseInt(watchdogText, 10);
-    if (isNaN(parsed) || parsed < 5000)
-      parsed = 12000;
+    if (isNaN(parsed) || parsed < 30000)
+      parsed = 60000;
     pluginApi.pluginSettings.watchdogInterval = parsed;
     pluginApi.saveSettings();
     watchdogText = String(parsed);
@@ -56,7 +56,7 @@ Item {
       TextField {
         Layout.fillWidth: true
         text: root.watchdogText
-        placeholderText: "12000"
+        placeholderText: "60000"
         inputMethodHints: Qt.ImhDigitsOnly
         onTextChanged: root.watchdogText = text
       }
