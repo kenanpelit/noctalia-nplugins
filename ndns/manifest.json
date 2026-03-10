@@ -1,7 +1,7 @@
 {
   "id": "ndns",
   "name": "NDNS",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "DNS / VPN Switcher for Noctalia with Mullvad, Blocky, and DNS presets.",
   "repository": "https://github.com/kenanpelit/noctalia-nplugins",
   "tags": [
@@ -20,7 +20,8 @@
   },
   "metadata": {
     "defaultSettings": {
-      "oscCommand": "osc-mullvad"
+      "oscCommand": "osc-mullvad",
+      "watchdogInterval": 30000
     }
   }
 }

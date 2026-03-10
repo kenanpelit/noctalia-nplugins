@@ -40,7 +40,10 @@ ColumnLayout {
       description: pluginApi?.tr("settings.iconColor.desc")
       model: Color.colorKeyModel
       currentKey: root.valueIconColor
-      onSelected: key => root.valueIconColor = key
+      onSelected: key => {
+        root.valueIconColor = key;
+        root.saveSettings();
+      }
     }
 
     // State Icons section
@@ -164,6 +167,13 @@ ColumnLayout {
         }
       }
     }
+
+    NButton {
+      Layout.fillWidth: true
+      text: pluginApi?.tr("settings.save") || "Save"
+      icon: "device-floppy"
+      onClicked: root.saveSettings()
+    }
   }
 
   signal settingsChanged(var settings)
@@ -173,12 +183,17 @@ ColumnLayout {
       return;
     }
 
+    var parsedRefreshInterval = parseInt(root.valueRefreshInterval, 10);
+    if (isNaN(parsedRefreshInterval) || parsedRefreshInterval < 0)
+      parsedRefreshInterval = defaults.refreshInterval ?? 300;
+
     pluginApi.pluginSettings.iconColor = root.valueIconColor;
-    pluginApi.pluginSettings.refreshInterval = root.valueRefreshInterval;
+    pluginApi.pluginSettings.refreshInterval = parsedRefreshInterval;
     pluginApi.pluginSettings.successIcon = root.valueSuccessIcon;
     pluginApi.pluginSettings.errorIcon = root.valueErrorIcon;
     pluginApi.pluginSettings.loadingIcon = root.valueLoadingIcon;
     pluginApi.saveSettings();
+    root.valueRefreshInterval = parsedRefreshInterval;
 
     Logger.d("Nip", "Settings saved successfully");
   }

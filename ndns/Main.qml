@@ -21,6 +21,10 @@ Item {
     property bool isCustomDns: false
     property string activeProviderId: "unknown"
     property string lastError: ""
+    readonly property int watchdogInterval: {
+        var candidate = pluginApi && pluginApi.pluginSettings ? parseInt(pluginApi.pluginSettings.watchdogInterval, 10) : NaN;
+        return (isNaN(candidate) || candidate < 10000) ? 30000 : candidate;
+    }
 
     readonly property var defaultProviders: [
         { id: "google", label: "Google", ip: "8.8.8.8 8.8.4.4", icon: "brand-google" },
@@ -208,7 +212,7 @@ Item {
     }
 
     function refreshState() {
-        if (!isChanging) {
+        if (!isChanging && !checkProcess.running) {
             checkProcess.running = true;
         }
     }
@@ -405,7 +409,7 @@ Item {
     }
 
     Timer {
-        interval: 6000
+        interval: root.watchdogInterval
         running: true
         repeat: true
         triggeredOnStart: true
@@ -417,7 +421,7 @@ Item {
         command: [root.stateScript]
         stdout: StdioCollector {
             id: checkStdout
-            onTextChanged: root.applyState(text)
+            onStreamFinished: root.applyState(this.text || "")
         }
         stderr: StdioCollector {
             id: checkStderr

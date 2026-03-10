@@ -4,7 +4,7 @@
     {
       "id": "ndns",
       "name": "NDNS",
-      "version": "1.5.3",
+      "version": "1.5.4",
       "official": false,
       "author": "Kenan Pelit",
       "description": "DNS / VPN Switcher for Noctalia with Mullvad, Blocky, and DNS presets.",
@@ -86,7 +86,7 @@
     {
       "id": "nip",
       "name": "NIP",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Compact public IP monitor with an icon-only bar presence.",
@@ -102,7 +102,7 @@
     {
       "id": "nufw",
       "name": "NUFW",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Compact UFW firewall control panel with live state and quick actions.",
