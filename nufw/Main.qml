@@ -24,13 +24,48 @@ Item {
   readonly property string actionScript: String(Qt.resolvedUrl("scripts/action.sh")).replace(/^file:\/\//, "")
   readonly property int watchdogInterval: {
     var candidate = pluginApi && pluginApi.pluginSettings ? parseInt(pluginApi.pluginSettings.watchdogInterval, 10) : NaN;
-    return (isNaN(candidate) || candidate < 30000) ? 60000 : candidate;
+    return (isNaN(candidate) || candidate < 120000) ? 120000 : candidate;
+  }
+  readonly property int detailInterval: Math.max(watchdogInterval * 5, 300000)
+  readonly property bool allowPrivilegedReads: {
+    if (!pluginApi || !pluginApi.pluginSettings)
+      return true;
+    if (pluginApi.pluginSettings.allowPrivilegedReads === undefined)
+      return true;
+    return !!pluginApi.pluginSettings.allowPrivilegedReads;
   }
   readonly property bool enabled: status === "active"
+  property bool pendingDetailedRefresh: false
+  property bool initialRefreshQueued: false
 
-  function refresh() {
+  function ensureInitialRefresh() {
+    if (initialRefreshQueued || !pluginApi)
+      return;
+    initialRefreshQueued = true;
+    refreshDetails();
+  }
+
+  function refresh(detailed) {
+    if (detailed === undefined)
+      detailed = false;
+    if (detailed)
+      pendingDetailedRefresh = true;
     if (!stateProcess.running)
-      stateProcess.running = true;
+      startRefresh();
+  }
+
+  function refreshDetails() {
+    refresh(true);
+  }
+
+  function startRefresh() {
+    var detailed = pendingDetailedRefresh;
+    pendingDetailedRefresh = false;
+    var command = ["sh", root.stateScript, detailed ? "--details" : "--summary"];
+    if (allowPrivilegedReads)
+      command.push("--allow-sudo");
+    stateProcess.command = command;
+    stateProcess.running = true;
   }
 
   function applyState(text) {
@@ -46,10 +81,12 @@ Item {
       incomingPolicy = String(data.incomingPolicy || "n/a");
       outgoingPolicy = String(data.outgoingPolicy || "n/a");
       routedPolicy = String(data.routedPolicy || "n/a");
-      ruleCount = Number(data.ruleCount);
-      if (isNaN(ruleCount))
-        ruleCount = 0;
-      rulesPreview = String(data.rulesPreview || "");
+      if ("ruleCount" in data) {
+        var nextRuleCount = Number(data.ruleCount);
+        ruleCount = isNaN(nextRuleCount) ? 0 : nextRuleCount;
+      }
+      if ("rulesPreview" in data)
+        rulesPreview = String(data.rulesPreview || "");
       lastError = String(data.error || "");
     } catch (err) {
       lastError = "Failed to parse firewall state";
@@ -69,6 +106,7 @@ Item {
   function openPanelUi() {
     if (!pluginApi)
       return;
+    refreshDetails();
     pluginApi.withCurrentScreen(function(screen) {
       pluginApi.togglePanel(screen, null);
     });
@@ -87,8 +125,8 @@ Item {
   function disableFirewall() { runAction(["disable"], "Disabling firewall"); }
   function reloadFirewall() { runAction(["reload"], "Reloading firewall"); }
 
-  Component.onCompleted: refresh()
-  onPluginApiChanged: refresh()
+  Component.onCompleted: ensureInitialRefresh()
+  onPluginApiChanged: ensureInitialRefresh()
 
   Process {
     id: stateProcess
@@ -100,6 +138,8 @@ Item {
     onExited: function(code) {
       if (code !== 0 && !root.lastError)
         root.lastError = (stateStderr.text || "Failed to read firewall state").trim();
+      if (root.pendingDetailedRefresh)
+        root.startRefresh();
     }
   }
 
@@ -115,7 +155,7 @@ Item {
         var out = String(actionStdout.text || "").trim();
         if (out)
           root.lastAction = out;
-        root.refresh();
+        root.refreshDetails();
       }
     }
   }
@@ -127,13 +167,22 @@ Item {
     onTriggered: root.refresh()
   }
 
+  Timer {
+    interval: root.detailInterval
+    running: true
+    repeat: true
+    onTriggered: root.refreshDetails()
+  }
+
   IpcHandler {
     target: "plugin:nufw"
 
     function togglePanel() { root.openPanelUi(); }
     function toggle() { root.openPanelUi(); }
     function panel() { root.openPanelUi(); }
-    function refresh() { root.refresh(); }
+    function refresh() { root.refreshDetails(); }
+    function refreshSummary() { root.refresh(); }
+    function refreshDetails() { root.refreshDetails(); }
     function toggleFirewall() { root.toggleFirewall(); }
     function enable() { root.enableFirewall(); }
     function disable() { root.disableFirewall(); }

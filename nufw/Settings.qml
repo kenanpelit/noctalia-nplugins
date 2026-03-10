@@ -8,7 +8,8 @@ Item {
   id: root
 
   property var pluginApi: null
-  property string watchdogText: "60000"
+  property string watchdogText: "120000"
+  property bool allowPrivilegedReads: true
 
   Component.onCompleted: syncFromSettings()
   onPluginApiChanged: syncFromSettings()
@@ -17,16 +18,21 @@ Item {
     if (!pluginApi || !pluginApi.pluginSettings)
       return;
     var value = pluginApi.pluginSettings.watchdogInterval;
-    watchdogText = value === undefined ? "60000" : String(value);
+    var parsed = parseInt(value, 10);
+    watchdogText = (isNaN(parsed) || parsed < 120000) ? "120000" : String(parsed);
+    allowPrivilegedReads = pluginApi.pluginSettings.allowPrivilegedReads === undefined
+      ? true
+      : !!pluginApi.pluginSettings.allowPrivilegedReads;
   }
 
   function save() {
     if (!pluginApi || !pluginApi.pluginSettings)
       return;
     var parsed = parseInt(watchdogText, 10);
-    if (isNaN(parsed) || parsed < 30000)
-      parsed = 60000;
+    if (isNaN(parsed) || parsed < 120000)
+      parsed = 120000;
     pluginApi.pluginSettings.watchdogInterval = parsed;
+    pluginApi.pluginSettings.allowPrivilegedReads = allowPrivilegedReads;
     pluginApi.saveSettings();
     watchdogText = String(parsed);
   }
@@ -49,6 +55,19 @@ Item {
       Layout.fillWidth: true
     }
 
+    CheckBox {
+      text: "Allow privileged reads (`sudo -n` fallback)"
+      checked: root.allowPrivilegedReads
+      onToggled: root.allowPrivilegedReads = checked
+    }
+
+    NText {
+      text: "Keep this off unless plain `ufw status` is unreadable. Enabling it can generate sudo journal noise."
+      wrapMode: Text.Wrap
+      color: Color.mOnSurfaceVariant
+      Layout.fillWidth: true
+    }
+
     RowLayout {
       Layout.fillWidth: true
       spacing: Style.marginM
@@ -56,7 +75,7 @@ Item {
       TextField {
         Layout.fillWidth: true
         text: root.watchdogText
-        placeholderText: "60000"
+        placeholderText: "120000"
         inputMethodHints: Qt.ImhDigitsOnly
         onTextChanged: root.watchdogText = text
       }

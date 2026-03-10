@@ -16,11 +16,9 @@ run_root() {
 
 is_enabled() {
   local out
-  if command -v sudo >/dev/null 2>&1; then
+  out="$(ufw status 2>/dev/null || true)"
+  if [[ -z "${out:-}" ]] && command -v sudo >/dev/null 2>&1; then
     out="$(sudo -n ufw status 2>/dev/null || true)"
-  fi
-  if [[ -z "${out:-}" ]]; then
-    out="$(ufw status 2>/dev/null || true)"
   fi
   grep -qi '^Status:[[:space:]]*active' <<<"$out"
 }

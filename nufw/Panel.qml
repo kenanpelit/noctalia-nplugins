@@ -335,7 +335,7 @@ Item {
             backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
             textColor: Color.mOnSurface
             enabled: main && !main.actionBusy
-            onClicked: main.refresh()
+            onClicked: main.refreshDetails()
           }
         }
       }

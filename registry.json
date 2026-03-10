@@ -86,7 +86,7 @@
     {
       "id": "nip",
       "name": "NIP",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Compact public IP monitor with an icon-only bar presence.",
