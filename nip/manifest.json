@@ -1,7 +1,7 @@
 {
   "id": "nip",
   "name": "NIP",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "minNoctaliaVersion": "4.4.3",
   "author": "Kenan Pelit",
   "official": false,
