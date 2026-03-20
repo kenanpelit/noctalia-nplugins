@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
 
-ColumnLayout {
+Item {
   id: root
 
   property var pluginApi: null
@@ -12,6 +12,9 @@ ColumnLayout {
   property int tempStep: 150
   property int gammaStep: 2
   property bool showLabelInBar: false
+
+  implicitWidth: Math.round(760 * Style.uiScaleRatio)
+  implicitHeight: content.implicitHeight + (Style.marginXL * 2)
 
   Component.onCompleted: syncFromSettings()
   onPluginApiChanged: syncFromSettings()
@@ -29,7 +32,7 @@ ColumnLayout {
     showLabelInBar = settings.showLabelInBar === true;
   }
 
-  function save() {
+  function saveSettings() {
     if (!pluginApi || !pluginApi.pluginSettings)
       return;
 
@@ -42,91 +45,182 @@ ColumnLayout {
       pluginApi.mainInstance.syncPluginSettings();
   }
 
-  spacing: Style.marginM
+  ColumnLayout {
+    id: content
+    anchors.fill: parent
+    anchors.margins: Style.marginXL
+    spacing: Style.marginL
 
-  NLabel {
-    Layout.fillWidth: true
-    label: "NSunsetr"
-    description: "Simple controls for refresh cadence, quick-action step sizes, and what the expanded bar chip shows."
-  }
-
-  NLabel {
-    Layout.fillWidth: true
-    label: "Refresh Interval"
-    description: "Background state polling cadence. Higher values reduce backend churn."
-  }
-
-  RowLayout {
-    Layout.fillWidth: true
-    spacing: Style.marginS
-
-    Slider {
+    NLabel {
       Layout.fillWidth: true
-      from: 5000
-      to: 120000
-      stepSize: 5000
-      value: root.watchdogInterval
-      onMoved: root.watchdogInterval = Math.round(value)
-      onValueChanged: root.watchdogInterval = Math.round(value)
+      label: "NSunsetr"
+      description: "Readable controls for bar behavior and color adjustment steps."
     }
 
-    NText {
-      text: Math.round(root.watchdogInterval / 1000) + " s"
-      color: Color.mSecondary
-      pointSize: Style.fontSizeS
+    NBox {
+      Layout.fillWidth: true
+      implicitHeight: barCard.implicitHeight + (Style.marginL * 2)
+
+      ColumnLayout {
+        id: barCard
+        anchors.fill: parent
+        anchors.margins: Style.marginL
+        spacing: Style.marginM
+
+        NLabel {
+          Layout.fillWidth: true
+          label: "Bar Behavior"
+          description: "The widget starts as icon-only. Double-click the widget to show or hide the value chip."
+        }
+
+        CheckBox {
+          Layout.fillWidth: true
+          checked: root.showLabelInBar
+          text: "When expanded, show preset label instead of live Kelvin"
+          onToggled: root.showLabelInBar = checked
+        }
+      }
     }
-  }
 
-  NLabel {
-    Layout.fillWidth: true
-    label: "Temperature Step"
-    description: "How much each warmer/cooler action changes the current color temperature."
-  }
+    NBox {
+      Layout.fillWidth: true
+      implicitHeight: refreshCard.implicitHeight + (Style.marginL * 2)
 
-  SpinBox {
-    from: 50
-    to: 1000
-    stepSize: 25
-    value: root.tempStep
-    onValueChanged: root.tempStep = value
-  }
+      ColumnLayout {
+        id: refreshCard
+        anchors.fill: parent
+        anchors.margins: Style.marginL
+        spacing: Style.marginM
 
-  NLabel {
-    Layout.fillWidth: true
-    label: "Gamma Step"
-    description: "How much each gamma action changes the current gamma percentage."
-  }
+        NLabel {
+          Layout.fillWidth: true
+          label: "Refresh Interval"
+          description: "Fallback polling cadence for sunsetr state."
+        }
 
-  SpinBox {
-    from: 1
-    to: 20
-    stepSize: 1
-    value: root.gammaStep
-    onValueChanged: root.gammaStep = value
-  }
+        RowLayout {
+          Layout.fillWidth: true
+          spacing: Style.marginM
 
-  NLabel {
-    Layout.fillWidth: true
-    label: "Bar Label"
-    description: "When you expand the bar widget with a double-click, show the preset label instead of live Kelvin."
-  }
+          Slider {
+            Layout.fillWidth: true
+            from: 5000
+            to: 120000
+            stepSize: 5000
+            value: root.watchdogInterval
+            onMoved: root.watchdogInterval = Math.round(value)
+            onValueChanged: root.watchdogInterval = Math.round(value)
+          }
 
-  CheckBox {
-    checked: root.showLabelInBar
-    text: "Show preset label in bar"
-    onToggled: root.showLabelInBar = checked
-  }
+          Rectangle {
+            radius: Style.radiusS
+            color: Qt.alpha(Color.mPrimary, 0.12)
+            border.color: Qt.alpha(Color.mPrimary, 0.20)
+            border.width: 1
+            implicitWidth: refreshValue.implicitWidth + (Style.marginM * 2)
+            implicitHeight: refreshValue.implicitHeight + (Style.marginS * 2)
 
-  NLabel {
-    Layout.fillWidth: true
-    label: "Bar Behavior"
-    description: "The widget starts as icon-only by default. Double-click the widget to show or hide the value chip."
-  }
+            NText {
+              id: refreshValue
+              anchors.centerIn: parent
+              text: Math.round(root.watchdogInterval / 1000) + " s"
+              color: Color.mPrimary
+              font.weight: Font.Medium
+            }
+          }
+        }
+      }
+    }
 
-  NButton {
-    Layout.fillWidth: true
-    text: "Save"
-    icon: "device-floppy"
-    onClicked: root.save()
+    NBox {
+      Layout.fillWidth: true
+      implicitHeight: stepsCard.implicitHeight + (Style.marginL * 2)
+
+      ColumnLayout {
+        id: stepsCard
+        anchors.fill: parent
+        anchors.margins: Style.marginL
+        spacing: Style.marginM
+
+        NLabel {
+          Layout.fillWidth: true
+          label: "Adjustment Steps"
+          description: "Control how much the warmer/cooler and gamma actions change on each click."
+        }
+
+        RowLayout {
+          Layout.fillWidth: true
+          spacing: Style.marginM
+
+          ColumnLayout {
+            Layout.fillWidth: true
+            spacing: Style.marginS
+
+            NText {
+              text: "Temperature Step"
+              color: Color.mOnSurface
+              font.weight: Font.Medium
+            }
+
+            Slider {
+              Layout.fillWidth: true
+              from: 50
+              to: 1000
+              stepSize: 25
+              value: root.tempStep
+              onMoved: root.tempStep = Math.round(value)
+              onValueChanged: root.tempStep = Math.round(value)
+            }
+
+            NText {
+              text: root.tempStep + " K"
+              color: Color.mSecondary
+            }
+          }
+
+          ColumnLayout {
+            Layout.fillWidth: true
+            spacing: Style.marginS
+
+            NText {
+              text: "Gamma Step"
+              color: Color.mOnSurface
+              font.weight: Font.Medium
+            }
+
+            Slider {
+              Layout.fillWidth: true
+              from: 1
+              to: 20
+              stepSize: 1
+              value: root.gammaStep
+              onMoved: root.gammaStep = Math.round(value)
+              onValueChanged: root.gammaStep = Math.round(value)
+            }
+
+            NText {
+              text: root.gammaStep + " %"
+              color: Color.mSecondary
+            }
+          }
+        }
+      }
+    }
+
+    RowLayout {
+      Layout.fillWidth: true
+      Layout.topMargin: Style.marginS
+      spacing: Style.marginM
+
+      Item {
+        Layout.fillWidth: true
+      }
+
+      NButton {
+        text: "Save"
+        icon: "device-floppy"
+        onClicked: root.saveSettings()
+      }
+    }
   }
 }
