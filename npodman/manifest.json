@@ -1,7 +1,7 @@
 {
   "id": "npodman",
   "name": "NPodman",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "minNoctaliaVersion": "4.0.0",
   "author": "Kenan Pelit",
   "license": "MIT",

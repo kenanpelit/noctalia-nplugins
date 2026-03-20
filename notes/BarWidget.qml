@@ -17,7 +17,8 @@ Item {
   readonly property int activeTodos: main ? main.activeTodoCount : 0
   readonly property int notesCount: main ? main.noteCount : 0
   readonly property bool hasWork: activeTodos > 0 || notesCount > 0
-  readonly property color accentColor: hasWork ? Color.mPrimary : Color.mOnSurface
+  readonly property color accentColor: hasWork ? Color.mPrimary : Color.mOnSurfaceVariant
+  readonly property color hoverTextColor: "#000000"
   readonly property real contentWidth: Style.capsuleHeight
   readonly property real contentHeight: Style.capsuleHeight
   readonly property string tooltipText: {
@@ -34,17 +35,18 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    radius: Style.radiusL
+    radius: height / 2
     color: mouseArea.containsMouse ? Color.mHover : Style.capsuleColor
     border.color: hasWork ? Qt.alpha(Color.mPrimary, 0.22) : Style.capsuleBorderColor
     border.width: Style.capsuleBorderWidth
+    Behavior on color { ColorAnimation { duration: 150 } }
 
     NIcon {
       anchors.centerIn: parent
       icon: "notes"
       applyUiScale: false
       pointSize: Style.fontSizeM
-      color: mouseArea.containsMouse ? Color.mOnHover : accentColor
+      color: mouseArea.containsMouse ? root.hoverTextColor : root.accentColor
     }
   }
 

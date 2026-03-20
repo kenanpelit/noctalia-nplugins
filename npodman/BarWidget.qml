@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import "podmanUtils.js" as PodmanUtils
@@ -27,8 +26,18 @@ Item {
     readonly property int watchdogInterval: resolveWatchdogInterval()
     readonly property bool hasRunningContainers: podmanAvailable && runningCount > 0
     readonly property color activeColor: "#4caf50"
+    readonly property color accentColor: {
+        if (!podmanAvailable)
+            return Color.mError;
+        if (hasRunningContainers)
+            return activeColor;
+        return Color.mOnSurfaceVariant;
+    }
     readonly property color hoverTextColor: "#000000"
-    readonly property real contentWidth: row.implicitWidth + (Style.marginM * 2)
+    readonly property color borderColor: hasRunningContainers
+                                         ? Qt.alpha(root.activeColor, 0.22)
+                                         : (podmanAvailable ? Style.capsuleBorderColor : Qt.alpha(Color.mError, 0.22))
+    readonly property real contentWidth: Style.capsuleHeight
     readonly property real contentHeight: Style.capsuleHeight
     readonly property string tooltipText: {
         if (!podmanAvailable)
@@ -154,30 +163,29 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: height / 2
-        color: mouse.containsMouse
-               ? Color.mHover
-               : (root.hasRunningContainers ? Qt.alpha(root.activeColor, 0.16) : Style.capsuleColor)
-        border.color: root.hasRunningContainers ? Qt.alpha(root.activeColor, 0.3) : Style.capsuleBorderColor
+        color: mouse.containsMouse ? Color.mHover : Style.capsuleColor
+        border.color: root.borderColor
         border.width: Style.capsuleBorderWidth
+        Behavior on color { ColorAnimation { duration: 150 } }
 
-        RowLayout {
-            id: row
+        NIcon {
             anchors.centerIn: parent
-            spacing: Style.marginS
+            icon: "brand-docker"
+            applyUiScale: false
+            pointSize: Style.fontSizeM
+            color: mouse.containsMouse ? root.hoverTextColor : root.accentColor
+        }
 
-            NIcon {
-                icon: "brand-docker"
-                pointSize: Style.fontSizeS
-                color: mouse.containsMouse ? root.hoverTextColor : (root.hasRunningContainers ? root.activeColor : Color.mOnSurface)
-            }
-
-            Rectangle {
-                visible: root.hasRunningContainers
-                Layout.preferredWidth: 8
-                Layout.preferredHeight: 8
-                radius: 4
-                color: root.activeColor
-            }
+        Rectangle {
+            visible: root.hasRunningContainers
+            anchors.right: parent.right
+            anchors.rightMargin: Style.marginXS
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: Style.marginXS
+            width: 8
+            height: 8
+            radius: 4
+            color: root.activeColor
         }
     }
 

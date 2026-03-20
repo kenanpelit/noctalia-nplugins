@@ -46,6 +46,8 @@ Item {
     return "#ffcc80";
   }
   readonly property color hoverTextColor: "#000000"
+  readonly property color baseTextColor: Color.mOnSurfaceVariant
+  readonly property real infoChipWidth: Math.round(84 * Style.uiScaleRatio)
   readonly property int doubleClickInterval: 500
   readonly property string chipText: {
     if (!main)
@@ -84,10 +86,11 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    radius: Style.radiusL
+    radius: height / 2
     color: mouse.containsMouse ? Color.mHover : Style.capsuleColor
-    border.color: Qt.alpha(root.accentColor, 0.22)
+    border.color: !main ? Style.capsuleBorderColor : (main.available ? Qt.alpha(root.accentColor, 0.22) : Qt.alpha(Color.mError, 0.22))
     border.width: Style.capsuleBorderWidth
+    Behavior on color { ColorAnimation { duration: 150 } }
 
     RowLayout {
       id: row
@@ -97,6 +100,7 @@ Item {
       NIcon {
         icon: root.iconName
         applyUiScale: false
+        pointSize: Style.fontSizeM
         color: mouse.containsMouse ? root.hoverTextColor : root.accentColor
       }
 
@@ -107,7 +111,7 @@ Item {
         border.color: mouse.containsMouse ? Qt.alpha(root.hoverTextColor, 0.16) : Qt.alpha(root.accentColor, 0.22)
         border.width: 1
         Layout.preferredHeight: Math.max(Style.capsuleHeight - 10, 18)
-        Layout.preferredWidth: Math.max(Math.round(78 * Style.uiScaleRatio), chipLabel.implicitWidth + Style.marginM * 2)
+        Layout.preferredWidth: Math.max(root.infoChipWidth, chipLabel.implicitWidth + Style.marginM * 2)
 
         NText {
           id: chipLabel
@@ -115,7 +119,7 @@ Item {
           text: root.chipText
           pointSize: Style.barFontSize
           font.weight: Font.Medium
-          color: mouse.containsMouse ? root.hoverTextColor : Color.mOnSurfaceVariant
+          color: mouse.containsMouse ? root.hoverTextColor : root.baseTextColor
         }
       }
     }

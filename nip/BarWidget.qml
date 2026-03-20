@@ -1,12 +1,8 @@
 import QtQuick
-import QtQuick.Layouts
 import Quickshell
 import qs.Commons
-import qs.Modules.Bar.Extras
-import qs.Modules.Panels.Settings
 import qs.Services.UI
 import qs.Widgets
-import "." as Local
 
 Item {
   id: root
@@ -30,24 +26,30 @@ Item {
   readonly property var ipData: ipMonitorService?.ipData ?? null
   readonly property string fetchState: ipMonitorService?.fetchState ?? "idle"
 
-  readonly property string displayIp: ""
-  readonly property bool isHot: fetchState === "success"
-
-  // Bar position handling
-  readonly property string screenName: screen ? screen.name : ""
-  readonly property string barPosition: Settings.getBarPositionForScreen(screenName)
-  readonly property bool isVerticalBar: barPosition === "left" || barPosition === "right"
-
   readonly property string currentIcon: {
     if (fetchState === "loading") return loadingIconKey;
     if (fetchState === "error") return errorIconKey;
     return successIconKey;
   }
 
-  readonly property color iconColor: isHot ? Color.resolveColorKey(iconColorKey) : Color.mOnSurfaceVariant
+  readonly property color accentColor: {
+    if (fetchState === "error")
+      return Color.mError;
+    if (fetchState === "success")
+      return Color.resolveColorKey(iconColorKey);
+    return Color.mOnSurfaceVariant;
+  }
+  readonly property color hoverTextColor: "#000000"
+  readonly property color borderColor: {
+    if (fetchState === "error")
+      return Qt.alpha(Color.mError, 0.22);
+    if (fetchState === "success")
+      return Qt.alpha(root.accentColor, 0.22);
+    return Style.capsuleBorderColor;
+  }
 
-  implicitWidth: pill.width
-  implicitHeight: pill.height
+  implicitWidth: Style.capsuleHeight
+  implicitHeight: Style.capsuleHeight
 
   onIpMonitorServiceChanged: {
     Logger.d("Nip", "BarWidget ipMonitorService changed:", ipMonitorService !== null);
@@ -61,19 +63,41 @@ Item {
     Logger.d("Nip", "BarWidget completed refresh");
   }
 
-  BarPill {
-    id: pill
-    screen: root.screen
-    oppositeDirection: BarService.getPillDirection(root)
-    icon: root.currentIcon
-    text: root.displayIp
-    rotateText: isVerticalBar
-    forceOpen: false
-    forceClose: true
-    autoHide: false
-    customTextIconColor: root.iconColor
+  Rectangle {
+    anchors.fill: parent
+    radius: height / 2
+    color: mouseArea.containsMouse ? Color.mHover : Style.capsuleColor
+    border.color: root.borderColor
+    border.width: Style.capsuleBorderWidth
+    Behavior on color { ColorAnimation { duration: 150 } }
 
-    tooltipText: {
+    NIcon {
+      anchors.centerIn: parent
+      icon: root.currentIcon
+      applyUiScale: false
+      pointSize: Style.fontSizeM
+      color: mouseArea.containsMouse ? root.hoverTextColor : root.accentColor
+    }
+  }
+
+  MouseArea {
+    id: mouseArea
+    anchors.fill: parent
+    hoverEnabled: true
+    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    cursorShape: Qt.PointingHandCursor
+
+    onClicked: function(mouse) {
+      if (mouse.button === Qt.RightButton) {
+        PanelService.showContextMenu(contextMenu, root, screen);
+        return;
+      }
+      if (pluginApi) {
+        pluginApi.openPanel(root.screen, root);
+      }
+    }
+
+    onEntered: {
       var lines = [];
       lines.push("Left click: Open panel");
       lines.push("Right click: Menu");
@@ -88,19 +112,10 @@ Item {
           lines.push(parts.join(", "));
         }
       }
-      return lines.join("\n");
+      TooltipService.show(root, lines.join("\n"), BarService.getTooltipDirection(root.screen?.name));
     }
 
-    onClicked: {
-      // Open panel (displays cached IP data)
-      if (pluginApi) {
-        pluginApi.openPanel(root.screen, root);
-      }
-    }
-
-    onRightClicked: {
-      PanelService.showContextMenu(contextMenu, root, screen);
-    }
+    onExited: TooltipService.hide()
   }
 
   NPopupContextMenu {
@@ -143,4 +158,3 @@ Item {
     }
   }
 }
-
