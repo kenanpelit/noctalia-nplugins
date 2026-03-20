@@ -52,7 +52,7 @@
     {
       "id": "notes",
       "name": "Notes Hub",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Unified notes workspace with scratchpad, note cards, and todos.",
@@ -86,7 +86,7 @@
     {
       "id": "nip",
       "name": "NIP",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Compact public IP monitor with an icon-only bar presence.",
@@ -120,7 +120,7 @@
     {
       "id": "nsunsetr",
       "name": "NSunsetr",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Sunsetr schedule, preset, and live temperature controls for Noctalia.",

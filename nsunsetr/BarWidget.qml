@@ -19,16 +19,14 @@ Item {
     if (!main || !main.available)
       return "alert-circle";
     if (!main.serviceActive)
-      return "moon-off";
+      return "temperature";
     if (main.period === "day")
-      return "sun-high";
+      return "sun";
     if (main.period === "night")
       return "moon-stars";
-    if (main.period === "sunset")
-      return "sunset";
-    if (main.period === "sunrise")
-      return "sun-low";
-    return "sun-moon";
+    if (main.period === "sunset" || main.period === "sunrise")
+      return "sun-moon";
+    return "sun";
   }
   readonly property color accentColor: {
     if (!main || !main.available)
