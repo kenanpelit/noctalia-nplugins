@@ -12,6 +12,7 @@ Item {
   property string tempStepText: "150"
   property string gammaStepText: "2"
   property bool showLabelInBar: false
+  property bool iconOnlyInBar: false
 
   Component.onCompleted: syncFromSettings()
   onPluginApiChanged: syncFromSettings()
@@ -24,6 +25,7 @@ Item {
     tempStepText = settings.tempStep === undefined ? "150" : String(settings.tempStep);
     gammaStepText = settings.gammaStep === undefined ? "2" : String(settings.gammaStep);
     showLabelInBar = settings.showLabelInBar === true;
+    iconOnlyInBar = settings.iconOnlyInBar === true;
   }
 
   function save() {
@@ -46,6 +48,7 @@ Item {
     pluginApi.pluginSettings.tempStep = tempStep;
     pluginApi.pluginSettings.gammaStep = gammaStep;
     pluginApi.pluginSettings.showLabelInBar = showLabelInBar;
+    pluginApi.pluginSettings.iconOnlyInBar = iconOnlyInBar;
     pluginApi.saveSettings();
 
     watchdogText = String(watchdog);
@@ -138,6 +141,23 @@ Item {
 
       NText {
         text: "Show preset label in the bar instead of live Kelvin"
+        color: Color.mOnSurface
+        wrapMode: Text.Wrap
+        Layout.fillWidth: true
+      }
+    }
+
+    RowLayout {
+      Layout.fillWidth: true
+      spacing: Style.marginM
+
+      Switch {
+        checked: root.iconOnlyInBar
+        onToggled: root.iconOnlyInBar = checked
+      }
+
+      NText {
+        text: "Start the bar widget in icon-only mode"
         color: Color.mOnSurface
         wrapMode: Text.Wrap
         Layout.fillWidth: true

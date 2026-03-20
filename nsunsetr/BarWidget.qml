@@ -14,6 +14,7 @@ Item {
   property string section: ""
 
   readonly property var main: pluginApi ? pluginApi.mainInstance : null
+  readonly property bool iconOnly: main ? main.iconOnlyInBar : false
   readonly property string iconName: {
     if (!main || !main.available)
       return "alert-circle";
@@ -72,10 +73,11 @@ Item {
       lines.push("Target: " + Math.round(main.targetTemp) + "K @ " + Number(main.targetGamma).toFixed(1) + "%");
     lines.push("Next: " + String(main.nextScheduledTime || "--:--") + " -> " + String(main.nextScheduledLabel || "Default"));
     lines.push("Right click: apply auto preset");
+    lines.push("Double click: toggle icon-only mode");
     return lines.join("\n");
   }
 
-  implicitWidth: row.implicitWidth + (Style.marginM * 2)
+  implicitWidth: iconOnly ? Style.capsuleHeight : row.implicitWidth + (Style.marginM * 2)
   implicitHeight: Style.capsuleHeight
 
   Rectangle {
@@ -97,6 +99,7 @@ Item {
       }
 
       Rectangle {
+        visible: !root.iconOnly
         radius: Style.radiusM
         color: mouse.containsMouse ? Qt.alpha("#ffffff", 0.70) : Qt.alpha(root.accentColor, 0.12)
         border.color: mouse.containsMouse ? Qt.alpha(root.hoverTextColor, 0.16) : Qt.alpha(root.accentColor, 0.22)
@@ -126,15 +129,32 @@ Item {
       if (!main)
         return;
       if (mouseEvent.button === Qt.RightButton) {
+        leftClickTimer.stop();
         main.applyAuto();
-      } else if (pluginApi) {
-        pluginApi.openPanel(root.screen, root);
+      } else if (mouseEvent.button === Qt.LeftButton) {
+        leftClickTimer.restart();
       }
+    }
+    onDoubleClicked: function(mouseEvent) {
+      if (!main || mouseEvent.button !== Qt.LeftButton)
+        return;
+      leftClickTimer.stop();
+      main.toggleIconOnlyInBar();
     }
     onEntered: {
       if (root.tooltipText)
         TooltipService.show(root, root.tooltipText, BarService.getTooltipDirection(root.screen?.name));
     }
     onExited: TooltipService.hide()
+  }
+
+  Timer {
+    id: leftClickTimer
+    interval: 220
+    repeat: false
+    onTriggered: {
+      if (pluginApi)
+        pluginApi.openPanel(root.screen, root);
+    }
   }
 }

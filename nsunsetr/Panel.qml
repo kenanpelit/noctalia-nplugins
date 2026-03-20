@@ -278,66 +278,88 @@ Item {
         border.width: 1
         implicitHeight: actionLayout.implicitHeight + (Style.marginM * 2)
 
-        GridLayout {
+        ColumnLayout {
           id: actionLayout
           anchors.fill: parent
           anchors.margins: Style.marginM
-          columns: 3
-          columnSpacing: Style.marginS
-          rowSpacing: Style.marginS
+          spacing: Style.marginS
 
-          NButton {
-            text: "Auto"
-            icon: "clock"
-            onClicked: if (main) main.applyAuto()
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: Style.marginS
+
+            NButton {
+              Layout.fillWidth: true
+              text: "Auto"
+              icon: "clock"
+              onClicked: if (main) main.applyAuto()
+            }
+
+            NButton {
+              Layout.fillWidth: true
+              text: "Default"
+              icon: "reload"
+              onClicked: if (main) main.applyDefault()
+            }
+
+            NButton {
+              Layout.fillWidth: true
+              text: "Restart"
+              icon: "refresh"
+              onClicked: if (main) main.restartService()
+            }
           }
 
-          NButton {
-            text: "Default"
-            icon: "reload"
-            onClicked: if (main) main.applyDefault()
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: Style.marginS
+
+            NButton {
+              Layout.fillWidth: true
+              text: "Warmer"
+              icon: "chevron-up"
+              onClicked: if (main) main.makeWarmer()
+            }
+
+            NButton {
+              Layout.fillWidth: true
+              text: "Cooler"
+              icon: "chevron-down"
+              onClicked: if (main) main.makeCooler()
+            }
+
+            NButton {
+              Layout.fillWidth: true
+              text: "Refresh"
+              icon: "rotate"
+              onClicked: if (main) main.refresh()
+            }
           }
 
-          NButton {
-            text: "Restart"
-            icon: "refresh"
-            onClicked: if (main) main.restartService()
-          }
+          RowLayout {
+            Layout.fillWidth: true
+            spacing: Style.marginS
 
-          NButton {
-            text: "Warmer"
-            icon: "chevron-up"
-            onClicked: if (main) main.makeWarmer()
-          }
+            NButton {
+              Layout.fillWidth: true
+              text: "Gamma +"
+              icon: "plus"
+              onClicked: if (main) main.raiseGamma()
+            }
 
-          NButton {
-            text: "Cooler"
-            icon: "chevron-down"
-            onClicked: if (main) main.makeCooler()
-          }
+            NButton {
+              Layout.fillWidth: true
+              text: "Gamma -"
+              icon: "minus"
+              onClicked: if (main) main.lowerGamma()
+            }
 
-          NButton {
-            text: "Refresh"
-            icon: "rotate"
-            onClicked: if (main) main.refresh()
-          }
-
-          NButton {
-            text: "Gamma +"
-            icon: "plus"
-            onClicked: if (main) main.raiseGamma()
-          }
-
-          NButton {
-            text: "Gamma -"
-            icon: "minus"
-            onClicked: if (main) main.lowerGamma()
-          }
-
-          NButton {
-            text: "Settings"
-            icon: "settings"
-            onClicked: if (main) main.openSettingsUi()
+            NButton {
+              Layout.fillWidth: true
+              text: "Settings"
+              icon: "settings"
+              onClicked: if (main) main.openSettingsUi()
+            }
           }
         }
       }

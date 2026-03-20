@@ -120,7 +120,7 @@
     {
       "id": "nsunsetr",
       "name": "NSunsetr",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Sunsetr schedule, preset, and live temperature controls for Noctalia.",

@@ -52,6 +52,9 @@ Item {
   readonly property bool showLabelInBar: pluginApi && pluginApi.pluginSettings
                                          ? pluginApi.pluginSettings.showLabelInBar === true
                                          : false
+  readonly property bool iconOnlyInBar: pluginApi && pluginApi.pluginSettings
+                                        ? pluginApi.pluginSettings.iconOnlyInBar === true
+                                        : false
 
   function refresh() {
     if (!stateProcess.running)
@@ -136,6 +139,12 @@ Item {
   function raiseGamma() { runAction(["gamma-up", String(gammaStep)], "Gamma +" + gammaStep + "%"); }
   function lowerGamma() { runAction(["gamma-down", String(gammaStep)], "Gamma -" + gammaStep + "%"); }
   function restartService() { runAction(["restart"], "Restart sunsetr"); }
+  function toggleIconOnlyInBar() {
+    if (!pluginApi || !pluginApi.pluginSettings)
+      return;
+    pluginApi.pluginSettings.iconOnlyInBar = !iconOnlyInBar;
+    pluginApi.saveSettings();
+  }
 
   Component.onCompleted: refresh()
   onPluginApiChanged: refresh()
@@ -193,6 +202,7 @@ Item {
     function gammaDown() { root.lowerGamma(); }
     function restart() { root.restartService(); }
     function setPreset(preset: string) { root.applyPreset(preset); }
+    function toggleBarMode() { root.toggleIconOnlyInBar(); }
     function openSettings() { root.openSettingsUi(); }
   }
 }

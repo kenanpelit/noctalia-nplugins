@@ -7,6 +7,7 @@ Sunsetr schedule, preset, and live temperature controls for Noctalia.
 ## Highlights
 
 - compact bar widget with period icon and live Kelvin or preset label
+- double-click bar widget to toggle icon-only mode
 - detailed panel for active preset, current target, next schedule boundary, and quick actions
 - one-click access to scheduled presets from `~/.config/sunsetr/schedule.conf`
 - warmer/cooler and gamma adjustments through native `sunsetr set current_*` commands
