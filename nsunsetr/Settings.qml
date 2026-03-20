@@ -12,7 +12,6 @@ ColumnLayout {
   property int tempStep: 150
   property int gammaStep: 2
   property bool showLabelInBar: false
-  property bool iconOnlyInBar: false
 
   Component.onCompleted: syncFromSettings()
   onPluginApiChanged: syncFromSettings()
@@ -28,7 +27,6 @@ ColumnLayout {
     var parsedGammaStep = parseInt(settings.gammaStep, 10);
     gammaStep = (isNaN(parsedGammaStep) || parsedGammaStep < 1) ? 2 : parsedGammaStep;
     showLabelInBar = settings.showLabelInBar === true;
-    iconOnlyInBar = settings.iconOnlyInBar === true;
   }
 
   function save() {
@@ -39,7 +37,6 @@ ColumnLayout {
     pluginApi.pluginSettings.tempStep = tempStep;
     pluginApi.pluginSettings.gammaStep = gammaStep;
     pluginApi.pluginSettings.showLabelInBar = showLabelInBar;
-    pluginApi.pluginSettings.iconOnlyInBar = iconOnlyInBar;
     pluginApi.saveSettings();
     if (pluginApi.mainInstance)
       pluginApi.mainInstance.syncPluginSettings();
@@ -50,7 +47,7 @@ ColumnLayout {
   NLabel {
     Layout.fillWidth: true
     label: "NSunsetr"
-    description: "Panel control, bar presentation, and quick action tuning."
+    description: "Simple controls for refresh cadence, quick-action step sizes, and what the expanded bar chip shows."
   }
 
   NLabel {
@@ -111,7 +108,7 @@ ColumnLayout {
   NLabel {
     Layout.fillWidth: true
     label: "Bar Label"
-    description: "Use the preset label instead of live Kelvin in the bar chip."
+    description: "When you expand the bar widget with a double-click, show the preset label instead of live Kelvin."
   }
 
   CheckBox {
@@ -122,14 +119,8 @@ ColumnLayout {
 
   NLabel {
     Layout.fillWidth: true
-    label: "Icon-Only Start Mode"
-    description: "Begin with only the bar icon visible. You can also double-click the widget to toggle this live."
-  }
-
-  CheckBox {
-    checked: root.iconOnlyInBar
-    text: "Start in icon-only mode"
-    onToggled: root.iconOnlyInBar = checked
+    label: "Bar Behavior"
+    description: "The widget starts as icon-only by default. Double-click the widget to show or hide the value chip."
   }
 
   NButton {

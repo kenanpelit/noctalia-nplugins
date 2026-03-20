@@ -38,7 +38,7 @@ Item {
   property int tempStep: 150
   property int gammaStep: 2
   property bool showLabelInBar: false
-  property bool iconOnlyInBar: false
+  property bool iconOnlyInBar: true
 
   readonly property string stateScript: String(Qt.resolvedUrl("scripts/state.sh")).replace(/^file:\/\//, "")
   readonly property string actionScript: String(Qt.resolvedUrl("scripts/action.sh")).replace(/^file:\/\//, "")
@@ -58,7 +58,6 @@ Item {
     gammaStep = (isNaN(parsedGammaStep) || parsedGammaStep < 1) ? 2 : parsedGammaStep;
 
     showLabelInBar = settings.showLabelInBar === true;
-    iconOnlyInBar = settings.iconOnlyInBar === true;
   }
 
   function refresh() {
@@ -145,11 +144,7 @@ Item {
   function lowerGamma() { runAction(["gamma-down", String(gammaStep)], "Gamma -" + gammaStep + "%"); }
   function restartService() { runAction(["restart"], "Restart sunsetr"); }
   function toggleIconOnlyInBar() {
-    if (!pluginApi || !pluginApi.pluginSettings)
-      return;
     iconOnlyInBar = !iconOnlyInBar;
-    pluginApi.pluginSettings.iconOnlyInBar = iconOnlyInBar;
-    pluginApi.saveSettings();
   }
 
   Component.onCompleted: {

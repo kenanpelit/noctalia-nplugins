@@ -1,7 +1,7 @@
 {
   "id": "nsunsetr",
   "name": "NSunsetr",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "minNoctaliaVersion": "4.0.0",
   "author": "Kenan Pelit",
   "license": "MIT",
@@ -29,8 +29,7 @@
       "watchdogInterval": 20000,
       "tempStep": 150,
       "gammaStep": 2,
-      "showLabelInBar": false,
-      "iconOnlyInBar": false
+      "showLabelInBar": false
     }
   }
 }
