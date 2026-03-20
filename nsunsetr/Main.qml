@@ -34,27 +34,32 @@ Item {
   property var scheduleEntries: []
   property string lastError: ""
   property string lastAction: ""
+  property int watchdogInterval: 20000
+  property int tempStep: 150
+  property int gammaStep: 2
+  property bool showLabelInBar: false
+  property bool iconOnlyInBar: false
 
   readonly property string stateScript: String(Qt.resolvedUrl("scripts/state.sh")).replace(/^file:\/\//, "")
   readonly property string actionScript: String(Qt.resolvedUrl("scripts/action.sh")).replace(/^file:\/\//, "")
-  readonly property int watchdogInterval: {
-    var candidate = pluginApi && pluginApi.pluginSettings ? parseInt(pluginApi.pluginSettings.watchdogInterval, 10) : NaN;
-    return (isNaN(candidate) || candidate < 5000) ? 20000 : candidate;
+
+  function syncPluginSettings() {
+    if (!pluginApi || !pluginApi.pluginSettings)
+      return;
+
+    var settings = pluginApi.pluginSettings;
+    var parsedWatchdog = parseInt(settings.watchdogInterval, 10);
+    watchdogInterval = (isNaN(parsedWatchdog) || parsedWatchdog < 5000) ? 20000 : parsedWatchdog;
+
+    var parsedTempStep = parseInt(settings.tempStep, 10);
+    tempStep = (isNaN(parsedTempStep) || parsedTempStep < 50) ? 150 : parsedTempStep;
+
+    var parsedGammaStep = parseInt(settings.gammaStep, 10);
+    gammaStep = (isNaN(parsedGammaStep) || parsedGammaStep < 1) ? 2 : parsedGammaStep;
+
+    showLabelInBar = settings.showLabelInBar === true;
+    iconOnlyInBar = settings.iconOnlyInBar === true;
   }
-  readonly property int tempStep: {
-    var candidate = pluginApi && pluginApi.pluginSettings ? parseInt(pluginApi.pluginSettings.tempStep, 10) : NaN;
-    return (isNaN(candidate) || candidate < 50) ? 150 : candidate;
-  }
-  readonly property int gammaStep: {
-    var candidate = pluginApi && pluginApi.pluginSettings ? parseInt(pluginApi.pluginSettings.gammaStep, 10) : NaN;
-    return (isNaN(candidate) || candidate < 1) ? 2 : candidate;
-  }
-  readonly property bool showLabelInBar: pluginApi && pluginApi.pluginSettings
-                                         ? pluginApi.pluginSettings.showLabelInBar === true
-                                         : false
-  readonly property bool iconOnlyInBar: pluginApi && pluginApi.pluginSettings
-                                        ? pluginApi.pluginSettings.iconOnlyInBar === true
-                                        : false
 
   function refresh() {
     if (!stateProcess.running)
@@ -142,12 +147,19 @@ Item {
   function toggleIconOnlyInBar() {
     if (!pluginApi || !pluginApi.pluginSettings)
       return;
-    pluginApi.pluginSettings.iconOnlyInBar = !iconOnlyInBar;
+    iconOnlyInBar = !iconOnlyInBar;
+    pluginApi.pluginSettings.iconOnlyInBar = iconOnlyInBar;
     pluginApi.saveSettings();
   }
 
-  Component.onCompleted: refresh()
-  onPluginApiChanged: refresh()
+  Component.onCompleted: {
+    syncPluginSettings();
+    refresh();
+  }
+  onPluginApiChanged: {
+    syncPluginSettings();
+    refresh();
+  }
 
   Process {
     id: stateProcess

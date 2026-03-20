@@ -46,7 +46,7 @@ Item {
     return "#ffcc80";
   }
   readonly property color hoverTextColor: "#000000"
-  readonly property int doubleClickInterval: 360
+  readonly property int doubleClickInterval: 500
   readonly property string chipText: {
     if (!main)
       return "--";
