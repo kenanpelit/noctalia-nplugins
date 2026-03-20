@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="64" x2="1120" y2="656" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#181422"/>
+      <stop offset="0.5" stop-color="#2A2233"/>
+      <stop offset="1" stop-color="#3D2D1E"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="286" y1="154" x2="997" y2="566" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9AD1FF"/>
+      <stop offset="0.5" stop-color="#FFB56B"/>
+      <stop offset="1" stop-color="#F46E52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" rx="42" fill="url(#bg)"/>
+  <rect x="98" y="90" width="1084" height="540" rx="30" fill="#13111A" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <rect x="140" y="132" width="1000" height="94" rx="24" fill="#1C1724"/>
+  <circle cx="196" cy="179" r="22" fill="#FFB56B"/>
+  <path d="M196 146C177.8 146 163 160.8 163 179H229C229 160.8 214.2 146 196 146Z" fill="#F46E52"/>
+  <text x="244" y="168" fill="#F4F2F8" font-family="sans-serif" font-size="30" font-weight="700">NSunsetr</text>
+  <text x="244" y="202" fill="#A39AB3" font-family="sans-serif" font-size="22">Sunsetr schedule and live display controls</text>
+  <rect x="140" y="256" width="470" height="320" rx="26" fill="#19151F" stroke="#FFFFFF" stroke-opacity="0.06"/>
+  <text x="178" y="305" fill="#F4F2F8" font-family="sans-serif" font-size="28" font-weight="700">13:00 noon</text>
+  <text x="178" y="340" fill="#A39AB3" font-family="sans-serif" font-size="22">Current 2600K @ 95%</text>
+  <text x="178" y="374" fill="#A39AB3" font-family="sans-serif" font-size="22">Next 17:00 afternoon</text>
+  <rect x="178" y="410" width="176" height="54" rx="18" fill="#FFB56B" fill-opacity="0.16"/>
+  <text x="228" y="444" fill="#FFB56B" font-family="sans-serif" font-size="22" font-weight="700">Manual</text>
+  <rect x="178" y="486" width="176" height="54" rx="18" fill="#9AD1FF" fill-opacity="0.16"/>
+  <text x="227" y="520" fill="#9AD1FF" font-family="sans-serif" font-size="22" font-weight="700">Warmer</text>
+  <rect x="392" y="486" width="176" height="54" rx="18" fill="#F46E52" fill-opacity="0.16"/>
+  <text x="444" y="520" fill="#F46E52" font-family="sans-serif" font-size="22" font-weight="700">Gamma +</text>
+  <rect x="658" y="256" width="482" height="320" rx="26" fill="#19151F" stroke="#FFFFFF" stroke-opacity="0.06"/>
+  <text x="696" y="305" fill="#F4F2F8" font-family="sans-serif" font-size="28" font-weight="700">Schedule</text>
+  <rect x="696" y="332" width="406" height="52" rx="18" fill="url(#accent)" fill-opacity="0.12"/>
+  <text x="726" y="365" fill="#F4F2F8" font-family="sans-serif" font-size="20" font-weight="700">13:00 - 17:00 noon</text>
+  <text x="971" y="365" fill="#F4F2F8" font-family="sans-serif" font-size="20">2600K</text>
+  <rect x="696" y="396" width="406" height="52" rx="18" fill="#211C29"/>
+  <text x="726" y="429" fill="#F4F2F8" font-family="sans-serif" font-size="20">17:00 - 19:00 afternoon</text>
+  <text x="971" y="429" fill="#A39AB3" font-family="sans-serif" font-size="20">2500K</text>
+  <rect x="696" y="460" width="406" height="52" rx="18" fill="#211C29"/>
+  <text x="726" y="493" fill="#F4F2F8" font-family="sans-serif" font-size="20">19:00 - 21:00 sunset</text>
+  <text x="971" y="493" fill="#A39AB3" font-family="sans-serif" font-size="20">2400K</text>
+  <rect x="696" y="524" width="406" height="52" rx="18" fill="#211C29"/>
+  <text x="726" y="557" fill="#F4F2F8" font-family="sans-serif" font-size="20">22:30 - 00:00 evening</text>
+  <text x="971" y="557" fill="#A39AB3" font-family="sans-serif" font-size="20">2200K</text>
+</svg>

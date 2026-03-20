@@ -11,8 +11,8 @@ This repository is designed to be used as a custom Noctalia plugin source. Nocta
 | DNS and VPN switching for Mullvad, Blocky, and direct DNS presets. | Laptop power profile, battery, and session controls in one panel. | Compact Podman dashboard for containers, images, and pods. |
 | [<img src="notes/preview.png" width="220"><br><b>Notes Hub</b>](notes) | [<img src="network/preview.png" width="220"><br><b>Network Console</b>](network) | [<img src="nip/preview.png" width="220"><br><b>NIP</b>](nip) |
 | Unified scratchpad, note cards, and todo workflow. | Live NetworkManager view with Wi-Fi visibility and quick actions. | Compact public IP monitor with an icon-only bar presence. |
-| [<img src="nufw/preview.png" width="220"><br><b>NUFW</b>](nufw) | | |
-| UFW firewall status, quick actions, and rule overview. | | |
+| [<img src="nufw/preview.png" width="220"><br><b>NUFW</b>](nufw) | [<img src="nsunsetr/preview.svg" width="220"><br><b>NSunsetr</b>](nsunsetr) | |
+| UFW firewall status, quick actions, and rule overview. | Sunsetr schedule, live Kelvin state, and quick preset controls. | |
 
 ## Repository Structure
 
@@ -24,6 +24,7 @@ This repository is designed to be used as a custom Noctalia plugin source. Nocta
 - `network/`: network status and Wi-Fi control plugin
 - `nip/`: public IP monitoring plugin
 - `nufw/`: UFW firewall control plugin
+- `nsunsetr/`: sunsetr schedule and display control plugin
 
 ## Add This As A Noctalia Source
 
@@ -102,6 +103,18 @@ It interacts with the local user-session Podman CLI directly.
 - `sudo -n` or `pkexec` for firewall actions
 
 It reads live firewall state from the local UFW configuration and shell tools.
+
+### NSunsetr
+
+`nsunsetr` requires:
+
+- `sunsetr`
+- `sunsetr-set`
+- `systemctl --user`
+- `jq`
+
+It expects a repo-managed sunsetr configuration rooted at `~/.config/sunsetr`,
+including `schedule.conf` and preset directories.
 
 ## Compatibility
 
