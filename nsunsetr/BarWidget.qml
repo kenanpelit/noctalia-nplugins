@@ -19,16 +19,16 @@ Item {
     if (!main || !main.available)
       return "alert-circle";
     if (!main.serviceActive)
-      return "temperature";
+      return "moon-off";
     if (main.period === "day")
-      return "sun";
+      return "sun-high";
     if (main.period === "night")
-      return "moon";
+      return "moon-stars";
     if (main.period === "sunset")
-      return "sunset-2";
+      return "sunset";
     if (main.period === "sunrise")
-      return "sunrise";
-    return "temperature";
+      return "sun-low";
+    return "sun-moon";
   }
   readonly property color accentColor: {
     if (!main || !main.available)
@@ -48,7 +48,6 @@ Item {
   readonly property color hoverTextColor: "#000000"
   readonly property color baseTextColor: Color.mOnSurfaceVariant
   readonly property real infoChipWidth: Math.round(84 * Style.uiScaleRatio)
-  readonly property int doubleClickInterval: 500
   readonly property string chipText: {
     if (!main)
       return "--";
@@ -75,11 +74,10 @@ Item {
     else if (main.targetTemp > 0)
       lines.push("Target: " + Math.round(main.targetTemp) + "K @ " + Number(main.targetGamma).toFixed(1) + "%");
     lines.push("Next: " + String(main.nextScheduledTime || "--:--") + " -> " + String(main.nextScheduledLabel || "Default"));
-    lines.push("Right click: apply auto preset");
-    lines.push("Double click: toggle icon-only mode");
+    lines.push("Right click: toggle bar details");
+    lines.push("Middle click: apply auto preset");
     return lines.join("\n");
   }
-  property double lastLeftClickMs: 0
 
   implicitWidth: iconOnly ? Style.capsuleHeight : row.implicitWidth + (Style.marginM * 2)
   implicitHeight: Style.capsuleHeight
@@ -129,25 +127,17 @@ Item {
     id: mouse
     anchors.fill: parent
     hoverEnabled: true
-    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
     cursorShape: Qt.PointingHandCursor
     onClicked: function(mouseEvent) {
       if (!main)
         return;
-      if (mouseEvent.button === Qt.RightButton) {
-        leftClickTimer.stop();
-        root.lastLeftClickMs = 0;
+      if (mouseEvent.button === Qt.MiddleButton) {
         main.applyAuto();
-      } else if (mouseEvent.button === Qt.LeftButton) {
-        var now = Date.now();
-        if (root.lastLeftClickMs > 0 && (now - root.lastLeftClickMs) <= root.doubleClickInterval) {
-          leftClickTimer.stop();
-          root.lastLeftClickMs = 0;
-          main.toggleIconOnlyInBar();
-          return;
-        }
-        root.lastLeftClickMs = now;
-        leftClickTimer.restart();
+      } else if (mouseEvent.button === Qt.RightButton) {
+        main.toggleIconOnlyInBar();
+      } else if (pluginApi) {
+        pluginApi.openPanel(root.screen, root);
       }
     }
     onEntered: {
@@ -155,16 +145,5 @@ Item {
         TooltipService.show(root, root.tooltipText, BarService.getTooltipDirection(root.screen?.name));
     }
     onExited: TooltipService.hide()
-  }
-
-  Timer {
-    id: leftClickTimer
-    interval: root.doubleClickInterval
-    repeat: false
-    onTriggered: {
-      root.lastLeftClickMs = 0;
-      if (pluginApi)
-        pluginApi.openPanel(root.screen, root);
-    }
   }
 }

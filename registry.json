@@ -102,7 +102,7 @@
     {
       "id": "nufw",
       "name": "NUFW",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Compact UFW firewall control panel with live state and quick actions.",
@@ -120,7 +120,7 @@
     {
       "id": "nsunsetr",
       "name": "NSunsetr",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "official": false,
       "author": "Kenan Pelit",
       "description": "Sunsetr schedule, preset, and live temperature controls for Noctalia.",
