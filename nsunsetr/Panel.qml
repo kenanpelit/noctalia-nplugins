@@ -68,6 +68,40 @@ Item {
     return value > 0 ? Number(value).toFixed(1) + "%" : "--";
   }
 
+  function actionIsActive(actionId) {
+    if (!main)
+      return false;
+
+    switch (actionId) {
+    case "auto":
+      return !main.manualOverride && main.activePreset === main.scheduledPreset;
+    case "default":
+      return main.activePreset === "default";
+    case "refresh":
+      return false;
+    case "restart":
+      return false;
+    default:
+      return false;
+    }
+  }
+
+  function actionBackground(actionId) {
+    if (root.actionIsActive(actionId))
+      return Qt.alpha(Color.mPrimary, 0.16);
+    if (actionId === "refresh" || actionId === "restart")
+      return Qt.alpha(Color.mPrimary, 0.12);
+    return Qt.alpha(Color.mSurfaceVariant, 0.48);
+  }
+
+  function actionTextColor(actionId) {
+    if (root.actionIsActive(actionId))
+      return Color.mPrimary;
+    if (actionId === "refresh" || actionId === "restart")
+      return Color.mPrimary;
+    return Color.mOnSurface;
+  }
+
   Rectangle {
     id: panelFrame
     anchors.fill: parent
@@ -290,22 +324,34 @@ Item {
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Auto"
               icon: "clock"
+              backgroundColor: root.actionBackground("auto")
+              textColor: root.actionTextColor("auto")
               onClicked: if (main) main.applyAuto()
             }
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Default"
               icon: "reload"
+              backgroundColor: root.actionBackground("default")
+              textColor: root.actionTextColor("default")
               onClicked: if (main) main.applyDefault()
             }
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Restart"
               icon: "refresh"
+              backgroundColor: root.actionBackground("restart")
+              textColor: root.actionTextColor("restart")
               onClicked: if (main) main.restartService()
             }
           }
@@ -316,22 +362,34 @@ Item {
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Warmer"
               icon: "chevron-up"
+              backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+              textColor: Color.mOnSurface
               onClicked: if (main) main.makeWarmer()
             }
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Cooler"
               icon: "chevron-down"
+              backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+              textColor: Color.mOnSurface
               onClicked: if (main) main.makeCooler()
             }
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Refresh"
               icon: "rotate"
+              backgroundColor: root.actionBackground("refresh")
+              textColor: root.actionTextColor("refresh")
               onClicked: if (main) main.refresh()
             }
           }
@@ -342,22 +400,34 @@ Item {
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Gamma +"
               icon: "plus"
+              backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+              textColor: Color.mOnSurface
               onClicked: if (main) main.raiseGamma()
             }
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Gamma -"
               icon: "minus"
+              backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+              textColor: Color.mOnSurface
               onClicked: if (main) main.lowerGamma()
             }
 
             NButton {
               Layout.fillWidth: true
+              Layout.minimumWidth: 0
+              Layout.preferredWidth: 1
               text: "Settings"
               icon: "settings"
+              backgroundColor: Qt.alpha(Color.mSurfaceVariant, 0.48)
+              textColor: Color.mOnSurface
               onClicked: if (main) main.openSettingsUi()
             }
           }

@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import qs.Commons
 import qs.Widgets
@@ -61,110 +60,58 @@ Item {
     anchors.margins: Style.marginL
     spacing: Style.marginL
 
-    NText {
-      text: "NSunsetr Settings"
-      font.pointSize: Style.fontSizeL * Style.uiScaleRatio
-      font.weight: Font.Bold
+    NLabel {
+      Layout.fillWidth: true
+      label: "NSunsetr"
+      description: "Panel control, bar presentation, and quick action tuning."
     }
 
-    NText {
-      text: "Tune how often the plugin refreshes and how much each quick action changes color temperature or gamma."
-      wrapMode: Text.Wrap
-      color: Color.mOnSurfaceVariant
+    NTextInput {
       Layout.fillWidth: true
+      label: "Refresh Interval (ms)"
+      description: "Background state polling cadence. Higher values reduce backend churn."
+      placeholderText: "20000"
+      text: root.watchdogText
+      inputMethodHints: Qt.ImhDigitsOnly
+      onTextChanged: root.watchdogText = text
     }
 
-    RowLayout {
+    NTextInput {
       Layout.fillWidth: true
-      spacing: Style.marginM
-
-      ColumnLayout {
-        Layout.fillWidth: true
-
-        NText {
-          text: "Refresh interval (ms)"
-          color: Color.mOnSurface
-        }
-
-        TextField {
-          Layout.fillWidth: true
-          text: root.watchdogText
-          placeholderText: "20000"
-          inputMethodHints: Qt.ImhDigitsOnly
-          onTextChanged: root.watchdogText = text
-        }
-      }
-
-      ColumnLayout {
-        Layout.fillWidth: true
-
-        NText {
-          text: "Temp step (K)"
-          color: Color.mOnSurface
-        }
-
-        TextField {
-          Layout.fillWidth: true
-          text: root.tempStepText
-          placeholderText: "150"
-          inputMethodHints: Qt.ImhDigitsOnly
-          onTextChanged: root.tempStepText = text
-        }
-      }
-
-      ColumnLayout {
-        Layout.fillWidth: true
-
-        NText {
-          text: "Gamma step (%)"
-          color: Color.mOnSurface
-        }
-
-        TextField {
-          Layout.fillWidth: true
-          text: root.gammaStepText
-          placeholderText: "2"
-          inputMethodHints: Qt.ImhDigitsOnly
-          onTextChanged: root.gammaStepText = text
-        }
-      }
+      label: "Temperature Step (K)"
+      description: "How much each warmer/cooler action changes the current color temperature."
+      placeholderText: "150"
+      text: root.tempStepText
+      inputMethodHints: Qt.ImhDigitsOnly
+      onTextChanged: root.tempStepText = text
     }
 
-    RowLayout {
+    NTextInput {
       Layout.fillWidth: true
-      spacing: Style.marginM
-
-      Switch {
-        checked: root.showLabelInBar
-        onToggled: root.showLabelInBar = checked
-      }
-
-      NText {
-        text: "Show preset label in the bar instead of live Kelvin"
-        color: Color.mOnSurface
-        wrapMode: Text.Wrap
-        Layout.fillWidth: true
-      }
+      label: "Gamma Step (%)"
+      description: "How much each gamma action changes the current gamma percentage."
+      placeholderText: "2"
+      text: root.gammaStepText
+      inputMethodHints: Qt.ImhDigitsOnly
+      onTextChanged: root.gammaStepText = text
     }
 
-    RowLayout {
-      Layout.fillWidth: true
-      spacing: Style.marginM
+    NToggle {
+      label: "Show Preset Label In Bar"
+      description: "Use the preset label instead of live Kelvin in the bar chip."
+      checked: root.showLabelInBar
+      onToggled: checked => root.showLabelInBar = checked
+    }
 
-      Switch {
-        checked: root.iconOnlyInBar
-        onToggled: root.iconOnlyInBar = checked
-      }
-
-      NText {
-        text: "Start the bar widget in icon-only mode"
-        color: Color.mOnSurface
-        wrapMode: Text.Wrap
-        Layout.fillWidth: true
-      }
+    NToggle {
+      label: "Start In Icon-Only Mode"
+      description: "Begin with only the bar icon visible. You can also double-click the widget to toggle this live."
+      checked: root.iconOnlyInBar
+      onToggled: checked => root.iconOnlyInBar = checked
     }
 
     NButton {
+      Layout.fillWidth: true
       text: "Save"
       icon: "device-floppy"
       onClicked: root.save()

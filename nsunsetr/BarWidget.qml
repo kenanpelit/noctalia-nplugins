@@ -46,6 +46,7 @@ Item {
     return "#ffcc80";
   }
   readonly property color hoverTextColor: "#000000"
+  readonly property int doubleClickInterval: 360
   readonly property string chipText: {
     if (!main)
       return "--";
@@ -76,6 +77,7 @@ Item {
     lines.push("Double click: toggle icon-only mode");
     return lines.join("\n");
   }
+  property double lastLeftClickMs: 0
 
   implicitWidth: iconOnly ? Style.capsuleHeight : row.implicitWidth + (Style.marginM * 2)
   implicitHeight: Style.capsuleHeight
@@ -130,16 +132,19 @@ Item {
         return;
       if (mouseEvent.button === Qt.RightButton) {
         leftClickTimer.stop();
+        root.lastLeftClickMs = 0;
         main.applyAuto();
       } else if (mouseEvent.button === Qt.LeftButton) {
+        var now = Date.now();
+        if (root.lastLeftClickMs > 0 && (now - root.lastLeftClickMs) <= root.doubleClickInterval) {
+          leftClickTimer.stop();
+          root.lastLeftClickMs = 0;
+          main.toggleIconOnlyInBar();
+          return;
+        }
+        root.lastLeftClickMs = now;
         leftClickTimer.restart();
       }
-    }
-    onDoubleClicked: function(mouseEvent) {
-      if (!main || mouseEvent.button !== Qt.LeftButton)
-        return;
-      leftClickTimer.stop();
-      main.toggleIconOnlyInBar();
     }
     onEntered: {
       if (root.tooltipText)
@@ -150,9 +155,10 @@ Item {
 
   Timer {
     id: leftClickTimer
-    interval: 220
+    interval: root.doubleClickInterval
     repeat: false
     onTriggered: {
+      root.lastLeftClickMs = 0;
       if (pluginApi)
         pluginApi.openPanel(root.screen, root);
     }
