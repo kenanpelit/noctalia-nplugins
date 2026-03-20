@@ -1,6 +1,6 @@
 # NSunsetr
 
-![nsunsetr preview](preview.svg)
+![nsunsetr preview](preview.png)
 
 Sunsetr schedule, preset, and live temperature controls for Noctalia.
 

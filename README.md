@@ -6,13 +6,13 @@ This repository is designed to be used as a custom Noctalia plugin source. Nocta
 
 ## Included Plugins
 
-| [<img src="ndns/preview.png" width="220"><br><b>NDNS</b>](ndns) | [<img src="npower/preview.png" width="220"><br><b>NPower</b>](npower) | [<img src="npodman/preview.png" width="220"><br><b>NPodman</b>](npodman) |
-| :--- | :--- | :--- |
-| DNS and VPN switching for Mullvad, Blocky, and direct DNS presets. | Laptop power profile, battery, and session controls in one panel. | Compact Podman dashboard for containers, images, and pods. |
-| [<img src="notes/preview.png" width="220"><br><b>Notes Hub</b>](notes) | [<img src="network/preview.png" width="220"><br><b>Network Console</b>](network) | [<img src="nip/preview.png" width="220"><br><b>NIP</b>](nip) |
-| Unified scratchpad, note cards, and todo workflow. | Live NetworkManager view with Wi-Fi visibility and quick actions. | Compact public IP monitor with an icon-only bar presence. |
-| [<img src="nufw/preview.png" width="220"><br><b>NUFW</b>](nufw) | [<img src="nsunsetr/preview.svg" width="220"><br><b>NSunsetr</b>](nsunsetr) | |
-| UFW firewall status, quick actions, and rule overview. | Sunsetr schedule, live Kelvin state, and quick preset controls. | |
+| [<img src="ndns/preview.png" width="220"><br><b>NDNS</b>](ndns)        | [<img src="npower/preview.png" width="220"><br><b>NPower</b>](npower)            | [<img src="npodman/preview.png" width="220"><br><b>NPodman</b>](npodman) |
+| :--------------------------------------------------------------------- | :------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
+| DNS and VPN switching for Mullvad, Blocky, and direct DNS presets.     | Laptop power profile, battery, and session controls in one panel.                | Compact Podman dashboard for containers, images, and pods.               |
+| [<img src="notes/preview.png" width="220"><br><b>Notes Hub</b>](notes) | [<img src="network/preview.png" width="220"><br><b>Network Console</b>](network) | [<img src="nip/preview.png" width="220"><br><b>NIP</b>](nip)             |
+| Unified scratchpad, note cards, and todo workflow.                     | Live NetworkManager view with Wi-Fi visibility and quick actions.                | Compact public IP monitor with an icon-only bar presence.                |
+| [<img src="nufw/preview.png" width="220"><br><b>NUFW</b>](nufw)        | [<img src="nsunsetr/preview.png" width="220"><br><b>NSunsetr</b>](nsunsetr)      |                                                                          |
+| UFW firewall status, quick actions, and rule overview.                 | Sunsetr schedule, live Kelvin state, and quick preset controls.                  |                                                                          |
 
 ## Repository Structure
 
