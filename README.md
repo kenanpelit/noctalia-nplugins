@@ -94,6 +94,7 @@ It interacts with the local user-session Podman CLI directly.
 ### NIP
 
 `nip` relies on the local networking stack and external connectivity to resolve public IP information.
+If `mullvad` is available and connected, it prefers Mullvad-aware detection before falling back to public IP providers.
 
 ### NUFW
 

@@ -20,6 +20,7 @@ Item {
 
   readonly property var ipData: ipMonitorService?.ipData ?? null
   readonly property string fetchState: ipMonitorService?.fetchState ?? "idle"
+  readonly property string lastError: ipMonitorService?.lastError ?? ""
 
   function refreshIp() {
     if (ipMonitorService)
@@ -44,9 +45,11 @@ Item {
     case "loading":
       return "Requesting public IP data";
     case "error":
-      return "Unable to reach the IP service";
+      return lastError ? lastError : "Unable to reach the IP service";
     case "success": {
       var parts = [];
+      if (ipData?.vpnConnected)
+        parts.push("Mullvad exit");
       if (ipData?.city)
         parts.push(ipData.city);
       if (ipData?.country)
@@ -65,7 +68,7 @@ Item {
     case "error":
       return "Error";
     case "success":
-      return "Online";
+      return ipData?.vpnConnected ? "Protected" : "Online";
     default:
       return "Idle";
     }
@@ -93,19 +96,38 @@ Item {
       return "loader";
     case "error":
       return "alert-circle";
+    case "success":
+      return ipData?.vpnConnected ? "shield-lock" : "world";
     default:
       return "world";
     }
   }
 
+  function sourceLabel() {
+    switch (ipData?.source) {
+    case "mullvad":
+      return "Mullvad";
+    case "ipwhois":
+      return "ipwho.is";
+    case "ipapi":
+      return "ipapi.co";
+    case "ifconfig":
+      return "ifconfig.co";
+    case "ipinfo":
+      return "ipinfo.io";
+    default:
+      return "n/a";
+    }
+  }
+
   function detailCards() {
     return [
-      { label: "Hostname", value: ipData?.hostname ?? "n/a", accent: Color.mSecondary },
+      { label: ipData?.relay ? "Relay" : "Hostname", value: ipData?.relay ?? ipData?.hostname ?? "n/a", accent: Color.mSecondary },
       { label: "Organization", value: ipData?.org ?? "n/a", accent: Color.mTertiary },
       { label: "Region", value: ipData?.region ?? "n/a", accent: Color.mPrimary },
-      { label: "Timezone", value: ipData?.timezone ?? "n/a", accent: Color.mSecondary },
+      { label: ipData?.protocol ? "Protocol" : "Timezone", value: ipData?.protocol ?? ipData?.timezone ?? "n/a", accent: Color.mSecondary },
       { label: "Coordinates", value: ipData?.loc ?? "n/a", accent: Color.mTertiary },
-      { label: "Postal", value: ipData?.postal ?? "n/a", accent: Color.mPrimary }
+      { label: "Source", value: root.sourceLabel(), accent: Color.mPrimary }
     ];
   }
 
@@ -256,7 +278,9 @@ Item {
               NText {
                 id: statusChip
                 anchors.centerIn: parent
-                text: fetchState === "success" ? "Reachable" : (fetchState === "error" ? "Offline" : "Pending")
+                text: fetchState === "success"
+                      ? (ipData?.vpnConnected ? "Protected" : "Reachable")
+                      : (fetchState === "error" ? "Offline" : "Pending")
                 pointSize: Style.fontSizeXS
                 color: Color.mOnSurface
                 font.weight: Font.Medium
@@ -272,7 +296,7 @@ Item {
               NText {
                 id: scopeChip
                 anchors.centerIn: parent
-                text: "Public IPv4"
+                text: ipData?.vpnConnected ? "Mullvad Exit" : "Public IPv4"
                 pointSize: Style.fontSizeXS
                 color: Color.mOnSurface
                 font.weight: Font.Medium
@@ -295,7 +319,7 @@ Item {
           id: errorText
           anchors.fill: parent
           anchors.margins: Style.marginS
-          text: "Unable to fetch public IP details right now."
+          text: lastError ? lastError : "Unable to fetch public IP details right now."
           color: Color.mError
           pointSize: Style.fontSizeS
           wrapMode: Text.WordWrap
@@ -337,7 +361,9 @@ Item {
           NText {
             id: actionHint
             anchors.centerIn: parent
-            text: fetchState === "success" ? "Data fresh" : "Manual refresh"
+            text: fetchState === "success"
+                  ? (ipData?.vpnConnected ? "Mullvad exit detected" : "Data fresh")
+                  : "Manual refresh"
             pointSize: Style.fontSizeXS
             color: Color.mOnSurfaceVariant
             font.weight: Font.Medium

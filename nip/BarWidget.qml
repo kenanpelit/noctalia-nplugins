@@ -32,6 +32,23 @@ Item {
     return successIconKey;
   }
 
+  function sourceLabel(source) {
+    switch (source) {
+    case "mullvad":
+      return "Mullvad";
+    case "ipwhois":
+      return "ipwho.is";
+    case "ipapi":
+      return "ipapi.co";
+    case "ifconfig":
+      return "ifconfig.co";
+    case "ipinfo":
+      return "ipinfo.io";
+    default:
+      return source || "unknown";
+    }
+  }
+
   readonly property color accentColor: {
     if (fetchState === "error")
       return Color.mError;
@@ -105,12 +122,16 @@ Item {
       lines.push("IP: " + root.currentIp);
       if (root.fetchState === "success" && root.ipData) {
         var data = root.ipData;
+        if (data.vpnConnected)
+          lines.push("Mode: Mullvad exit");
         if (data.city || data.country) {
           var parts = [];
           if (data.city) parts.push(data.city);
           if (data.country) parts.push(data.country);
           lines.push(parts.join(", "));
         }
+        if (data.source)
+          lines.push("Source: " + root.sourceLabel(data.source));
       }
       TooltipService.show(root, lines.join("\n"), BarService.getTooltipDirection(root.screen?.name));
     }
