@@ -1,7 +1,7 @@
 {
   "id": "nworkspace",
   "name": "NWorkspace",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minNoctaliaVersion": "4.0.0",
   "author": "Kenan Pelit",
   "official": false,
@@ -25,15 +25,15 @@
   },
   "metadata": {
     "defaultSettings": {
-      "labelMode": "index+name",
+      "labelMode": "index",
       "characterCount": 3,
-      "hideEmpty": false,
+      "hideEmpty": true,
       "followFocusedOutput": true,
       "showOutputName": false,
-      "showWindowCount": true,
-      "showPreviewDots": true,
+      "showWindowCount": false,
+      "showPreviewDots": false,
       "maxPreviewDots": 4,
-      "compact": false
+      "compact": true
     }
   }
 }

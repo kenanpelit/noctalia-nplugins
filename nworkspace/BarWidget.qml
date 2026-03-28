@@ -16,13 +16,16 @@ Item {
 
   readonly property var main: pluginApi ? pluginApi.mainInstance : null
   readonly property var rows: main ? main.visibleRowsForScreen(screen?.name || "") : []
-  readonly property real pillHeight: Style.capsuleHeight
-  readonly property real pillRadius: Style.radiusL
-  readonly property real previewDotSize: Math.max(6, Math.round(Style.marginS * 0.75))
+  readonly property real capsuleHeight: Style.capsuleHeight
+  readonly property real horizontalPadding: Style.marginS
+  readonly property real spacingBetweenPills: Style.marginXS
+  readonly property real visualPillHeight: Style.toOdd(Math.max(14, capsuleHeight * (main && main.compact ? 0.62 : 0.74)))
+  readonly property real visualPillRadius: Style.radiusM
+  readonly property real previewDotSize: Math.max(5, Math.round(Style.marginS * 0.65))
   property var selectedWorkspace: null
 
-  implicitWidth: container.implicitWidth
-  implicitHeight: container.implicitHeight
+  implicitWidth: workspaceBackground.implicitWidth
+  implicitHeight: workspaceBackground.implicitHeight
 
   function tooltipFor(workspace) {
     var lines = [];
@@ -48,153 +51,181 @@ Item {
   }
 
   function pillWidth(workspace) {
-    var base = main && main.compact ? 44 : 54;
-    var extra = Math.max(0, String(workspace.label || "").length - 1) * (main && main.compact ? 6 : 8);
+    var dimension = visualPillHeight;
+    var active = !!workspace.isFocused || !!workspace.isActive;
+    var base = active ? dimension * 2.15 : dimension;
+    var extra = Math.max(0, String(workspace.label || "").length - 1) * (dimension * 0.32);
     if (main && main.showOutputName)
-      extra += 18;
+      extra += dimension * 0.85;
     if (main && main.showWindowCount && workspace.windowCount > 0)
-      extra += 16;
+      extra += dimension * 0.95;
     if (main && main.showPreviewDots && workspace.previewTokens.length > 0)
-      extra += workspace.previewTokens.length * (previewDotSize + 3);
-    return Math.max(base, Math.round((base + extra) * Style.uiScaleRatio));
+      extra += workspace.previewTokens.length * (previewDotSize + 2);
+    return Style.toOdd(Math.max(base, Math.round(base + extra)));
   }
 
-  RowLayout {
-    id: container
-    spacing: Style.marginXS
+  function pillColor(workspace, hovered) {
+    if (hovered)
+      return Color.mHover;
+    if (workspace.isFocused)
+      return Color.mPrimary;
+    if (workspace.isUrgent)
+      return Color.mError;
+    if (workspace.windowCount > 0)
+      return Color.mSecondary;
+    return Qt.alpha(Color.mSecondary, 0.30);
+  }
 
-    Repeater {
-      model: root.rows
+  function pillTextColor(workspace, hovered) {
+    if (hovered)
+      return Color.mOnHover;
+    if (workspace.isFocused)
+      return Color.mOnPrimary;
+    if (workspace.isUrgent)
+      return Color.mOnError;
+    if (workspace.windowCount > 0)
+      return Color.mOnSecondary;
+    return Color.mOnSecondary;
+  }
 
-      delegate: Rectangle {
-        required property var modelData
-        readonly property var workspace: modelData
+  Rectangle {
+    id: workspaceBackground
+    implicitWidth: pillRow.implicitWidth + horizontalPadding * 2
+    implicitHeight: capsuleHeight
+    width: implicitWidth
+    height: implicitHeight
+    radius: Style.radiusM
+    color: Style.capsuleColor
+    border.color: Style.capsuleBorderColor
+    border.width: Style.capsuleBorderWidth
 
-        Layout.preferredWidth: root.pillWidth(workspace)
-        Layout.preferredHeight: root.pillHeight
-        radius: root.pillRadius
-        color: {
-          if (mouseArea.containsMouse)
-            return Color.mHover;
-          if (workspace.isFocused)
-            return Qt.alpha(Color.mPrimary, 0.92);
-          if (workspace.isUrgent)
-            return Qt.alpha(Color.mError, 0.85);
-          if (workspace.windowCount > 0)
-            return Qt.alpha(Color.mSurfaceVariant, 0.88);
-          return Qt.alpha(Color.mSurfaceVariant, 0.42);
-        }
-        border.color: workspace.isFocused
-                        ? Qt.alpha(Color.mPrimary, 0.35)
-                        : Qt.alpha(workspace.isUrgent ? Color.mError : Color.mOutline, 0.18)
-        border.width: Style.capsuleBorderWidth
+    Row {
+      id: pillRow
+      anchors.left: parent.left
+      anchors.leftMargin: horizontalPadding
+      anchors.verticalCenter: parent.verticalCenter
+      spacing: spacingBetweenPills
 
-        RowLayout {
-          anchors.fill: parent
-          anchors.leftMargin: main && main.compact ? Style.marginS : Style.marginM
-          anchors.rightMargin: main && main.compact ? Style.marginS : Style.marginM
-          spacing: Style.marginXS
+      Repeater {
+        model: root.rows
+
+        delegate: Item {
+          required property var modelData
+          readonly property var workspace: modelData
+          width: root.pillWidth(workspace)
+          height: root.capsuleHeight
 
           Rectangle {
-            visible: main && main.showOutputName
-            Layout.preferredWidth: Math.max(12, Math.round(Style.fontSizeXS * 1.6))
-            Layout.preferredHeight: Math.max(12, Math.round(Style.fontSizeXS * 1.6))
-            radius: width / 2
-            color: Qt.alpha(workspace.isFocused ? Color.mOnPrimary : Color.mPrimary, workspace.isFocused ? 0.18 : 0.14)
+            id: pill
+            width: parent.width
+            height: root.visualPillHeight
+            anchors.centerIn: parent
+            radius: root.visualPillRadius
+            color: root.pillColor(workspace, mouseArea.containsMouse)
 
-            NText {
+            Row {
               anchors.centerIn: parent
-              text: String(workspace.output || "?").substring(0, 1).toUpperCase()
-              pointSize: Style.fontSizeXXS
-              font.weight: Font.Bold
-              color: workspace.isFocused ? Color.mOnPrimary : Color.mPrimary
-            }
-          }
+              spacing: 2
 
-          NText {
-            Layout.fillWidth: true
-            text: workspace.label
-            pointSize: main && main.compact ? Style.fontSizeXS : Style.barFontSize
-            font.weight: workspace.isFocused ? Font.Bold : Font.Medium
-            color: {
-              if (mouseArea.containsMouse)
-                return "#000000";
-              if (workspace.isFocused)
-                return Color.mOnPrimary;
-              if (workspace.isUrgent)
-                return Color.mOnError;
-              return Color.mOnSurface;
-            }
-            elide: Text.ElideRight
-          }
-
-          RowLayout {
-            visible: main && main.showPreviewDots && workspace.previewTokens.length > 0
-            spacing: 3
-
-            Repeater {
-              model: workspace.previewTokens
-              delegate: Rectangle {
-                required property var modelData
-                Layout.preferredWidth: root.previewDotSize
-                Layout.preferredHeight: root.previewDotSize
+              Rectangle {
+                visible: main && main.showOutputName
+                width: Math.max(10, Math.round(root.visualPillHeight * 0.58))
+                height: width
                 radius: width / 2
-                color: workspace.isFocused ? Qt.alpha(Color.mOnPrimary, 0.85) : Qt.alpha(Color.mPrimary, 0.65)
+                color: Qt.alpha(root.pillTextColor(workspace, mouseArea.containsMouse), 0.18)
 
                 NText {
                   anchors.centerIn: parent
-                  text: String(modelData || "")
-                  pointSize: Style.fontSizeXXS * 0.82
+                  text: String(workspace.output || "?").substring(0, 1).toUpperCase()
+                  pointSize: root.visualPillHeight * 0.25
+                  applyUiScale: false
                   font.weight: Font.Bold
-                  color: workspace.isFocused ? Color.mPrimary : Color.mOnPrimary
+                  color: root.pillTextColor(workspace, mouseArea.containsMouse)
+                }
+              }
+
+              NText {
+                anchors.verticalCenter: parent.verticalCenter
+                text: workspace.label
+                family: Settings.data.ui.fontFixed
+                pointSize: root.visualPillHeight * 0.48
+                applyUiScale: false
+                font.capitalization: Font.AllUppercase
+                font.weight: workspace.isFocused ? Font.DemiBold : Font.Medium
+                color: root.pillTextColor(workspace, mouseArea.containsMouse)
+              }
+
+              Row {
+                visible: main && main.showPreviewDots && workspace.previewTokens.length > 0
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 2
+
+                Repeater {
+                  model: workspace.previewTokens
+                  delegate: Rectangle {
+                    required property var modelData
+                    width: root.previewDotSize
+                    height: root.previewDotSize
+                    radius: width / 2
+                    color: Qt.alpha(root.pillTextColor(workspace, mouseArea.containsMouse), 0.82)
+
+                    NText {
+                      anchors.centerIn: parent
+                      text: String(modelData || "")
+                      pointSize: root.previewDotSize * 0.52
+                      applyUiScale: false
+                      font.weight: Font.Bold
+                      color: root.pillColor(workspace, mouseArea.containsMouse)
+                    }
+                  }
+                }
+              }
+
+              Rectangle {
+                visible: main && main.showWindowCount && workspace.windowCount > 0
+                anchors.verticalCenter: parent.verticalCenter
+                radius: height / 2
+                color: Qt.alpha(root.pillTextColor(workspace, mouseArea.containsMouse), 0.16)
+                implicitHeight: Math.max(14, Math.round(root.visualPillHeight * 0.62))
+                implicitWidth: countText.implicitWidth + Style.marginS
+
+                NText {
+                  id: countText
+                  anchors.centerIn: parent
+                  text: String(workspace.windowCount)
+                  pointSize: root.visualPillHeight * 0.26
+                  applyUiScale: false
+                  font.weight: Font.Bold
+                  color: root.pillTextColor(workspace, mouseArea.containsMouse)
                 }
               }
             }
           }
 
-          Rectangle {
-            visible: main && main.showWindowCount && workspace.windowCount > 0
-            radius: height / 2
-            color: workspace.isFocused ? Qt.alpha(Color.mOnPrimary, 0.18) : Qt.alpha(Color.mPrimary, 0.14)
-            border.color: workspace.isFocused ? Qt.alpha(Color.mOnPrimary, 0.18) : Qt.alpha(Color.mPrimary, 0.18)
-            border.width: 1
-            implicitHeight: Math.max(18, Math.round((main && main.compact ? 18 : 20) * Style.uiScaleRatio))
-            implicitWidth: countText.implicitWidth + Style.marginM
+          MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
 
-            NText {
-              id: countText
-              anchors.centerIn: parent
-              text: String(workspace.windowCount)
-              pointSize: Style.fontSizeXXS
-              font.weight: Font.Bold
-              color: workspace.isFocused ? Color.mOnPrimary : Color.mPrimary
+            onClicked: function(mouse) {
+              if (mouse.button === Qt.RightButton) {
+                root.selectedWorkspace = workspace;
+                PanelService.showContextMenu(contextMenu, parent, root.screen);
+                return;
+              }
+              if (mouse.button === Qt.MiddleButton) {
+                if (pluginApi)
+                  pluginApi.openPanel(root.screen, parent);
+                return;
+              }
+              CompositorService.switchToWorkspace(workspace);
             }
+
+            onEntered: TooltipService.show(parent, root.tooltipFor(workspace), BarService.getTooltipDirection(root.screen?.name))
+            onExited: TooltipService.hide()
           }
-        }
-
-        MouseArea {
-          id: mouseArea
-          anchors.fill: parent
-          acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-
-          onClicked: function(mouse) {
-            if (mouse.button === Qt.RightButton) {
-              root.selectedWorkspace = workspace;
-              PanelService.showContextMenu(contextMenu, parent, root.screen);
-              return;
-            }
-            if (mouse.button === Qt.MiddleButton) {
-              if (pluginApi)
-                pluginApi.openPanel(root.screen, parent);
-              return;
-            }
-            CompositorService.switchToWorkspace(workspace);
-          }
-
-          onEntered: TooltipService.show(parent, root.tooltipFor(workspace), BarService.getTooltipDirection(root.screen?.name))
-          onExited: TooltipService.hide()
         }
       }
     }
