@@ -1,0 +1,39 @@
+{
+  "id": "nworkspace",
+  "name": "NWorkspace",
+  "version": "0.1.0",
+  "minNoctaliaVersion": "4.0.0",
+  "author": "Kenan Pelit",
+  "official": false,
+  "license": "MIT",
+  "repository": "https://github.com/kenanpelit/noctalia-nplugins",
+  "description": "Workspace radar with monitor-aware pills, live window counts, and a faster focus panel.",
+  "tags": [
+    "Bar",
+    "Panel",
+    "Productivity",
+    "WindowManagement"
+  ],
+  "entryPoints": {
+    "main": "Main.qml",
+    "barWidget": "BarWidget.qml",
+    "panel": "Panel.qml",
+    "settings": "Settings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {
+      "labelMode": "index+name",
+      "characterCount": 3,
+      "hideEmpty": false,
+      "followFocusedOutput": true,
+      "showOutputName": false,
+      "showWindowCount": true,
+      "showPreviewDots": true,
+      "maxPreviewDots": 4,
+      "compact": false
+    }
+  }
+}
