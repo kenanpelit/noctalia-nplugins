@@ -58,11 +58,9 @@ Item {
     var base = active ? dimension * 1.28 : dimension * 0.92;
     var extra = 0;
     if (showsIndex)
-      extra += dimension * 0.95;
+      extra += dimension * 0.82;
     if (showsName)
-      extra += Math.max(dimension * 0.86, String(workspace.shortName || "").length * (dimension * (showsIndex ? 0.34 : 0.42)));
-    if (showsIndex && showsName)
-      extra += dimension * 0.22;
+      extra += Math.max(dimension * 0.98, String(workspace.shortName || "").length * (dimension * (showsIndex ? 0.44 : 0.48)));
     if (main && main.showOutputName)
       extra += dimension * 0.85;
     if (main && main.showWindowCount && workspace.windowCount > 0)
@@ -117,7 +115,7 @@ Item {
   }
 
   function secondaryTextColor(workspace, hovered) {
-    return Qt.alpha(pillTextColor(workspace, hovered), workspace.isFocused ? 0.96 : 0.78);
+    return Qt.alpha(pillTextColor(workspace, hovered), workspace.isFocused ? 0.98 : 0.90);
   }
 
   Rectangle {
@@ -183,37 +181,28 @@ Item {
                 color: root.accentChipColor(workspace, mouseArea.containsMouse)
                 border.color: Qt.alpha(root.pillTextColor(workspace, mouseArea.containsMouse), workspace.isFocused ? 0.12 : 0.06)
                 border.width: 1
-                implicitHeight: Math.max(14, Math.round(root.visualPillHeight * (root.showNameLabel(workspace) ? 0.60 : 0.68)))
-                implicitWidth: indexText.implicitWidth + (root.showNameLabel(workspace) ? Style.marginS : Style.marginM)
+                implicitHeight: Math.max(14, Math.round(root.visualPillHeight * (root.showNameLabel(workspace) ? 0.56 : 0.68)))
+                implicitWidth: indexText.implicitWidth + (root.showNameLabel(workspace) ? Style.marginXS : Style.marginM)
 
                 NText {
                   id: indexText
                   anchors.centerIn: parent
                   text: workspace.indexLabel
                   family: Settings.data.ui.fontFixed
-                  pointSize: root.visualPillHeight * (root.showNameLabel(workspace) ? 0.30 : 0.36)
+                  pointSize: root.visualPillHeight * (root.showNameLabel(workspace) ? 0.27 : 0.36)
                   applyUiScale: false
                   font.weight: Font.Bold
                   color: root.pillTextColor(workspace, mouseArea.containsMouse)
                 }
               }
 
-              Rectangle {
-                visible: root.showIndexLabel(workspace) && root.showNameLabel(workspace)
-                anchors.verticalCenter: parent.verticalCenter
-                width: Math.max(4, Math.round(root.previewDotSize * 0.72))
-                height: width
-                radius: width / 2
-                color: Qt.alpha(root.pillTextColor(workspace, mouseArea.containsMouse), 0.28)
-              }
-
               NText {
                 visible: root.showNameLabel(workspace)
                 anchors.verticalCenter: parent.verticalCenter
                 text: workspace.shortName
-                pointSize: root.visualPillHeight * (root.showIndexLabel(workspace) ? 0.32 : 0.42)
+                pointSize: root.visualPillHeight * (root.showIndexLabel(workspace) ? 0.39 : 0.44)
                 applyUiScale: false
-                font.weight: workspace.isFocused ? Font.DemiBold : Font.Medium
+                font.weight: workspace.isFocused ? Font.Bold : Font.DemiBold
                 color: root.showIndexLabel(workspace)
                        ? root.secondaryTextColor(workspace, mouseArea.containsMouse)
                        : root.pillTextColor(workspace, mouseArea.containsMouse)
