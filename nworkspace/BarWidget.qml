@@ -29,7 +29,7 @@ Item {
 
   function tooltipFor(workspace) {
     var lines = [];
-    lines.push(workspace.fullLabel || workspace.label);
+    lines.push(workspace.label);
     lines.push("Output: " + (workspace.output || "Unknown"));
     lines.push("Windows: " + workspace.windowCount);
     if (workspace.isFocused)
@@ -53,16 +53,8 @@ Item {
   function pillWidth(workspace) {
     var dimension = visualPillHeight;
     var active = !!workspace.isFocused || !!workspace.isActive;
-    var showsIndex = showIndexLabel(workspace);
-    var showsName = showNameLabel(workspace);
-    var base = active ? dimension * 1.28 : dimension * 0.92;
-    var extra = 0;
-    if (showsIndex)
-      extra += dimension * 0.95;
-    if (showsName)
-      extra += Math.max(dimension * 0.86, String(workspace.shortName || "").length * (dimension * (showsIndex ? 0.34 : 0.42)));
-    if (showsIndex && showsName)
-      extra += dimension * 0.22;
+    var base = active ? dimension * 2.15 : dimension;
+    var extra = Math.max(0, String(workspace.label || "").length - 1) * (dimension * 0.32);
     if (main && main.showOutputName)
       extra += dimension * 0.85;
     if (main && main.showWindowCount && workspace.windowCount > 0)
@@ -70,22 +62,6 @@ Item {
     if (main && main.showPreviewDots && workspace.previewTokens.length > 0)
       extra += workspace.previewTokens.length * (previewDotSize + 2);
     return Style.toOdd(Math.max(base, Math.round(base + extra)));
-  }
-
-  function showIndexLabel(workspace) {
-    if (!main)
-      return true;
-    if (main.labelMode === "name")
-      return !workspace.shortName;
-    return true;
-  }
-
-  function showNameLabel(workspace) {
-    if (!main)
-      return !!workspace.shortName;
-    if (main.labelMode === "index")
-      return false;
-    return !!workspace.shortName;
   }
 
   function pillColor(workspace, hovered) {
@@ -110,14 +86,6 @@ Item {
     if (workspace.windowCount > 0)
       return Color.mOnSecondary;
     return Color.mOnSecondary;
-  }
-
-  function accentChipColor(workspace, hovered) {
-    return Qt.alpha(pillTextColor(workspace, hovered), workspace.isFocused ? 0.22 : 0.15);
-  }
-
-  function secondaryTextColor(workspace, hovered) {
-    return Qt.alpha(pillTextColor(workspace, hovered), workspace.isFocused ? 0.96 : 0.78);
   }
 
   Rectangle {
@@ -176,47 +144,15 @@ Item {
                 }
               }
 
-              Rectangle {
-                visible: root.showIndexLabel(workspace)
-                anchors.verticalCenter: parent.verticalCenter
-                radius: height / 2
-                color: root.accentChipColor(workspace, mouseArea.containsMouse)
-                border.color: Qt.alpha(root.pillTextColor(workspace, mouseArea.containsMouse), workspace.isFocused ? 0.12 : 0.06)
-                border.width: 1
-                implicitHeight: Math.max(14, Math.round(root.visualPillHeight * (root.showNameLabel(workspace) ? 0.60 : 0.68)))
-                implicitWidth: indexText.implicitWidth + (root.showNameLabel(workspace) ? Style.marginS : Style.marginM)
-
-                NText {
-                  id: indexText
-                  anchors.centerIn: parent
-                  text: workspace.indexLabel
-                  family: Settings.data.ui.fontFixed
-                  pointSize: root.visualPillHeight * (root.showNameLabel(workspace) ? 0.30 : 0.36)
-                  applyUiScale: false
-                  font.weight: Font.Bold
-                  color: root.pillTextColor(workspace, mouseArea.containsMouse)
-                }
-              }
-
-              Rectangle {
-                visible: root.showIndexLabel(workspace) && root.showNameLabel(workspace)
-                anchors.verticalCenter: parent.verticalCenter
-                width: Math.max(4, Math.round(root.previewDotSize * 0.72))
-                height: width
-                radius: width / 2
-                color: Qt.alpha(root.pillTextColor(workspace, mouseArea.containsMouse), 0.28)
-              }
-
               NText {
-                visible: root.showNameLabel(workspace)
                 anchors.verticalCenter: parent.verticalCenter
-                text: workspace.shortName
-                pointSize: root.visualPillHeight * (root.showIndexLabel(workspace) ? 0.32 : 0.42)
+                text: workspace.label
+                family: Settings.data.ui.fontFixed
+                pointSize: root.visualPillHeight * 0.48
                 applyUiScale: false
+                font.capitalization: Font.AllUppercase
                 font.weight: workspace.isFocused ? Font.DemiBold : Font.Medium
-                color: root.showIndexLabel(workspace)
-                       ? root.secondaryTextColor(workspace, mouseArea.containsMouse)
-                       : root.pillTextColor(workspace, mouseArea.containsMouse)
+                color: root.pillTextColor(workspace, mouseArea.containsMouse)
               }
 
               Row {

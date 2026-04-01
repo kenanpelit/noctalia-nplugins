@@ -151,36 +151,15 @@ Item {
     CompositorService.switchToWorkspace(rows[nextIndex]);
   }
 
-  function workspaceName(workspace) {
-    return String(workspace.name || "").trim();
-  }
-
-  function shortNameFor(workspace) {
-    var name = workspaceName(workspace);
-    if (!name)
-      return "";
-    return name.substring(0, characterCount);
-  }
-
   function labelFor(workspace) {
-    var shortName = shortNameFor(workspace);
+    var name = String(workspace.name || "");
+    var shortName = name ? name.substring(0, characterCount) : "";
     if (labelMode === "name")
       return shortName || String(workspace.idx);
     if (labelMode === "index")
       return String(workspace.idx);
     if (shortName)
       return String(workspace.idx) + " " + shortName;
-    return String(workspace.idx);
-  }
-
-  function fullLabelFor(workspace) {
-    var name = workspaceName(workspace);
-    if (labelMode === "name")
-      return name || String(workspace.idx);
-    if (labelMode === "index")
-      return String(workspace.idx);
-    if (name)
-      return String(workspace.idx) + " " + name;
     return String(workspace.idx);
   }
 
@@ -225,21 +204,16 @@ Item {
 
   function buildRow(workspace) {
     var windows = windowsForWorkspace(workspace.id);
-    var name = workspaceName(workspace);
-    var shortName = shortNameFor(workspace);
     return {
       id: workspace.id,
       idx: workspace.idx,
-      name: name,
-      shortName: shortName,
-      indexLabel: String(workspace.idx),
+      name: String(workspace.name || ""),
       output: String(workspace.output || ""),
       isFocused: !!workspace.isFocused,
       isActive: !!workspace.isActive,
       isUrgent: !!workspace.isUrgent,
       isOccupied: !!workspace.isOccupied,
       label: labelFor(workspace),
-      fullLabel: fullLabelFor(workspace),
       windowCount: windows.length,
       previewTokens: previewTokens(windows),
       windows: windows

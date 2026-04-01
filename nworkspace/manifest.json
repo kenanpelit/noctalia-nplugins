@@ -1,7 +1,7 @@
 {
   "id": "nworkspace",
   "name": "NWorkspace",
-  "version": "0.1.2",
+  "version": "0.1.1",
   "minNoctaliaVersion": "4.0.0",
   "author": "Kenan Pelit",
   "official": false,
