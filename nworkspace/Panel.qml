@@ -238,11 +238,44 @@ Item {
                         Layout.fillWidth: true
                         spacing: Style.marginS
 
-                        NText {
-                          text: workspace.label
-                          pointSize: Style.fontSizeM
-                          font.weight: workspace.isFocused ? Font.Bold : Font.Medium
-                          color: workspace.isFocused ? Color.mPrimary : Color.mOnSurface
+                        Rectangle {
+                          Layout.preferredWidth: Math.round(34 * Style.uiScaleRatio)
+                          Layout.preferredHeight: Math.round(34 * Style.uiScaleRatio)
+                          radius: Style.radiusM
+                          color: Qt.alpha(workspace.isUrgent ? Color.mError : (workspace.isFocused ? Color.mPrimary : Color.mSurfaceVariant), workspace.isFocused ? 0.18 : 0.82)
+                          border.color: Qt.alpha(workspace.isUrgent ? Color.mError : (workspace.isFocused ? Color.mPrimary : Color.mOutline), workspace.isFocused ? 0.24 : 0.10)
+                          border.width: 1
+
+                          NText {
+                            anchors.centerIn: parent
+                            text: workspace.indexLabel
+                            pointSize: Style.fontSizeS
+                            font.family: Settings.data.ui.fontFixed
+                            font.weight: Font.Bold
+                            color: workspace.isUrgent ? Color.mError : (workspace.isFocused ? Color.mPrimary : Color.mOnSurface)
+                          }
+                        }
+
+                        ColumnLayout {
+                          Layout.fillWidth: true
+                          spacing: 1
+
+                          NText {
+                            text: workspace.name || ("Workspace " + workspace.indexLabel)
+                            pointSize: Style.fontSizeM
+                            font.weight: workspace.isFocused ? Font.Bold : Font.Medium
+                            color: workspace.isFocused ? Color.mPrimary : Color.mOnSurface
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                          }
+
+                          NText {
+                            visible: !!workspace.name
+                            text: "Workspace " + workspace.indexLabel
+                            pointSize: Style.fontSizeXXS
+                            font.weight: Font.Medium
+                            color: Color.mSecondary
+                          }
                         }
 
                         Rectangle {

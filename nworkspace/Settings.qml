@@ -96,66 +96,100 @@ ColumnLayout {
       { "key": "index+name", "name": "Index + Name" }
     ]
     currentKey: valueLabelMode
-    onSelected: key => valueLabelMode = key
+    onSelected: key => {
+      valueLabelMode = key;
+      saveSettings();
+    }
     minimumWidth: 220
   }
 
-  TextField {
+  NTextInput {
     Layout.fillWidth: true
+    label: "Name length"
+    description: "How many characters from the workspace name should appear in the bar."
     text: valueCharacterCount
     placeholderText: "3"
     inputMethodHints: Qt.ImhDigitsOnly
     onTextChanged: valueCharacterCount = text
+    onEditingFinished: saveSettings()
   }
 
   NToggle {
     label: "Hide empty workspaces"
     description: "Keep the bar tighter by removing empty workspaces unless they are focused."
     checked: valueHideEmpty
-    onToggled: checked => valueHideEmpty = checked
+    onToggled: checked => {
+      valueHideEmpty = checked;
+      saveSettings();
+    }
   }
 
   NToggle {
     label: "Follow focused output"
     description: "Show workspaces from the monitor that currently has focus instead of the bar's own output."
     checked: valueFollowFocusedOutput
-    onToggled: checked => valueFollowFocusedOutput = checked
+    onToggled: checked => {
+      valueFollowFocusedOutput = checked;
+      saveSettings();
+    }
   }
 
   NToggle {
     label: "Show output badge"
     description: "Add a compact output marker to each workspace pill."
     checked: valueShowOutputName
-    onToggled: checked => valueShowOutputName = checked
+    onToggled: checked => {
+      valueShowOutputName = checked;
+      saveSettings();
+    }
   }
 
   NToggle {
     label: "Show window counts"
     description: "Display how many windows are open inside each workspace."
     checked: valueShowWindowCount
-    onToggled: checked => valueShowWindowCount = checked
+    onToggled: checked => {
+      valueShowWindowCount = checked;
+      saveSettings();
+    }
   }
 
   NToggle {
     label: "Show preview dots"
     description: "Render tiny app hints for the first few unique windows in each workspace."
     checked: valueShowPreviewDots
-    onToggled: checked => valueShowPreviewDots = checked
+    onToggled: checked => {
+      valueShowPreviewDots = checked;
+      saveSettings();
+    }
   }
 
-  TextField {
+  NTextInput {
     Layout.fillWidth: true
+    label: "Preview dots"
+    description: "Maximum number of unique app markers shown inside each workspace pill."
     text: valueMaxPreviewDots
     placeholderText: "4"
     inputMethodHints: Qt.ImhDigitsOnly
     enabled: valueShowPreviewDots
     onTextChanged: valueMaxPreviewDots = text
+    onEditingFinished: saveSettings()
   }
 
   NToggle {
     label: "Compact mode"
     description: "Reduce pill padding for denser bars."
     checked: valueCompact
-    onToggled: checked => valueCompact = checked
+    onToggled: checked => {
+      valueCompact = checked;
+      saveSettings();
+    }
+  }
+
+  NButton {
+    text: "Save Settings"
+    icon: "device-floppy"
+    Layout.alignment: Qt.AlignLeft
+    onClicked: saveSettings()
   }
 }
