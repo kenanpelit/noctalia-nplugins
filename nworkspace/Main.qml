@@ -1,6 +1,7 @@
 import QtQuick
 import qs.Services.Compositor
 import qs.Services.UI
+import "WorkspaceMeta.js" as WorkspaceMeta
 
 Item {
   id: root
@@ -163,6 +164,17 @@ Item {
     return String(workspace.idx);
   }
 
+  function resolvedWorkspaceName(workspace) {
+    var currentName = String(workspace.name || "").trim();
+    var idxKey = String(workspace.idx || "").trim();
+
+    if (currentName && WorkspaceMeta.aliases[currentName] !== undefined)
+      return String(WorkspaceMeta.aliases[currentName]);
+    if (idxKey && WorkspaceMeta.aliases[idxKey] !== undefined)
+      return String(WorkspaceMeta.aliases[idxKey]);
+    return currentName;
+  }
+
   function previewTokens(windows) {
     var tokens = [];
     var seen = {};
@@ -204,10 +216,11 @@ Item {
 
   function buildRow(workspace) {
     var windows = windowsForWorkspace(workspace.id);
+    var resolvedName = resolvedWorkspaceName(workspace);
     return {
       id: workspace.id,
       idx: workspace.idx,
-      name: String(workspace.name || ""),
+      name: resolvedName,
       output: String(workspace.output || ""),
       isFocused: !!workspace.isFocused,
       isActive: !!workspace.isActive,

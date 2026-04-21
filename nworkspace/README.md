@@ -20,5 +20,6 @@ Monitor-aware workspace radar for Noctalia.
 ## Notes
 
 - the plugin reads workspace and window state from `CompositorService`
-- it is designed to work well with both Niri and Hyprland backends
+- it is designed to work well with Niri, Hyprland, and Mango backends
+- Mango tag names are resolved through `WorkspaceMeta.js`
 - settings are global plugin settings, not per-bar-instance settings
